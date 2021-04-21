@@ -3,6 +3,38 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
+// reusable function for log activity, data should at least include : quoteid,and activity type props
+const logActivity = async (data) => {
+  const ref = admin.firestore().collection('specs');
+  await ref
+    .doc(data.quoteId)
+    .get()
+    .then((doc) => {
+      const { leadtime, quantity, price, userId, status } = doc.data();
+      const userRef = admin.firestore().collection('users');
+      userRef
+        .doc(userId)
+        .collection('activityLog')
+        .doc()
+        .set({
+          activity: data.activity,
+          activityTitle: data.quoteId,
+          content:
+            'leadtime--' +
+            leadtime +
+            ' ,qty--' +
+            quantity +
+            ' ,price--' +
+            price,
+          // reference: doc.data(),
+          date: admin.firestore.FieldValue.serverTimestamp(),
+        });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
 // create or update a new user profile after a user signup
 exports.addUser = functions.https.onCall((data) => {
   const userRef = admin.firestore().collection('users');
@@ -49,9 +81,9 @@ exports.createStripeCheckout = functions.https.onCall(async (data, context) => {
         quantity: 1,
         price_data: {
           currency: 'gbp',
-          unit_amount: data * 100,
+          unit_amount: data.amount * 100,
           product_data: {
-            name: 'PCB Prototype',
+            name: data.quoteId,
           },
         },
       },
@@ -62,38 +94,47 @@ exports.createStripeCheckout = functions.https.onCall(async (data, context) => {
   };
 });
 
-// log activity
-exports.logCustomerActivity = functions.https.onCall(
-  async (quoteid, email, activity, context) => {
-    const ref = admin.firestore().collection('specs');
-    ref
-      .doc(quoteid)
-      .get()
-      .then((doc) => {
-        const { leadtime, quantity, price } = doc.data();
+// stripe webhook
+exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
+  const stripe = require('stripe')(functions.config().stripe.secret);
+  let event;
 
-        const userRef = admin.firestore().collection('users');
-        userRef
-          .doc(email)
-          .collection('activityLog')
-          .doc()
-          .set({
-            activity: activity,
-            activityTitle: quoteid,
-            content:
-              'leadtime--' +
-              leadtime +
-              ' ,qty--' +
-              quantity +
-              ' ,price--' +
-              price,
-            // reference: doc.data(),
-            date: firebase.firestore.FieldValue.serverTimestamp(),
-          });
+  try {
+    const whSec = functions.config().stripe.payments_webhook_secret;
+
+    event = stripe.webhooks.constructEvent(
+      req.rawBody,
+      req.headers['stripe-signature'],
+      whSec,
+    );
+  } catch (err) {
+    console.error('⚠️ Webhook signature verification failed.');
+    return res.sendStatus(400);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    const { line_items } = await stripe.checkout.sessions.retrieve(session.id, {
+      expand: ['line_items'],
+    });
+    const quoteId = line_items.data[0].description;
+    const data = { quoteId: quoteId, activity: 'paid' };
+    // update payment status
+    const ref = admin.firestore().collection('specs');
+    await ref
+      .doc(quoteId)
+      .update({
+        progress: 'paid',
       })
-      .catch((err) => {
-        console.error(err);
+      .then(() => {
+        //log activity
+        logActivity(data);
       });
-    return console.log('activity loged');
-  },
-);
+  }
+  return res.sendStatus(200);
+});
+
+// log activity
+exports.logCustomerActivity = functions.https.onCall(async (data) => {
+  logActivity(data);
+});

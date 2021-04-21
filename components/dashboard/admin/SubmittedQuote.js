@@ -10,12 +10,14 @@ import { getAllSubmitted } from '../../../pages/api/getSpec';
 import MaterialTable from 'material-table';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import PrintIcon from '@material-ui/icons/Print';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import QuoteTemplate from '../../stepForms/QuoteTemplate';
 import { IconButton } from '@material-ui/core';
 import QuoteTemplatePortal from '../selfService/quoteTemplatePortal';
 import { CustomizedDialog } from '../../shared/customizedDialog';
+import QuoteTemplateAdmin from './QuoteTemplelateAdmin';
 
 export default function SubmittedQuoteTable({ data }) {
   const [Open, setOpen] = React.useState(false);
@@ -43,6 +45,10 @@ export default function SubmittedQuoteTable({ data }) {
       title: 'Price',
     },
     {
+      field: 'progress',
+      title: 'progress',
+    },
+    {
       field: 'gerberFileUrl',
       title: 'GerBer File',
       render: (rowData) => (
@@ -53,10 +59,10 @@ export default function SubmittedQuoteTable({ data }) {
     },
     {
       field: 'id',
-      title: 'Print',
+      title: 'Action',
       render: (rowData) => (
         <IconButton onClick={() => handlePrint(rowData)}>
-          <PrintIcon />
+          <AssignmentIcon />
         </IconButton>
       ),
     },
@@ -78,9 +84,9 @@ export default function SubmittedQuoteTable({ data }) {
       <CustomizedDialog
         isOpen={Open}
         handleClose={handleClose}
-        title="Print Quote"
+        title="Confirm Quote"
       >
-        <QuoteTemplatePortal
+        <QuoteTemplateAdmin
           handleClose={handleClose}
           rowData={rowData}
           entrance="submitted"

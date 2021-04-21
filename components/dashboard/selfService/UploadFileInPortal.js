@@ -111,38 +111,11 @@ export default function UploadFileInPortal({
             });
         }
         // log activity using cloud function
+        const data = { quoteId: quoteId, activity: 'submit quote' };
         const logActivity = firebase
           .functions()
           .httpsCallable('logCustomerActivity');
-        logActivity(quoteId, user.email, 'submit');
-
-        //   ref
-        //     .doc(quoteId)
-        //     .get()
-        //     .then((doc) => {
-        //       const { leadtime, quantity, price } = doc.data();
-
-        //       const userRef = firebase.firestore().collection('users');
-        //       userRef
-        //         .doc(user.email)
-        //         .collection('activityLog')
-        //         .doc()
-        //         .set({
-        //           activity: 'submit',
-        //           activityTitle: quoteId,
-        //           content:
-        //             'leadtime--' +
-        //             leadtime +
-        //             ' ,qty--' +
-        //             quantity +
-        //             ' ,price--' +
-        //             price,
-        //           date: firebase.firestore.FieldValue.serverTimestamp(),
-        //         });
-        //     })
-        // .catch((err) => {
-        //   console.error(err);
-        // });
+        logActivity(data);
       });
     });
   };

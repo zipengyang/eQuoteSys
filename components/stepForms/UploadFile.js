@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 export default function UploadFile() {
   const classes = useStyles();
   const router = useRouter();
-  const { quoteid } = router.query;
+  const { quoteid, uid } = router.query;
 
   const [confirmDialog, setConfirmDialog] = React.useState({
     isOpen: false,
@@ -64,6 +64,17 @@ export default function UploadFile() {
             submittedDate: new Date().toISOString(),
           })
           .then(() => {
+            // log activity using cloud function
+            const data = { quoteId: quoteid, activity: 'submit quote' };
+            const logActivity = firebase
+              .functions()
+              .httpsCallable('logCustomerActivity');
+            logActivity(data);
+          })
+          .catch((err) => {
+            console.error(err);
+          })
+          .then(() => {
             setConfirmDialog({
               isOpen: true,
               title: 'Thank you for submitting your request for quote.',
@@ -71,13 +82,13 @@ export default function UploadFile() {
                 'We will check the gerber file and come back to you with offical quote shortly.',
               entrance: 'thankyou',
               onConfirm: () => {
-                window.location.href = '/';
+                if (uid === 'uid') {
+                  window.location.href = '/';
+                } else {
+                  router.push(`/users/${uid}/selfService`);
+                }
               },
             });
-          })
-          // log activity here
-          .catch((err) => {
-            console.error(err);
           });
       });
     });

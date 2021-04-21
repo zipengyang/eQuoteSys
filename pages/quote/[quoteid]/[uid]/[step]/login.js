@@ -33,7 +33,21 @@ export default function login() {
           // if quote does not exists:
 
           if (quoteid && quoteid === 'quoteid') {
-            router.push(`/users/${user.uid}/selfService`);
+            // log activity
+            const userRef = firebase.firestore().collection('users');
+            userRef
+              .doc(user.email)
+              .collection('activityLog')
+              .doc()
+              .set({
+                activity: 'Log in',
+                activityTitle: 'login to self-service portal',
+                content: '',
+                date: firebase.firestore.FieldValue.serverTimestamp(),
+              })
+              .then(() => {
+                router.push(`/users/${user.uid}/selfService`);
+              });
           } else {
             // if quote exists, update userId
             const url =
@@ -44,35 +58,19 @@ export default function login() {
                 : `/quote/${quoteid}/${user.uid}/${step}?tabValue=${tabValue}`;
 
             const ref = firebase.firestore().collection('specs');
-            await ref.doc(quoteid).update({
-              userId: user.email,
-              status: step === '9' ? 'draft' : status,
-            });
-            // log activity
             await ref
               .doc(quoteid)
-              .get()
-              .then((doc) => {
-                const { leadtime, quantity, price } = doc.data();
-                if (step === '9') {
-                  const userRef = firebase.firestore().collection('users');
-                  userRef
-                    .doc(user.email)
-                    .collection('activityLog')
-                    .doc()
-                    .set({
-                      activity: 'save as draft',
-                      activityTitle: quoteid,
-                      content:
-                        'leadtime--' +
-                        leadtime +
-                        ' ,qty--' +
-                        quantity +
-                        ' ,price--' +
-                        price,
-                      date: firebase.firestore.FieldValue.serverTimestamp(),
-                    });
-                }
+              .update({
+                userId: user.email,
+                status: step === '9' ? 'draft' : status,
+              })
+              .then(() => {
+                // log activity using cloud function
+                const data = { quoteId: quoteid, activity: 'save quote' };
+                const logActivity = firebase
+                  .functions()
+                  .httpsCallable('logCustomerActivity');
+                logActivity(data);
               })
               .then(() => router.push(url))
               .catch((err) => {
@@ -80,14 +78,6 @@ export default function login() {
               });
           }
         }
-        // log activity, will use cloud function instead
-        const userRef = firebase.firestore().collection('users');
-        userRef.doc(user.email).collection('activityLog').doc().set({
-          activity: 'Log in',
-          activityTitle: 'login to self-service portal',
-          content: '',
-          date: firebase.firestore.FieldValue.serverTimestamp(),
-        });
       })
       .catch(function (error) {
         const message = error.message;

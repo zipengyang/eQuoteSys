@@ -45,6 +45,10 @@ export default function SubmittedQuoteTable() {
       title: 'Price',
     },
     {
+      field: 'progress',
+      title: 'progress',
+    },
+    {
       field: 'id',
       title: 'Action',
       render: (rowData) => (
@@ -65,13 +69,6 @@ export default function SubmittedQuoteTable() {
     setRowData(rowData);
     setOpen(true);
   };
-
-  // const { data, status } = useQuery(
-  //   ['SubmittedQuotes', email],
-  //   getCustomerSubmitted,
-  // );
-  // if (status === 'loading') return 'loading';
-  // if (status === 'error') return 'error';
 
   return (
     <div style={{ height: 680, width: 1080 }}>

@@ -41,33 +41,19 @@ export default function QuoteDetails({ defaultValues, uuid }) {
       // already login
       const ref = firebase.firestore().collection('specs');
       // update status
-      await ref.doc(quoteid).update({
-        status: 'draft',
-      });
-      // log activity, will use cloud function instead.
       await ref
         .doc(quoteid)
-        .get()
-        .then((doc) => {
-          const { leadtime, quantity, price } = doc.data();
+        .update({
+          status: 'draft',
+        })
+        .then(() => {
+          // log activity using cloud function
+          const data = { quoteId: quoteid, activity: 'save quote' };
 
-          const userRef = firebase.firestore().collection('users');
-          userRef
-            .doc(user.email)
-            .collection('activityLog')
-            .doc()
-            .set({
-              activity: 'save as draft',
-              activityTitle: quoteid,
-              content:
-                'leadtime--' +
-                leadtime +
-                ' ,qty--' +
-                quantity +
-                ' ,price--' +
-                price,
-              date: firebase.firestore.FieldValue.serverTimestamp(),
-            });
+          const logActivity = firebase
+            .functions()
+            .httpsCallable('logCustomerActivity');
+          logActivity(data);
         })
         .catch((err) => {
           console.error(err);

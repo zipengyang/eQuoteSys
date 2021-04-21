@@ -29,9 +29,22 @@ export default function registration() {
         // update quote record
         if (quoteid !== 'quoteid') {
           const ref = firebase.firestore().collection('specs');
-          ref.doc(quoteid).update({
-            userId: data.email,
-          });
+          ref
+            .doc(quoteid)
+            .update({
+              userId: data.email,
+              status: step === '9' ? 'draft' : status,
+            })
+            .then(() => {
+              // log activity
+              if (step === '9') {
+                const data = { quoteId: quoteid, activity: 'save draft' };
+                const logActivity = firebase
+                  .functions()
+                  .httpsCallable('logCustomerActivity');
+                logActivity(data);
+              }
+            });
         } else {
           console.log('there is no record to update.');
         }
@@ -41,6 +54,8 @@ export default function registration() {
         const url =
           quoteid === 'quoteid'
             ? `/users/${user.uid}/selfService`
+            : step === '2' // skip step2 as arleady signup
+            ? `/quote/${quoteid}/${user.uid}/3`
             : `/quote/${quoteid}/${user.uid}/${step}?tabValue=${tabValue}`;
 
         router.push(url);

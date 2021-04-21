@@ -26,7 +26,7 @@ export default function RequestForQuote() {
 
   const handleOnSubmit = async (data) => {
     const email = data.email.toLowerCase();
-    console.log(email);
+    // console.log(email);
     const userRef = firebase.firestore().collection('users');
     const res = await userRef.doc(email).get();
     const result = () => res.data();
@@ -59,6 +59,14 @@ export default function RequestForQuote() {
             submittedDate: new Date().toISOString(),
           })
           .then(() => {
+            // log activity using cloud function
+            const data = { quoteId: quoteid, activity: 'submit quote' };
+            const logActivity = firebase
+              .functions()
+              .httpsCallable('logCustomerActivity');
+            logActivity(data);
+          })
+          .then(() => {
             setConfirmDialog({
               isOpen: true,
               title: 'Thank you for submitting your request for quote.',
@@ -69,13 +77,6 @@ export default function RequestForQuote() {
                 window.location.href = '/';
               },
             });
-          })
-          .then(() => {
-            // log activity using cloud function
-            const logActivity = firebase
-              .functions()
-              .httpsCallable('logCustomerActivity');
-            logActivity(quoteid, email, 'submit');
           });
       });
     });

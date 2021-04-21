@@ -8,10 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Button, Grid } from '@material-ui/core';
-import UploadFileInPortal from './UploadFileInPortal';
-import getStripe from '../../utils/getStripe';
+
 import firebase from '../../../firebase/firebase';
-import { loadStripe } from '@stripe/stripe-js';
 
 const TAX_RATE = 0.2;
 
@@ -38,14 +36,11 @@ function subtotal(items) {
   return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
 }
 
-export default function QuoteTemplatePortal({
-  rowData,
-  handleClose,
-  entrance,
-}) {
+export default function QuoteTemplateAdmin({ rowData, handleClose, entrance }) {
   const classes = useStyles();
 
-  const { id, quantity, price, leadtime, campaigns, progress } = rowData;
+  const { id, quantity, price, leadtime, campaigns } = rowData;
+  console.log(id);
 
   let rows = [];
   if (campaigns) {
@@ -83,22 +78,15 @@ export default function QuoteTemplatePortal({
   const invoiceTaxes = TAX_RATE * invoiceSubtotal;
   const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
-  // handle payment
-
-  const createStripeCheckout = firebase
-    .functions()
-    .httpsCallable('createStripeCheckout');
-  // const stripe = getStripe();
-  const stripe = Stripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-  // temparay pass amount to server, will get it from database
-  const data = { quoteId: id, amount: invoiceTotal };
-
-  const handlePayment = () => {
-    //pass invoiceTotal to cloud function for test purpose, will pass quoteid and get the amount in server side.
-    createStripeCheckout(data).then((response) => {
-      const sessionId = response.data.id;
-      stripe.redirectToCheckout({ sessionId: sessionId });
-    });
+  const handleClick = async (action) => {
+    const ref = firebase.firestore().collection('specs');
+    await ref
+      .doc(id)
+      .update({
+        progress: action,
+      })
+      .then(() => handleClose())
+      .catch((err) => console.err(err));
   };
 
   return (
@@ -159,33 +147,31 @@ export default function QuoteTemplatePortal({
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => window.print()}
+                onClick={() => handleClick('confirmed')}
               >
-                Print
+                Confirm
               </Button>
             </Grid>
-            {progress && progress === 'confirmed with proforma' && (
-              <Grid Grid item xs={3}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handlePayment()}
-                >
-                  Pay
-                </Button>
-              </Grid>
-            )}
-          </>
-        )}
 
-        {entrance === 'draft' && (
-          <Grid item xs={12}>
-            <UploadFileInPortal
-              quoteId={id}
-              handleClose={handleClose}
-              campaigns={campaigns}
-            />
-          </Grid>
+            <Grid item xs={3}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleClick('confirmed with proforma')}
+              >
+                Proforma
+              </Button>
+            </Grid>
+            <Grid item xs={3}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleClick('rejected')}
+              >
+                Reject
+              </Button>
+            </Grid>
+          </>
         )}
       </Grid>
     </>
