@@ -1,7 +1,5 @@
 import { Grid, Paper } from '@material-ui/core';
 import React from 'react';
-import Chart from '../../chart';
-import Deposits from '../../Deposits';
 import SubmittedQuoteTable from '../submittedQuoteTable';
 import { useStyles } from '../../styles';
 import clsx from 'clsx';
