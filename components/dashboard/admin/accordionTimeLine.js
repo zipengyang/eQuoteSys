@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CustomerActivityTimeLine from './CustomerActivityTimeLine';
 import { useQuery } from 'react-query';
-import { getUserActivity } from '../../pages/api/getSpec';
+import { getUserActivity } from '../../../pages/api/getSpec';
 import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({

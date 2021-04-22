@@ -29,7 +29,7 @@ import CampaignTable from '../../../components/marketing/CampaignTable';
 import Statics from '../../../components/dashboard/admin/Statics';
 import { drawerReducer } from '../../../components/shared/drawerReducer';
 import PromotedQuotes from '../../../components/dashboard/admin/promotedQuotes';
-import AccordionTimeLine from '../../../components/shared/accordionTimeLine';
+import AccordionTimeLine from '../../../components/dashboard/admin/accordionTimeLine';
 
 // context
 export const dispatchContext = createContext();
