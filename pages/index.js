@@ -62,10 +62,30 @@ export default function Home() {
     setAnchorEl(null);
   };
   const steps = [
-    { id: 1, image: 'https://firebasestorage.googleapis.com/v0/b/pcb-online-quote-system.appspot.com/o/images%2Fsetting.jpg?alt=media&token=cc68c7c8-d36f-4fa9-bfe2-4957dd73cac6', name: 'Step one -- Give Specs' },
-    { id: 2, image: 'https://firebasestorage.googleapis.com/v0/b/pcb-online-quote-system.appspot.com/o/images%2Fprice.jpg?alt=media&token=f7d64720-5618-4958-afb0-46b09142e877', name: 'Step two -- View Price' },
-    { id: 3, image: 'https://firebasestorage.googleapis.com/v0/b/pcb-online-quote-system.appspot.com/o/images%2Fsubmit.jpg?alt=media&token=93a33e2f-e8ce-4e8d-9758-bf6c02bf4b2b', name: 'Step three -- Submit Quote' },
-    { id: 4, image: 'https://firebasestorage.googleapis.com/v0/b/pcb-online-quote-system.appspot.com/o/images%2Fconfirm.jpg?alt=media&token=c48dbce9-7287-4f2f-8988-95829f75464f', name: 'Step four -- Confirm Quote' },
+    {
+      id: 1,
+      image:
+        'https://firebasestorage.googleapis.com/v0/b/pcb-online-quote-system.appspot.com/o/images%2Fsetting.jpg?alt=media&token=cc68c7c8-d36f-4fa9-bfe2-4957dd73cac6',
+      name: 'Step one -- Give Specs',
+    },
+    {
+      id: 2,
+      image:
+        'https://firebasestorage.googleapis.com/v0/b/pcb-online-quote-system.appspot.com/o/images%2Fprice.jpg?alt=media&token=f7d64720-5618-4958-afb0-46b09142e877',
+      name: 'Step two -- View Price',
+    },
+    {
+      id: 3,
+      image:
+        'https://firebasestorage.googleapis.com/v0/b/pcb-online-quote-system.appspot.com/o/images%2Fsubmit.jpg?alt=media&token=93a33e2f-e8ce-4e8d-9758-bf6c02bf4b2b',
+      name: 'Step three -- Submit Quote',
+    },
+    {
+      id: 4,
+      image:
+        'https://firebasestorage.googleapis.com/v0/b/pcb-online-quote-system.appspot.com/o/images%2Fconfirm.jpg?alt=media&token=c48dbce9-7287-4f2f-8988-95829f75464f',
+      name: 'Step four -- Confirm Quote',
+    },
   ];
 
   return (
@@ -78,7 +98,11 @@ export default function Home() {
         <Grid item>
           <Link href="/">
             <a>
-              <img src="/logo.jpg" width="88px" />
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/pcb-online-quote-system.appspot.com/o/images%2FLogo.jpg?alt=media&token=b4dba3eb-a1c8-42ec-846b-c191f11b6746"
+                width="100px"
+                width="88px"
+              />
             </a>
           </Link>
         </Grid>

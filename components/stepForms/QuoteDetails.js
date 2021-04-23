@@ -15,10 +15,12 @@ import { useAuth } from '../../firebase/auth';
 export default function QuoteDetails({ defaultValues, uuid }) {
   const { user } = useAuth();
 
-  // console.log(user);
   const router = useRouter();
   const { quoteid, uid } = router.query;
+
+  // temparay include price here to fix the NaN issue.
   const { supplied_as, step, xout, width, length, qty } = defaultValues;
+  // console.log(price);
 
   // make a copy of orignial quote. -- will use firebase function instead
 

@@ -35,6 +35,7 @@ function subtotal(items) {
 
 export default function QuoteTemplate({ data }) {
   const { quantity, price, leadtime } = data;
+  console.log(price);
 
   const rows = [
     createRow(
