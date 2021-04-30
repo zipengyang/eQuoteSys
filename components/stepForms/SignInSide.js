@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
 import Copyright from '../shared/copyRight';
+import firebase from '../../firebase/firebase';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,9 +57,19 @@ export default function SignInSide({
   tabValue,
 }) {
   const classes = useStyles();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch } = useForm();
+  const watchEmail = watch('email');
   const onSubmit = (data) => {
     handleFormSubmit(data);
+  };
+  const handleForgetPassword = () => {
+    firebase
+      .auth()
+      .sendPasswordResetEmail(watchEmail)
+      .then(() => {
+        window.alert('email sent.');
+      })
+      .catch((error) => console.error(error));
   };
   return (
     <Grid container component="main" className={classes.root}>
@@ -112,9 +123,7 @@ export default function SignInSide({
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
+                <button onClick={handleForgetPassword}>Forgot password?</button>
               </Grid>
               <Grid item>
                 <Link

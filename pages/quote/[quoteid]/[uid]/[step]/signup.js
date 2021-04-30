@@ -53,13 +53,12 @@ export default function registration() {
         const user = firebase.auth().currentUser;
         const url =
           quoteid === 'quoteid'
-            ? `/users/${user.uid}/selfService`
+            ? // ? `/users/${user.uid}/selfService`
+              '/quote/quoteid/uid/step/login'
             : step === '2' // skip step2 as arleady signup
             ? `/quote/${quoteid}/${user.uid}/3`
             : `/quote/${quoteid}/${user.uid}/${step}?tabValue=${tabValue}`;
-
-        router.push(url);
-        // console.log(url);
+        user.sendEmailVerification().then(() => router.push(url));
       })
       .catch((err) => console.error(err));
   };

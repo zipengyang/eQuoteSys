@@ -8,7 +8,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import { useAuth } from '../../firebase/auth';
-import Link from 'next/link';
 import firebase from '../../firebase/firebase';
 import { useRouter } from 'next/router';
 

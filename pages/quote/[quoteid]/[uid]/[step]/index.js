@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  StepOneForm,
-  StepTwoForm,
   QuoteDetails,
   RequestForQuote,
   Stepper,
@@ -10,13 +8,9 @@ import {
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { useRouter } from 'next/router';
 import firebase from '../../../../../firebase/firebase';
-import { updateSpec, createSpec } from '../../../../api/getSpec';
-import { useMutation } from 'react-query';
-import { Grid, Paper } from '@material-ui/core';
+import { Paper } from '@material-ui/core';
 import { useStyle } from '../../../../../src/styles';
 import UploadFile from '../../../../../components/stepForms/UploadFile';
-import Modal from '../../../../../components/shared/Modal';
-import StepTabs from '../../../../../components/stepForms/StepTab';
 import SpecMain from '../../../../../components/stepForms/SpecMain';
 
 export default function Main({ spec }) {
@@ -52,7 +46,6 @@ export default function Main({ spec }) {
         className={classes.appBar}
       />
       <main className={classes.root}>
-        {/* <Modal showModal={showModal} setShowModal={setShowModal} /> */}
         <Paper className={classes.paper}>
           <Stepper activeStep={parseInt(step)} />
         </Paper>

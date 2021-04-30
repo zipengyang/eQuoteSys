@@ -138,3 +138,70 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
 exports.logCustomerActivity = functions.https.onCall(async (data) => {
   logActivity(data);
 });
+
+// update specs with offer and send email via sendGrid
+const SENDGRID_API_KEY = functions.config().sendgrid.key;
+const sendGridEmail = require('@sendgrid/mail');
+sendGridEmail.setApiKey(SENDGRID_API_KEY);
+exports.updateAndSendOfferEmail = functions.https.onCall((data) => {
+  const ref = admin.firestore().collection('specs');
+  const { camp, specs } = data;
+  specs &&
+    specs.map((item) => {
+      ref
+        .doc(item.id)
+        .update({
+          campaigns: {
+            campaignId: camp.id,
+            isClicked: false,
+            isAccepted: false,
+            offerDate: camp.startedDate,
+            type: camp.type,
+            offer: camp.offer,
+            expiredDate: camp.expiredDate,
+          },
+        })
+        .then(() => {
+          const msg = {
+            to: item.userId,
+            from: 'crm@exceptionpcb.com',
+            subject: 'Offer for your quote',
+            templateId: 'd-399a0c1dd13047fbbb22a8bd65d38322',
+            dynamic_template_data: {
+              quoteId: item.id,
+              offer: camp.offer,
+              expired_date: camp.expiredDate,
+            },
+          };
+
+          return sendGridEmail.send(msg);
+        })
+        .then(() => console.log('email sent'))
+        .catch((error) => console.error(error));
+    });
+});
+
+// email verification
+// exports.emailVerification = functions.https.onCall(() => {
+//   const email = 'zipeng.yang@exceptionpcb.com';
+//   const actionCodeSettings = {
+//     url: 'https://equotesys.vercel.app/',
+//   };
+//   admin
+//     .auth()
+//     .generatePasswordResetLink(email, actionCodeSettings)
+//     .then(() => {
+//       const msg = {
+//         to: email,
+//         from: 'crm@exceptionpcb.com',
+//         subject: 'eQuoteSys Email Verification',
+//         templateId: 'd-27b22b9caf4942ce9a81175bb7808cf9',
+//         dynamic_template_data: {
+//           url: 'https://equotesys.vercel.app/',
+//         },
+//       };
+//       return sendGridEmail.send(msg);
+//     })
+//     .then(() => console.log('email sent'))
+//     .catch((error) => console.error(error));
+// });

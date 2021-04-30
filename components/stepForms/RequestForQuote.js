@@ -1,17 +1,11 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { Paper } from '@material-ui/core';
-import { useStyle } from '../../src/styles';
-import { Button, Box, Typography } from '@material-ui/core';
-import Link from 'next/link';
 import ContactForm from './contactForm';
 import firebase from '../../firebase/firebase';
-import moment from 'moment';
 import ConfirmDialog from '../shared/confirmDialog';
 
 // this is for user without signup or login
 export default function RequestForQuote() {
-  const classes = useStyle();
   const router = useRouter();
   const { quoteid, step } = router.query;
 

@@ -1,25 +1,20 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import Calc_Array from '../utils/panelisation';
 import { Grid, Button } from '@material-ui/core';
 import { useMutation } from 'react-query';
-import { createSpec, updateStatus } from '../../pages/api/getSpec';
+import { createSpec } from '../../pages/api/getSpec';
 import { v4 as uuidv4 } from 'uuid';
-import PriceTable from './PriceTable';
 import firebase from '../../firebase/firebase';
-import moment from 'moment';
 import QuoteTemplate from './QuoteTemplate';
-// import { dispatchContext } from '../../pages/users/[id]/selfService';
 import { useAuth } from '../../firebase/auth';
 
 export default function QuoteDetails({ defaultValues, uuid }) {
   const { user } = useAuth();
-
   const router = useRouter();
   const { quoteid, uid } = router.query;
 
   // temparay include price here to fix the NaN issue.
-  const { supplied_as, step, xout, width, length, qty } = defaultValues;
+  const { supplied_as, step, xout, width, length, qty, price } = defaultValues;
   // console.log(price);
 
   // make a copy of orignial quote. -- will use firebase function instead

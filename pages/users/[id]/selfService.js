@@ -35,12 +35,17 @@ import SubmittedQuoteTable from '../../../components/dashboard/selfService/submi
 import Submitted from '../../../components/dashboard/selfService/content/submitted';
 import SSDrawer from '../../../components/dashboard/selfService/ssDrawer';
 import { drawerReducer } from '../../../components/shared/drawerReducer';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import { Button, Typography } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
 export const dispatchContext = createContext();
 
 export default function selfService({ session }) {
   if (session) {
-    const { uid, email } = session;
+    const { uid, email, email_verified } = session;
+    console.log(email_verified);
 
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -65,7 +70,8 @@ export default function selfService({ session }) {
     function getDisplayContent(content) {
       switch (content) {
         case 'submitted':
-          return <Submitted />;
+          // return <Submitted />;
+          return <SubmittedQuoteTable />;
 
         case 'draft':
           return <DraftQuoteTable />;
@@ -94,6 +100,31 @@ export default function selfService({ session }) {
       <dispatchContext.Provider value={{ data, dispatch, email }}>
         <div className={classes.root}>
           <CssBaseline />
+          {/* verify email address */}
+
+          <Dialog
+            open={!email_verified}
+            aria-labelledby="email-verification-dialog"
+            fullWidth
+            maxWidth="md"
+          >
+            <DialogContent>
+              <Alert severity="warning" variant="filled">
+                <Typography variant="h5">
+                  please verify your email address and click the login button to
+                  login -->
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => router.push('/quote/quoteid/uid/step/login')}
+                  >
+                    login
+                  </Button>
+                </Typography>
+              </Alert>
+            </DialogContent>
+          </Dialog>
+
           <DbAppBar
             email={session.email}
             handleDrawerOpen={handleDrawerOpen}
@@ -152,13 +183,14 @@ export async function getServerSideProps(context) {
   try {
     const cookies = nookies.get(context);
     const token = await verifyIdToken(cookies.token);
-    const { uid, email } = token;
+    const { uid, email, email_verified } = token;
 
     return {
       props: {
         session: {
           email: email,
           userId: uid,
+          email_verified,
         },
       },
     };

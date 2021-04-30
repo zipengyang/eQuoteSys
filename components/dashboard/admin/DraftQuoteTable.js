@@ -35,21 +35,20 @@ export default function DraftQuoteTable({ data }) {
     setSelected(data);
   };
 
+  // handle update via cloud functions
+
   const handleCampSelected = (camp) => {
+    //update campId only for data reflash. cloud funcitons handle the rest.
     const ref = firebase.firestore().collection('specs');
+    let newArr = [];
     selected &&
       selected.map((item) => {
+        newArr.push({ id: item.id, userId: item.userId });
         ref
           .doc(item.id)
           .update({
             campaigns: {
               campaignId: camp.id,
-              isClicked: false,
-              isAccepted: false,
-              offerDate: camp.startedDate,
-              type: camp.type,
-              offer: camp.offer,
-              expiredDate: camp.expiredDate,
             },
           })
           .then(() => {
@@ -57,8 +56,30 @@ export default function DraftQuoteTable({ data }) {
             setOpen(false); //close form
             setSelected([]); // reset selection
           })
-          .catch((err) => console.log(err));
+          .catch((error) => console.error(error));
       });
+    // create a new array with reducing properties
+    const data = {
+      camp: {
+        id: camp.id,
+        type: camp.type,
+        offer: camp.offer,
+        expiredDate: camp.expiredDate,
+        startedDate: camp.startedDate,
+      },
+      specs: newArr,
+    };
+    // pass all selected data and pass to functions to loop over rather than calling funcions many times?
+
+    // call cloud functions
+    const updateAndSendOfferEmail = firebase
+      .functions()
+      .httpsCallable('updateAndSendOfferEmail');
+    updateAndSendOfferEmail(data)
+      .then(() => {
+        console.log('email sent');
+      })
+      .catch((err) => console.log(err));
   };
 
   const [confirmDialog, setConfirmDialog] = React.useState({
