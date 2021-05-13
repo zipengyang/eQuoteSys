@@ -11,20 +11,37 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useStyles } from './styles';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import { useRouter } from 'next/router';
+import { useQuery } from 'react-query';
+import { getTasksByEmail } from '../../pages/api/getSpec';
+import MenuListComponent from './admin/menuList';
 
 export default function DbAppBar({
   email,
   open,
   handleDrawerOpen,
+  handleNotificationSideBar,
   handleSignout,
 }) {
   const classes = useStyles();
   const router = useRouter();
-
+  const menuItems = ['submitted', 'draft', 'promoted'];
   // const [open, setOpen] = React.useState(false);
   const handleClick = () => {
     handleDrawerOpen();
   };
+  const handleSideBar = () => {
+    handleNotificationSideBar();
+  };
+
+  //get tasks from cache
+
+  const { data, isLoading, isError, error } = useQuery(
+    ['myTasks', email],
+    getTasksByEmail,
+  );
+
+  if (isLoading) return <p>'...Loading'</p>;
+  if (isError) return <p>'...Error'</p>;
 
   return (
     <div>
@@ -45,7 +62,10 @@ export default function DbAppBar({
           >
             <MenuIcon />
           </IconButton>
-          <Typography
+          {/* <MenuListComponent menuName="Quote" menuItems={menuItems} />
+
+          <MenuListComponent menuName="Marketing" menuItems={menuItems} /> */}
+          {/* <Typography
             component="h1"
             variant="h6"
             color="inherit"
@@ -53,7 +73,7 @@ export default function DbAppBar({
             className={classes.title}
           >
             Dashboard
-          </Typography>
+          </Typography> */}
           <Typography
             component="h1"
             variant="h6"
@@ -63,8 +83,8 @@ export default function DbAppBar({
           >
             Welcome, {email}
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
+          <IconButton color="inherit" onClick={handleSideBar}>
+            <Badge badgeContent={data.length} color="secondary">
               <NotificationsIcon />
             </Badge>
           </IconButton>

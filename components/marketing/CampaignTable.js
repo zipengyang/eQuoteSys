@@ -60,7 +60,6 @@ export default function CampaignTable() {
   });
 
   const handleOnSubmit = (data) => {
-    console.log(data);
     Mutation.mutate(data);
   };
   //handle delete

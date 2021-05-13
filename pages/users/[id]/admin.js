@@ -30,6 +30,8 @@ import Statics from '../../../components/dashboard/admin/Statics';
 import { drawerReducer } from '../../../components/shared/drawerReducer';
 import PromotedQuotes from '../../../components/dashboard/admin/promotedQuotes';
 import AccordionTimeLine from '../../../components/dashboard/admin/accordionTimeLine';
+import ActivityTab from '../../../components/dashboard/admin/activity/activityTab';
+import NotificationSideBar from '../../../components/dashboard/notificationSideBar';
 
 // context
 export const dispatchContext = createContext();
@@ -42,8 +44,13 @@ export default function selfService({ session }) {
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
     const [open, setOpen] = React.useState(true);
+    const [NSBopen, setNSBopen] = React.useState(false);
     const handleDrawerOpen = () => {
       setOpen(!open);
+    };
+    const handleNotificationSideBar = () => {
+      setNSBopen(!NSBopen);
+      // could get data from appbar and pass onto notification component by using useState
     };
     const handleSignout = async () => {
       await firebase.auth().signOut();
@@ -72,7 +79,8 @@ export default function selfService({ session }) {
         case 'report':
           return <Statics data={data} camps={state.camps} />;
         case 'customerTimeLine':
-          return <AccordionTimeLine user={state.camps} />;
+          // return <AccordionTimeLine user={state.camps} />;
+          return <ActivityTab user={state.camps} />;
 
         default:
           return;
@@ -86,7 +94,6 @@ export default function selfService({ session }) {
     });
 
     //fetch data
-
     const cache = state.menuSelected === 'customer' ? 'users' : 'specs';
     const query = state.menuSelected === 'customer' ? getAllUsers : getAllSpecs;
 
@@ -102,10 +109,12 @@ export default function selfService({ session }) {
           <DbAppBar
             email={email}
             handleDrawerOpen={handleDrawerOpen}
+            handleNotificationSideBar={handleNotificationSideBar}
             open={open}
             handleSignout={handleSignout}
           />
           <DbDrawer handleDrawerOpen={handleDrawerOpen} open={open} uid={uid} />
+          <NotificationSideBar open={NSBopen} />
           <main className={classes.content}>
             <div className={classes.appBarSpacer} />
             <Container className={classes.container}>
@@ -134,7 +143,7 @@ export async function getServerSideProps(context) {
     // is admin role?
     const ref = admin.firestore().collection('admin');
     const role = await ref
-      .doc(uid)
+      .doc(email)
       .get()
       .then((result) => result.data());
 

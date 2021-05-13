@@ -5,6 +5,8 @@ import firebase from '../../firebase/firebase';
 const ref = firebase.firestore().collection('specs');
 const userRef = firebase.firestore().collection('users');
 const campRef = firebase.firestore().collection('campaigns');
+const adminRef = firebase.firestore().collection('admin');
+const taskRef = firebase.firestore().collection('tasks');
 
 // get specs to cache
 export const getAllSpecs = async () => {
@@ -218,6 +220,29 @@ export const updateSpecWithEmail = async ({ quoteid, ...data }) => {
     .catch((err) => {
       console.error(err);
     });
+};
+
+// get all admin
+export const getAdmins = async () => {
+  const data = await adminRef.get();
+  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return result;
+};
+
+// get tasks related to customer
+export const getTasks = async ({ queryKey }) => {
+  const [_key, customerId] = queryKey;
+  const data = await taskRef.where('customerId', '==', customerId).get();
+  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return result;
+};
+
+// get tasks related to assignedTo
+export const getTasksByEmail = async ({ queryKey }) => {
+  const [_key, email] = queryKey;
+  const data = await taskRef.where('assignedTo', '==', email).get();
+  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return result;
 };
 
 // update spec with email and create a new user record if email does not exist.
