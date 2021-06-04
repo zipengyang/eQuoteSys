@@ -6,7 +6,11 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
+import { useRouter } from 'next/router';
+import { dispatchContext } from '../../../pages/users/[id]/admin';
+import { useContext } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MenuListComponent({ menuName, menuItems }) {
-  console.log(menuItems);
+  const { dispatch } = useContext(dispatchContext);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
@@ -35,6 +39,10 @@ export default function MenuListComponent({ menuName, menuItems }) {
     setOpen(false);
   };
 
+  const handleClick = (url) => {
+    dispatch({ type: url });
+    setOpen(false);
+  };
   function handleListKeyDown(event) {
     if (event.key === 'Tab') {
       event.preventDefault();
@@ -63,6 +71,7 @@ export default function MenuListComponent({ menuName, menuItems }) {
           onClick={handleToggle}
         >
           {menuName}
+          <ExpandMoreIcon />
         </Button>
         <Popper
           open={open}
@@ -86,8 +95,15 @@ export default function MenuListComponent({ menuName, menuItems }) {
                     id="menu-list-grow"
                     onKeyDown={handleListKeyDown}
                   >
-                    {menuItems.map((menuItem) => (
-                      <MenuItem onClick={handleClose}>{menuItem}</MenuItem>
+                    {menuItems.map((menuItem, index) => (
+                      <MenuItem
+                        key={index}
+                        onClick={() => handleClick(menuItem.url)}
+
+                        // onClick={() => dispatch({ type: menuItem.url })}
+                      >
+                        {menuItem.name}
+                      </MenuItem>
                     ))}
                   </MenuList>
                 </ClickAwayListener>

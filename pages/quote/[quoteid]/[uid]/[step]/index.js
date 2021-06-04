@@ -8,7 +8,7 @@ import {
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { useRouter } from 'next/router';
 import firebase from '../../../../../firebase/firebase';
-import { Paper } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import { useStyle } from '../../../../../src/styles';
 import UploadFile from '../../../../../components/stepForms/UploadFile';
 import SpecMain from '../../../../../components/stepForms/SpecMain';
@@ -51,6 +51,9 @@ export default function Main({ spec }) {
         </Paper>
         <Paper className={classes.paper}>
           {getStepContent(parseInt(step))}
+        </Paper>
+        <Paper className={classes.paper}>
+          <div>testing area</div>
         </Paper>
       </main>
     </>

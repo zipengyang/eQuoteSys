@@ -5,7 +5,7 @@ import {
   GridToolbarExport,
 } from '@material-ui/data-grid';
 import Link from 'next/link';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { getAllSubmitted } from '../../../pages/api/getSpec';
 import MaterialTable from 'material-table';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -18,10 +18,17 @@ import { IconButton } from '@material-ui/core';
 import QuoteTemplatePortal from '../selfService/quoteTemplatePortal';
 import { CustomizedDialog } from '../../shared/customizedDialog';
 import QuoteTemplateAdmin from './QuoteTemplelateAdmin';
+import SearchIcon from '@material-ui/icons/Search';
+import AssigneToSalePerson from './assignToSalePerson';
+import firebase from '../../../firebase/firebase';
 
 export default function SubmittedQuoteTable({ data }) {
   const [Open, setOpen] = React.useState(false);
+  const [OpenPerson, setOpenPerson] = React.useState(false);
+  const [specId, setSpecId] = React.useState();
   const [rowData, setRowData] = React.useState({});
+  const queryClient = useQueryClient();
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -49,6 +56,15 @@ export default function SubmittedQuoteTable({ data }) {
       title: 'progress',
     },
     {
+      field: 'assignedTo',
+      title: 'Assign to',
+      render: (row) => (
+        <IconButton onClick={() => handleOpenPerson(row.id)} size="small">
+          {row.assignedTo ? row.assignedTo : <SearchIcon />}
+        </IconButton>
+      ),
+    },
+    {
       field: 'gerberFileUrl',
       title: 'GerBer File',
       render: (rowData) => (
@@ -71,6 +87,22 @@ export default function SubmittedQuoteTable({ data }) {
     setRowData(data);
     setOpen(true);
   };
+  const handleOpenPerson = (id) => {
+    setSpecId(id);
+    setOpenPerson(true);
+  };
+  const handleAssignedTo = async (data) => {
+    const email = data.id;
+    // update spec
+    const ref = firebase.firestore().collection('specs');
+    await ref
+      .doc(specId)
+      .update({
+        assignedTo: email,
+      })
+      .then(() => queryClient.invalidateQueries('specs'), setOpenPerson(false))
+      .catch((err) => console.err(err));
+  };
 
   return (
     <div style={{ height: 580, width: '100%' }}>
@@ -90,6 +122,17 @@ export default function SubmittedQuoteTable({ data }) {
           handleClose={handleClose}
           rowData={rowData}
           entrance="submitted"
+        />
+      </CustomizedDialog>
+      {/* select sales person */}
+      <CustomizedDialog
+        isOpen={OpenPerson}
+        handleClose={handleClose}
+        title="Assign to"
+      >
+        <AssigneToSalePerson
+          handleClose={handleClose}
+          handleAssignedTo={handleAssignedTo}
         />
       </CustomizedDialog>
     </div>

@@ -24,7 +24,11 @@ export default function DbAppBar({
 }) {
   const classes = useStyles();
   const router = useRouter();
-  const menuItems = ['submitted', 'draft', 'promoted'];
+  const menuItems = [
+    { name: 'submitted', url: '/users/uid/quote/submitted' },
+    { name: 'draft', url: '/users/uid/quote/draft' },
+    { name: 'promoted', url: '/users/uid/quote/promoted' },
+  ];
   // const [open, setOpen] = React.useState(false);
   const handleClick = () => {
     handleDrawerOpen();
@@ -62,9 +66,9 @@ export default function DbAppBar({
           >
             <MenuIcon />
           </IconButton>
-          {/* <MenuListComponent menuName="Quote" menuItems={menuItems} />
+          <MenuListComponent menuName="Quote" menuItems={menuItems} />
 
-          <MenuListComponent menuName="Marketing" menuItems={menuItems} /> */}
+          {/*<MenuListComponent menuName="Marketing" menuItems={menuItems} /> */}
           {/* <Typography
             component="h1"
             variant="h6"

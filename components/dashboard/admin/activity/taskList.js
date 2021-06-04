@@ -49,9 +49,8 @@ export default function TaskList({ customer, handleOnSubmit, admins }) {
     : data;
 
   return (
-    <div className={classes.root}>
-      {' '}
-      <Grid item xs={12} md={12}>
+    <div>
+      <div>
         <FormControlLabel
           control={
             <Switch
@@ -63,7 +62,7 @@ export default function TaskList({ customer, handleOnSubmit, admins }) {
           }
           label="Show Incompletion only"
         />
-      </Grid>
+      </div>
       {tasks.map((item) => (
         <Accordion key={item.id}>
           <AccordionSummary
