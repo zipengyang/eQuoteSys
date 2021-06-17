@@ -32,6 +32,8 @@ import PromotedQuotes from '../../../components/dashboard/admin/promotedQuotes';
 import AccordionTimeLine from '../../../components/dashboard/admin/accordionTimeLine';
 import ActivityTab from '../../../components/dashboard/admin/activity/activityTab';
 import NotificationSideBar from '../../../components/dashboard/notificationSideBar';
+import NewAppBar from '../../../components/shared/newAppBar';
+import QuoteAllInOneView from '../../../components/dashboard/quoteAllInOneView';
 
 // context
 export const dispatchContext = createContext();
@@ -81,7 +83,8 @@ export default function selfService({ session }) {
         case 'customerTimeLine':
           // return <AccordionTimeLine user={state.camps} />;
           return <ActivityTab user={state.camps} />;
-
+        case 'quoteAllInOneView':
+          return <QuoteAllInOneView data={state.camps} />;
         default:
           return;
       }
@@ -104,20 +107,22 @@ export default function selfService({ session }) {
 
     return (
       <dispatchContext.Provider value={{ dispatch }}>
-        <div className={classes.root}>
+        {/* <div className={classes.root}> */}
+        <div>
           <CssBaseline />
-          <DbAppBar
+          {/* <DbAppBar */}
+          <NewAppBar
             email={email}
             handleDrawerOpen={handleDrawerOpen}
             handleNotificationSideBar={handleNotificationSideBar}
             open={open}
             handleSignout={handleSignout}
           />
-          <DbDrawer handleDrawerOpen={handleDrawerOpen} open={open} uid={uid} />
+          {/* <DbDrawer handleDrawerOpen={handleDrawerOpen} open={open} uid={uid} /> */}
           <NotificationSideBar open={NSBopen} />
           <main className={classes.content}>
             <div className={classes.appBarSpacer} />
-            <Container className={classes.container}>
+            <Container className={classes.container} maxWidth="false">
               {getDisplayContent(state.menuSelected)}
             </Container>
           </main>

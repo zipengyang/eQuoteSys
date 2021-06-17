@@ -59,27 +59,23 @@ export default function TaskTab({ customer }) {
 
   return (
     <>
-      <div>
-        <Grid container spacing={3} justify="flex-end">
-          <Grid item>
-            <TaskList
-              customer={customer}
-              handleOnSubmit={handleOnSubmit}
-              admins={data}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setOpen(true)}
-            >
-              create task
-            </Button>
-          </Grid>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+          >
+            create task
+          </Button>
         </Grid>
-      </div>
-      <div>
+        <TaskList
+          customer={customer}
+          handleOnSubmit={handleOnSubmit}
+          admins={data}
+        />
+      </Grid>
+      <Grid item xs={12}>
         <CustomizedDialog
           isOpen={Open}
           handleClose={handleClose}
@@ -87,7 +83,7 @@ export default function TaskTab({ customer }) {
         >
           <TaskForm admins={data} handleOnSubmit={handleOnSubmit} />
         </CustomizedDialog>
-      </div>
+      </Grid>
     </>
   );
 }

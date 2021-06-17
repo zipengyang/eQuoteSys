@@ -109,7 +109,18 @@ export const getCustomerAllQuotes = async ({ queryKey }) => {
   return result;
 };
 
-// get specs to cache
+//get assignedto  quotes
+export const getAssignedToQuotes = async ({ queryKey }) => {
+  const [_key, email] = queryKey;
+  const data = await ref
+    .where('status', '==', 'submitted')
+    .where('assignedTo', '==', email)
+    .get();
+  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return result;
+};
+
+// get all users to cache
 export const getAllUsers = async () => {
   const data = await userRef.get();
   const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));

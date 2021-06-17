@@ -54,6 +54,12 @@ export const drawerReducer = (state, action) => {
         status: '',
         camps: action.payload,
       };
+    case 'quoteAllInOneView':
+      return {
+        menuSelected: 'quoteAllInOneView',
+        status: '',
+        camps: action.payload,
+      };
     default:
       return state;
   }

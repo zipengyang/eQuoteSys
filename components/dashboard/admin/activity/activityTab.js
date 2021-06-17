@@ -70,7 +70,7 @@ export default function ActivityTab({ user }) {
   };
 
   return (
-    <div className={classes.root}>
+    <div>
       <AppBar position="static" color="default">
         <Tabs
           value={value}

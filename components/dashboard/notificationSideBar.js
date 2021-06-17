@@ -17,8 +17,13 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import { useAuth } from '../../firebase/auth';
+import { useQueries, useQuery } from 'react-query';
+import { getAssignedToQuotes, getTasksByEmail } from '../../pages/api/getSpec';
+import NotificationCard from './notificationQuoteCard';
+import NotificationBarTab from './notificationBarTab';
 
-const drawerWidth = 280;
+const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,16 +82,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NotificationSideBar({
-  open,
-  handleNotificationSideBar,
-}) {
+export default function NotificationSideBar({ open, handleSideBar }) {
+  const { user } = useAuth();
+  const email = user ? user.email : '';
   const classes = useStyles();
   const theme = useTheme();
 
   const handleDrawerClose = () => {
-    handleNotificationSideBar();
+    handleSideBar();
   };
+
+  const { data, isLoading, isError } = useQuery(
+    ['myTasks', email],
+    getTasksByEmail,
+  );
+  const {
+    data: assignedQuotes,
+    isLoading: isLoadingQuotes,
+    isError: isErrorQuotes,
+  } = useQuery(['specs', email], getAssignedToQuotes);
+
+  if (isLoading && isLoadingQuotes) return <p>'...Loading'</p>;
+  if (isError && isErrorQuotes) return <p>'...Error'</p>;
 
   return (
     <div className={classes.root}>
@@ -111,7 +128,12 @@ export default function NotificationSideBar({
           </IconButton>
         </div>
         <Divider />
-        <p>content showing here</p>
+        <NotificationBarTab
+          quotes={assignedQuotes}
+          tasks={data}
+          handleDrawerClose={handleDrawerClose}
+        />
+
         <Divider />
       </Drawer>
     </div>

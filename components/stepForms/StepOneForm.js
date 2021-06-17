@@ -14,7 +14,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import Calc_Array from '../utils/panelisation';
+import GetPanel from '../utils/panelisation';
 
 export default function StepOneForm({ defaultValues, handleOnSubmit }) {
   const classes = useStyle();
@@ -44,20 +44,29 @@ export default function StepOneForm({ defaultValues, handleOnSubmit }) {
   };
 
   // panel calculation  -- will move to cloud function
-  const getPanel = () => {
-    const num_1 = Calc_Array(allFields.width, allFields.length);
-    const num_2 = Calc_Array(allFields.length, allFields.width);
-    const best_cut = Math.max(num_1, num_2);
-    return watchSuppliedAs === 'single'
-      ? Math.ceil(allFields.quantity / best_cut)
-      : Math.ceil(allFields.quantity / (best_cut * allFields.cstep));
-  };
-  const panel = getPanel();
+  // const getPanel = () => {
+  //   const num_1 = Calc_Array(watchPanType, allFields.width, allFields.length);
+  //   const num_2 = Calc_Array(watchPanType, allFields.length, allFields.width);
+  //   const best_cut = Math.max(num_1, num_2);
+  //   return watchSuppliedAs === 'single'
+  //     ? Math.ceil(allFields.quantity / best_cut)
+  //     : Math.ceil(allFields.quantity / (best_cut * allFields.cstep));
+  // };
+  const watchPanType = watch('panType');
+  const watchWidth = watch('width');
+  const watchLength = watch('length');
+  const bestCut = GetPanel(watchPanType, watchWidth, watchLength);
+  const steps =
+    watchSuppliedAs === 'single' ? bestCut : bestCut * allFields.cstep;
+  const panels =
+    watchSuppliedAs === 'single'
+      ? Math.ceil(allFields.quantity / bestCut)
+      : Math.ceil(allFields.quantity / (bestCut * allFields.cstep));
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} xs={9} md={9}>
           <Grid item xs={12} sm={6} md={3}>
             <FormControl className={classes.formControl} fullWidth>
               <InputLabel htmlFor="suppliedAs">Supplied As</InputLabel>
@@ -129,6 +138,17 @@ export default function StepOneForm({ defaultValues, handleOnSubmit }) {
               inputRef={register}
             />
           </Grid>
+          <Grid item xs={12} sm={12} md={12}>
+            <FormControl>
+              <InputLabel htmlFor="panType">Panel Type</InputLabel>
+              <Select native name="panType" inputRef={register}>
+                <option value="1812">18 X 12</option>
+                <option value="1824">18 X 24</option>
+                <option value="2112">21 X 12</option>
+                <option value="2124">21 X 24</option>
+              </Select>
+            </FormControl>
+          </Grid>
         </Grid>
         <div className={classes.buttons}>
           <Button
@@ -141,8 +161,7 @@ export default function StepOneForm({ defaultValues, handleOnSubmit }) {
           </Button>
         </div>
       </form>
-      <Grid container justify="flex-start" spacing={3}>
-        <Grid item xs={12} md={12}>
+      {/* <Grid item xs={3} md={3}>
           <FormControlLabel
             control={
               <Switch
@@ -154,14 +173,12 @@ export default function StepOneForm({ defaultValues, handleOnSubmit }) {
             }
             label="Show calculation (for testing use)"
           />
-        </Grid>
-        <Grid item xs={12} md={12}>
+
           {state.checkedB && <p>calculation display below:</p>}
-        </Grid>
-        <Grid item xs={12} md={12}>
-          {state.checkedB && <h3>panalization: {panel}</h3>}
-        </Grid>
-      </Grid>
+
+          {state.checkedB && <h3>best cut -- steps: {steps}</h3>}
+          {state.checkedB && <h3>panels: {panels}</h3>}
+        </Grid> */}
     </>
   );
 }
