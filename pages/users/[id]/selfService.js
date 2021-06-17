@@ -26,6 +26,7 @@ import { Button, Typography } from '@material-ui/core';
 import MenuAppBar from '../../../components/landing/AppBar';
 import HomePageHeader from '../../../components/landing/HomePageHeader';
 import QuoteList from '../../../components/portal/QuotesList';
+import Notification from '../../../components/portal/Notification';
 
 export default function selfService({ session }) {
   if (session) {
@@ -46,8 +47,16 @@ export default function selfService({ session }) {
             <Grid item xs={12}>
               <MenuAppBar />
             </Grid>
+            <Grid item container xs={12} justify="center">
+              <Paper
+                elevation={3}
+                style={{ marginTop: 20, maxWidth: 380, minHeight: 80 }}
+              >
+                <Notification />
+              </Paper>
+            </Grid>
             <Grid item xs={12}>
-              <HomePageHeader handleNewQuote={setNewQuote} />
+              <HomePageHeader />
             </Grid>
             {data &&
               data.map((item) => (
