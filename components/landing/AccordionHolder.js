@@ -6,7 +6,15 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
-import { Grid, Paper, Avatar, IconButton, Button } from '@material-ui/core';
+import {
+  Grid,
+  Paper,
+  Avatar,
+  IconButton,
+  Button,
+  Collapse,
+  Slide,
+} from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CardHolder from './CardHolder';
 import PriceSelection from './PriceSelection';
@@ -88,11 +96,18 @@ export default function AccordionHolder() {
                     handleStateChange={setSuppAsArray}
                   />
                 </Grid>
-                {state.suppliedAs.value && (
+                {/* {state.suppliedAs.value && ( */}
+                <Slide
+                  direction="up"
+                  in={state.suppliedAs.value}
+                  mountOnEnter
+                  unmountOnExit
+                >
                   <Grid item xs={12}>
                     <CardHolder field="suppliedAsArray" />
                   </Grid>
-                )}
+                </Slide>
+                {/* )} */}
                 <Grid item xs={12}>
                   <CardHolder field="dimension" />
                 </Grid>

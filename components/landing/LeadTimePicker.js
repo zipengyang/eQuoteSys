@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1, 2),
   },
   list: {
-    width: 200,
+    width: 280,
     height: 230,
     backgroundColor: theme.palette.background.paper,
     overflow: 'auto',
@@ -148,7 +148,7 @@ export default function LeadTimePicker() {
                   size="small"
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`${value} days`} />
+              <ListItemText id={labelId} primary={{ value }} />
             </ListItem>
           );
         })}

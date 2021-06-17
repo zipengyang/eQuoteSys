@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
     // minWidth: 400,
-    maxWidth: 428,
+    // maxWidth: 428,
     paddingTop: '56.25%', // 16:9
   },
   expand: {

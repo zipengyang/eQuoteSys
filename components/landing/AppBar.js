@@ -18,6 +18,7 @@ import SignUp from './SignUp';
 import CloseIcon from '@material-ui/icons/Close';
 import { useAuth } from '../../firebase/auth';
 import firebase from '../../firebase/firebase';
+import Notification from '../portal/Notification';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,7 +70,7 @@ export default function MenuAppBar() {
         <AppBar position="sticky" color="secondary">
           <Toolbar>
             <Grid container justify="space-between" alignItems="center">
-              <Grid item>
+              <Grid item xs={1}>
                 <IconButton
                   edge="start"
                   className={classes.menuButton}
@@ -79,10 +80,14 @@ export default function MenuAppBar() {
                   <MenuIcon />
                 </IconButton>
               </Grid>
-              <Grid item>{user && user.email}</Grid>
-
+              {/* <Grid item>{user && user.email}</Grid> */}
+              {user && (
+                <Grid item xs={8}>
+                  <Notification />
+                </Grid>
+              )}
               {!user && (
-                <Grid item>
+                <Grid item xs={1}>
                   <IconButton
                     color="inherit"
                     onClick={() => setAuthOpen(!authOpen)}

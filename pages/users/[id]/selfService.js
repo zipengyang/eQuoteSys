@@ -47,14 +47,7 @@ export default function selfService({ session }) {
             <Grid item xs={12}>
               <MenuAppBar />
             </Grid>
-            <Grid item container xs={12} justify="center">
-              <Paper
-                elevation={3}
-                // style={{ marginTop: 20, maxWidth: 380, minHeight: 80 }}
-              >
-                <Notification />
-              </Paper>
-            </Grid>
+
             <Grid item container xs={12} justify="center">
               <HomePageHeader />
             </Grid>

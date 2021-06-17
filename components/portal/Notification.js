@@ -42,18 +42,18 @@ const tutorialSteps = [
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 400,
-
-    flexGrow: 1,
+    // flexGrow: 1,
   },
   header: {
     display: 'flex',
     alignItems: 'center',
-    height: 50,
-    paddingLeft: theme.spacing(4),
+    alignContent: 'center',
+    height: 20,
+    paddingLeft: theme.spacing(2),
     backgroundColor: theme.palette.background.default,
   },
   img: {
-    height: 255,
+    height: 0,
     display: 'block',
     maxWidth: 400,
     overflow: 'hidden',
@@ -95,8 +95,8 @@ function Notification() {
             {Math.abs(activeStep - index) <= 2 ? (
               <Typography align="center">
                 {step.label}
-                <br />
-                <Button size="small" color="secondary">
+
+                <Button size="small" color="inherit" variant="outlined">
                   Learn More
                 </Button>
               </Typography>
@@ -105,34 +105,34 @@ function Notification() {
         ))}
       </AutoPlaySwipeableViews>
       <MobileStepper
-        steps={maxSteps}
-        position="static"
-        variant="text"
-        activeStep={activeStep}
-        nextButton={
-          <Button
-            size="small"
-            onClick={handleNext}
-            disabled={activeStep === maxSteps - 1}
-          >
-            Next
-            {theme.direction === 'rtl' ? (
-              <KeyboardArrowLeft />
-            ) : (
-              <KeyboardArrowRight />
-            )}
-          </Button>
-        }
-        backButton={
-          <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
-            {theme.direction === 'rtl' ? (
-              <KeyboardArrowRight />
-            ) : (
-              <KeyboardArrowLeft />
-            )}
-            Back
-          </Button>
-        }
+      // steps={maxSteps}
+      // position="static"
+      // variant="text"
+      // activeStep={activeStep}
+      // nextButton={
+      //   <Button
+      //     size="small"
+      //     onClick={handleNext}
+      //     disabled={activeStep === maxSteps - 1}
+      //   >
+      //     Next
+      //     {theme.direction === 'rtl' ? (
+      //       <KeyboardArrowLeft />
+      //     ) : (
+      //       <KeyboardArrowRight />
+      //     )}
+      //   </Button>
+      // }
+      // backButton={
+      //   <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+      //     {theme.direction === 'rtl' ? (
+      //       <KeyboardArrowRight />
+      //     ) : (
+      //       <KeyboardArrowLeft />
+      //     )}
+      //     Back
+      //   </Button>
+      // }
       />
     </div>
   );
