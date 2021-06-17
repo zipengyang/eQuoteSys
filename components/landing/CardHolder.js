@@ -30,7 +30,7 @@ import { HelpText } from './HelpText';
 const useStyles = makeStyles((theme) => ({
   root: {
     // minWidth: 380,
-    maxWidth: 428,
+    // maxWidth: 428,
   },
   media: {
     height: 0,

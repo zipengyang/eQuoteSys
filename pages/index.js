@@ -23,7 +23,7 @@ export default function Home() {
           <Grid item xs={12}>
             <MenuAppBar />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item container xs={12} justify="center">
             <HomePageHeader handleNewQuote={setNewQuote} />
           </Grid>
           {newQuote && (

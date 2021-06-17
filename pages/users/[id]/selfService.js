@@ -31,7 +31,7 @@ import Notification from '../../../components/portal/Notification';
 export default function selfService({ session }) {
   if (session) {
     const { uid, email, email_verified } = session;
-    console.log(email_verified);
+    // console.log(email_verified);
     const [newQuote, setNewQuote] = React.useState(false);
     const { data, isLoading, isError } = useQuery(
       ['specs', email],
@@ -39,7 +39,7 @@ export default function selfService({ session }) {
     );
     if (isLoading) return '...loading';
     if (isError) return '...error';
-    console.log(data);
+    // console.log(data);
     return (
       <div className={styles.container}>
         <Container maxWidth="sm" style={{ overflow: 'auto' }}>
@@ -50,12 +50,12 @@ export default function selfService({ session }) {
             <Grid item container xs={12} justify="center">
               <Paper
                 elevation={3}
-                style={{ marginTop: 20, maxWidth: 380, minHeight: 80 }}
+                // style={{ marginTop: 20, maxWidth: 380, minHeight: 80 }}
               >
                 <Notification />
               </Paper>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item container xs={12} justify="center">
               <HomePageHeader />
             </Grid>
             {data &&

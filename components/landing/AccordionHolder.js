@@ -18,7 +18,7 @@ import { SpecProvider } from './SpecContext';
 const useStyles = makeStyles((theme) => ({
   root: {
     // minWidth: 400,
-    maxWidth: 428,
+    // maxWidth: 428,
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),

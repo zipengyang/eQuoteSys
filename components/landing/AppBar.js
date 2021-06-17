@@ -21,8 +21,8 @@ import firebase from '../../firebase/firebase';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 428,
-    maxHeight: 40,
+    // maxWidth: 428,
+    // maxHeight: 40,
     flexGrow: 1,
   },
   menuButton: {

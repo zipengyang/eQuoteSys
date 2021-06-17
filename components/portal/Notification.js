@@ -93,7 +93,13 @@ function Notification() {
         {tutorialSteps.map((step, index) => (
           <div key={step.label}>
             {Math.abs(activeStep - index) <= 2 ? (
-              <Typography align="center">{step.label}</Typography>
+              <Typography align="center">
+                {step.label}
+                <br />
+                <Button size="small" color="secondary">
+                  Learn More
+                </Button>
+              </Typography>
             ) : null}
           </div>
         ))}
