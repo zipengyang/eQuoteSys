@@ -33,12 +33,8 @@
     "react-filter-box": "^3.4.2",
     "react-hook-form": "^7.8.6",
     "react-iframe": "^1.8.0",
-<<<<<<< HEAD
-    "react-query": "^3.17.0",
-=======
     "react-query": "^3.9.6",
     "react-swipeable-views": "^0.13.9",
->>>>>>> 239c891c49c5efa29b61e0701156e86314ef108f
     "sass": "^1.32.8",
     "stripe": "^8.143.0",
     "uuid": "^8.3.2",
