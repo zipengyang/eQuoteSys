@@ -4,12 +4,10 @@ import nookies from 'nookies';
 import { verifyIdToken } from '../../../firebase/firebaseAdmin';
 import firebase from '../../../firebase/firebase';
 import { useRouter } from 'next/router';
-import QuoteHistory from '../../../components/dashboard/quoteList';
-import DraftQuotesList from '../../../components/dashboard/draftQuoteList';
-import DbAppBar from '../../../components/dashboard/dbAppBar';
-import { useStyles } from '../../../components/dashboard/styles';
+
+import styles from '../../../styles/Home.module.css';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
-import DbDrawer from '../../../components/dashboard/dbDrawer';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -20,157 +18,46 @@ import Tooltip from '@material-ui/core/Tooltip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { v4 as uuidv4 } from 'uuid';
 import { useQuery, useQueries } from 'react-query';
-import {
-  getCustomerAllQuotes,
-  getCustomerDraftSpecs,
-  getDraftSpecs,
-  getQuotesByEmailAndStatus,
-  getUser,
-} from '../../api/getSpec';
-import { QuoteTemplate } from '../../../components/stepForms';
-import QuoteDetailForPortal from '../../../components/dashboard/QuoteDetailForPortal';
-// import UploadFileInPortal from '../../../components/dashboard/selfService/UploadFileInPortal';
-import DraftQuoteTable from '../../../components/dashboard/selfService/draftQuoteTable';
-import SubmittedQuoteTable from '../../../components/dashboard/selfService/submittedQuoteTable';
-import Submitted from '../../../components/dashboard/selfService/content/submitted';
-import SSDrawer from '../../../components/dashboard/selfService/ssDrawer';
-import { drawerReducer } from '../../../components/shared/drawerReducer';
+import { getCustomerAllQuotes } from '../../api/getSpec';
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import { Button, Typography } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
-
-export const dispatchContext = createContext();
+import MenuAppBar from '../../../components/landing/AppBar';
+import HomePageHeader from '../../../components/landing/HomePageHeader';
+import QuoteList from '../../../components/portal/QuotesList';
 
 export default function selfService({ session }) {
   if (session) {
     const { uid, email, email_verified } = session;
     console.log(email_verified);
-
-    const classes = useStyles();
-    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-    const router = useRouter();
-
-    const [open, setOpen] = useState(true);
-    const handleDrawerOpen = () => {
-      setOpen(!open);
-    };
-    const handleSignout = async () => {
-      await firebase.auth().signOut();
-      window.location.href = '/';
-    };
-
-    const startNewQuote = () => {
-      const quoteId = uuidv4();
-      router.push(
-        `/quote/${quoteId}/${session.userId}/0/?tabValue=0&create=true`,
-      );
-    };
-
-    function getDisplayContent(content) {
-      switch (content) {
-        case 'submitted':
-          // return <Submitted />;
-          return <SubmittedQuoteTable />;
-
-        case 'draft':
-          return <DraftQuoteTable />;
-
-        case 'customer':
-          return <div>this is profile page.</div>;
-
-        default:
-          return;
-      }
-    }
-
-    const [state, dispatch] = useReducer(drawerReducer, {
-      menuSelected: 'submitted',
-      status: 'submitted',
-    });
-
+    const [newQuote, setNewQuote] = React.useState(false);
     const { data, isLoading, isError } = useQuery(
-      ['specs', email, state.status],
-      getQuotesByEmailAndStatus,
+      ['specs', email],
+      getCustomerAllQuotes,
     );
-    if (isLoading) return 'loading...';
-    if (isError) return 'error...';
-
+    if (isLoading) return '...loading';
+    if (isError) return '...error';
+    console.log(data);
     return (
-      <dispatchContext.Provider value={{ data, dispatch, email }}>
-        <div className={classes.root}>
-          <CssBaseline />
-          {/* verify email address */}
-
-          <Dialog
-            open={!email_verified}
-            aria-labelledby="email-verification-dialog"
-            fullWidth
-            maxWidth="md"
-          >
-            <DialogContent>
-              <Alert severity="warning" variant="filled">
-                <Typography variant="h5">
-                  please verify your email address and click the login button to
-                  login -->
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => router.push('/quote/quoteid/uid/step/login')}
-                  >
-                    login
-                  </Button>
-                </Typography>
-              </Alert>
-            </DialogContent>
-          </Dialog>
-
-          <DbAppBar
-            email={session.email}
-            handleDrawerOpen={handleDrawerOpen}
-            open={open}
-            handleSignout={handleSignout}
-          />
-          <SSDrawer
-            handleDrawerOpen={handleDrawerOpen}
-            open={open}
-            // menuClicked={menuClicked}
-            dispatch={dispatch}
-            uid={session.userId}
-            role={'customer'}
-          />
-          <main className={classes.content}>
-            <div className={classes.appBarSpacer} />
-            <Container maxWidth="lg" className={classes.container}>
-              <Grid container spacing={3} justify="center">
-                <Grid
-                  container
-                  justify="flex-end"
-                  alignItems="flex-end"
-                  spacing={6}
-                >
-                  <Grid item xs={12}>
-                    <Tooltip title="start a new quote" aria-label="add">
-                      <Fab
-                        color="primary"
-                        aria-label="add"
-                        onClick={startNewQuote}
-                      >
-                        <AddIcon />
-                      </Fab>
-                    </Tooltip>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      {getDisplayContent(state.menuSelected)}
-                    </Paper>
-                  </Grid>
+      <div className={styles.container}>
+        <Container maxWidth="sm" style={{ overflow: 'auto' }}>
+          <Grid container spacing={2} justify="center">
+            <Grid item xs={12}>
+              <MenuAppBar />
+            </Grid>
+            <Grid item xs={12}>
+              <HomePageHeader handleNewQuote={setNewQuote} />
+            </Grid>
+            {data &&
+              data.map((item) => (
+                <Grid item xs={12} key={item.id}>
+                  <QuoteList data={item} />
                 </Grid>
-              </Grid>
-            </Container>
-          </main>
-        </div>
-      </dispatchContext.Provider>
+              ))}
+          </Grid>
+        </Container>
+      </div>
     );
   } else {
     <div>

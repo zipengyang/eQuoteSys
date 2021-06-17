@@ -68,7 +68,7 @@ export default function MenuAppBar() {
       <div className={classes.root}>
         <AppBar position="sticky" color="secondary">
           <Toolbar>
-            <Grid container justify="space-between">
+            <Grid container justify="space-between" alignItems="center">
               <Grid item>
                 <IconButton
                   edge="start"
@@ -79,7 +79,8 @@ export default function MenuAppBar() {
                   <MenuIcon />
                 </IconButton>
               </Grid>
-              {user && user.email}
+              <Grid item>{user && user.email}</Grid>
+
               {!user && (
                 <Grid item>
                   <IconButton

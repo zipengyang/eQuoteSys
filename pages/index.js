@@ -18,7 +18,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Container maxWidth="sm" style={{ margin: 'none', overflow: 'auto' }}>
+      <Container maxWidth="sm" style={{ overflow: 'auto' }}>
         <Grid container spacing={3} justify="center">
           <Grid item xs={12}>
             <MenuAppBar />
