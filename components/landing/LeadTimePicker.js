@@ -148,7 +148,7 @@ export default function LeadTimePicker() {
                   size="small"
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={{ value }} />
+              <ListItemText id={labelId} primary={value} />
             </ListItem>
           );
         })}
