@@ -64,7 +64,7 @@ export default function AccordionHolder() {
   const [priceIsReady, setPriceIsReady] = useState(false);
   const [priced, setPriced] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [prices, setPrices] = useState([]);
   // check if all required fields completed.
   useEffect(() => {
     if (
@@ -89,7 +89,8 @@ export default function AccordionHolder() {
   };
 
   const handleRevealButton = async () => {
-    // update data and get price  -- will use cloud function instead.
+    setIsLoading(true); // set loading true while waiting
+
     const ref = firebase.firestore().collection('specs');
     await ref
       .doc(state.quoteId)
@@ -112,12 +113,14 @@ export default function AccordionHolder() {
         const addCalculation = firebase
           .functions()
           .httpsCallable('addCalculation');
-        addCalculation(state);
+        addCalculation(state)
+          .then((result) => setPrices(result.data))
+          .catch((err) => console.error(err));
       })
 
       .then(() => {
-        setIsLoading(true);
-        setTimeout(() => setPriced(true), 3000);
+        setIsLoading(false);
+        setPriced(true);
       })
 
       .catch((err) => console.error(err));
@@ -204,7 +207,9 @@ export default function AccordionHolder() {
               )}
               {priced && <Typography>Price detail</Typography>}
             </AccordionSummary>
-            <AccordionDetails>{priced && <PriceSelection />}</AccordionDetails>
+            <AccordionDetails>
+              {priced && <PriceSelection prices={prices} />}
+            </AccordionDetails>
           </Accordion>
           <Accordion
             square

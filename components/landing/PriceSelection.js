@@ -9,7 +9,9 @@ import { Button, Grid } from '@material-ui/core';
 import { useQuery } from 'react-query';
 import { getSpecById } from '../../pages/api/getSpec';
 
-export default function PriceSelection() {
+export default function PriceSelection({ prices }) {
+  prices.sort((a, b) => a.leadtime - b.leadtime);
+  // console.log(prices);
   const { state, handleSpecChange } = useSpecContext();
   const [value, setValue] = React.useState('none');
 
@@ -40,13 +42,15 @@ export default function PriceSelection() {
               value={value}
               onChange={handleChange}
             >
-              {data &&
-                data.leadtimeOption.map((item, index) => (
+              {prices &&
+                prices.map((item, index) => (
                   <FormControlLabel
                     key={index}
                     value={item}
                     control={<Radio />}
-                    label={`${item} dyas: -- £150 per circuit`}
+                    label={`${item.leadtime} dyas: -- £${item.price.toFixed(
+                      2,
+                    )} per circuit`}
                   />
                 ))}
             </RadioGroup>

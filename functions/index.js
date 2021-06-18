@@ -212,6 +212,26 @@ const factors = {
     3: { type: '21x24', Val: 5, width: 483, height: 560 },
     4: { type: '16x18', Val: 5, width: 368, height: 406 },
   },
+  leadTime: {
+    2: { type: '2 Days', Val: 3.0 },
+    3: { type: '3 Days', Val: 2.25 },
+    4: { type: '4 Days', Val: 1.8 },
+    5: { type: '5 Days', Val: 1.5 },
+    6: { type: '6 Days', Val: 1.4 },
+    7: { type: '7 Days', Val: 1.25 },
+    8: { type: '8 Days', Val: 1.15 },
+    9: { type: '9 Days', Val: 1.05 },
+    10: { type: '10 Days', Val: 1 },
+    11: { type: '11 Days', Val: 0.98 },
+    12: { type: '12 Days', Val: 0.96 },
+    13: { type: '13 Days', Val: 0.94 },
+    14: { type: '14 Days', Val: 0.92 },
+    15: { type: '15 Days', Val: 0.9 },
+    18: { type: '18 Days', Val: 0.84 },
+    20: { type: '20 Days', Val: 0.8 },
+    25: { type: '25 Days', Val: 0.78 },
+    30: { type: '30 Days', Val: 0.76 },
+  },
 };
 
 // step 1: panelization
@@ -281,7 +301,6 @@ const Panelization = (
 // calculation
 
 const Calculation = (data) => {
-  console.log('id: ', data.quoteId);
   let calArray = [];
   let totalPrice = 0;
   const panelType = 1; // set penal size as '18x24'
@@ -310,24 +329,37 @@ const Calculation = (data) => {
     totalPrice: panel * unitPrice,
   });
   totalPrice = panel * unitPrice;
-  return calArray;
+  // return calArray;
+  // leadtime
+  const pricePerCircuit = totalPrice / data.quantity.value;
+  let prices = [];
+  data.leadtime.value.map((item) =>
+    prices.push({
+      leadtime: item,
+      price: pricePerCircuit * factors.leadTime[item].Val,
+    }),
+  );
+  return prices;
 };
 // create or update a new user profile after a user signup
-exports.addCalculation = functions.https.onCall((data) => {
-  const result = Calculation(data);
-  const ref = admin.firestore().collection('calculation');
-  ref
-    .doc()
-    .set({
-      quoteId: data.quoteId,
-      result,
-    })
-    .then(() => {
-      admin
-        .firestore()
-        .collection('specs')
-        .doc(data.quoteId)
-        .update({ price: result[-1].totalPrice }); // tempoary
-    })
-    .catch((err) => console.error(err));
+exports.addCalculation = functions.https.onCall(async (data) => {
+  const result = await Calculation(data);
+  if (result) {
+    return result;
+  } else return 0;
+  // const ref = admin.firestore().collection('calculation');
+  // ref
+  //   .doc()
+  //   .set({
+  //     quoteId: data.quoteId,
+  //     result,
+  //   })
+  //   .then(() => {
+  //     admin
+  //       .firestore()
+  //       .collection('specs')
+  //       .doc(data.quoteId)
+  //       .update({ price: result[-1].totalPrice }); // tempoary
+  //   })
+  //   .catch((err) => console.error(err));
 });
