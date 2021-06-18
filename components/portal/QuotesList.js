@@ -11,6 +11,7 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import QuoteTemplate from './QuoteTemplate';
+import OfferBadge from './OfferBadge';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +45,12 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       textDecoration: 'underline',
     },
+  },
+  badge: {
+    marginBottom: -200,
+
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '100 40px',
   },
 }));
 
