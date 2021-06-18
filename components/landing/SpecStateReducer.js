@@ -1,4 +1,7 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export const DEFAULT_STATE = {
+  quoteId: uuidv4(),
   suppliedAs: {
     value: false,
     error: null,

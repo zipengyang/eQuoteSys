@@ -145,9 +145,19 @@ export const getAllCamps = async () => {
 
 export const getSpec = async ({ queryKey }) => {
   const [_key, { quoteid }] = queryKey;
-  // console.log(id);
+  console.log('received id: ', quoteid);
   const data = await ref
     .doc(quoteid)
+    .get()
+    .then((result) => result.data());
+  return data;
+};
+// get spec by id -- quoteId
+export const getSpecById = async ({ queryKey }) => {
+  const [_key, quoteId] = queryKey;
+  console.log('received id: ', quoteId);
+  const data = await ref
+    .doc(quoteId)
     .get()
     .then((result) => result.data());
   return data;

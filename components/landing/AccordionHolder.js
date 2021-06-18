@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useReducer } from 'react';
+import React, { useCallback, useState, useReducer, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -22,6 +22,9 @@ import ContactForm from './ContactForm';
 import { useImmerReducer } from 'use-immer';
 import { DEFAULT_STATE, SpecReducer } from './SpecStateReducer';
 import { SpecProvider } from './SpecContext';
+import firebase from '../../firebase/firebase';
+import { v4 as uuidv4 } from 'uuid';
+import publicIp from 'public-ip';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +41,12 @@ export default function AccordionHolder() {
   const classes = useStyles();
 
   const [state, dispatch] = useImmerReducer(SpecReducer, DEFAULT_STATE);
-  // const [state, dispatch] = useReducer(SpecReducer, DEFAULT_STATE);
+
+  const [ip, setIp] = useState();
+  const getIP = async () => {
+    setIp(await publicIp.v4());
+  };
+  getIP();
 
   const handleSpecChange = useCallback(
     (name, newValue) => {
@@ -55,19 +63,55 @@ export default function AccordionHolder() {
   const [priceIsReady, setPriceIsReady] = useState(false);
   const [priced, setPriced] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   // check if all required fields completed.
-  // if (state.quantity.value > 0) {
-  //   setPriceIsReady(true);
-  // }
+  useEffect(() => {
+    if (
+      state.height.value !== '' &&
+      state.width.value !== '' &&
+      state.quantity.value !== '' &&
+      state.material.value !== '' &&
+      state.leadtime.value !== []
+    ) {
+      setPriceIsReady(true);
+    } else {
+      setPriceIsReady(false);
+    }
+    return () => {
+      priceIsReady;
+    };
+  }, [state]);
 
   const [expanded, setExpanded] = React.useState('specs');
   const handlePanelChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
-  const handleRevealButton = () => {
-    setIsLoading(true);
-    setTimeout(() => setPriced(true), 3000);
+  const handleRevealButton = async () => {
+    // update data and get price  -- will use cloud function instead.
+    const ref = firebase.firestore().collection('specs');
+    await ref
+      .doc(state.quoteId)
+      .set({
+        suppliedAs: state.suppliedAs.value === false ? 'single' : 'array',
+        ccPerArray: state.ccPerArray.value,
+        xOut: state.xOut.value,
+        height: state.height.value,
+        width: state.width.value,
+        layer: state.layer.value,
+        material: state.material.value,
+        leadtimeOption: state.leadtime.value,
+        quantity: state.quantity.value,
+        ipAddress: ip,
+        createdDate: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 'initiated',
+      })
+      .then(() => {
+        // will get price here by calling cloud function
+        setIsLoading(true);
+        setTimeout(() => setPriced(true), 3000);
+      })
+      .catch((err) => console.error(err));
   };
   return (
     <>
@@ -141,7 +185,7 @@ export default function AccordionHolder() {
                   fullWidth
                   variant="contained"
                   color="secondary"
-                  disabled={state.quantity.value === ''} // tempoary.
+                  disabled={!priceIsReady}
                   size="large"
                   onClick={() => handleRevealButton()}
                 >
