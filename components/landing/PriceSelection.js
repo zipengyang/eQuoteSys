@@ -40,14 +40,15 @@ export default function PriceSelection() {
               value={value}
               onChange={handleChange}
             >
-              {data.leadtimeOption.map((item, index) => (
-                <FormControlLabel
-                  key={index}
-                  value={item}
-                  control={<Radio />}
-                  label={`${item} dyas: -- £150 per circuit`}
-                />
-              ))}
+              {data &&
+                data.leadtimeOption.map((item, index) => (
+                  <FormControlLabel
+                    key={index}
+                    value={item}
+                    control={<Radio />}
+                    label={`${item} dyas: -- £150 per circuit`}
+                  />
+                ))}
             </RadioGroup>
           </FormControl>
         </Grid>

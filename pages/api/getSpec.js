@@ -155,7 +155,7 @@ export const getSpec = async ({ queryKey }) => {
 // get spec by id -- quoteId
 export const getSpecById = async ({ queryKey }) => {
   const [_key, quoteId] = queryKey;
-  console.log('received id: ', quoteId);
+
   const data = await ref
     .doc(quoteId)
     .get()

@@ -25,6 +25,7 @@ import { SpecProvider } from './SpecContext';
 import firebase from '../../firebase/firebase';
 import { v4 as uuidv4 } from 'uuid';
 import publicIp from 'public-ip';
+import Calculation from '../utils/testCal';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,7 +59,7 @@ export default function AccordionHolder() {
     },
     [dispatch],
   );
-  console.log(state);
+  // console.log(state);
   const [suppAsArray, setSuppAsArray] = useState(false);
   const [priceIsReady, setPriceIsReady] = useState(false);
   const [priced, setPriced] = useState(false);
@@ -107,10 +108,18 @@ export default function AccordionHolder() {
         status: 'initiated',
       })
       .then(() => {
-        // will get price here by calling cloud function
+        //call cloud function
+        const addCalculation = firebase
+          .functions()
+          .httpsCallable('addCalculation');
+        addCalculation(state);
+      })
+
+      .then(() => {
         setIsLoading(true);
         setTimeout(() => setPriced(true), 3000);
       })
+
       .catch((err) => console.error(err));
   };
   return (
