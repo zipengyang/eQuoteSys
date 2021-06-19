@@ -11,6 +11,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import { useSpecContext } from './SpecContext';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -120,12 +121,23 @@ export default function LeadTimePicker() {
               numberOfChecked(items) !== 0
             }
             disabled={items.length === 0}
-            inputProps={{ 'aria-label': 'all items selected' }}
+            inputProps={{
+              'aria-label': (
+                <Typography style={{ fontSize: 10 }}>
+                  all items selected
+                </Typography>
+              ),
+            }}
             size="small"
           />
         }
         title={title}
-        subheader={`${numberOfChecked(items)}/${items.length} selected`}
+        // subheader={`${numberOfChecked(items)}/${items.length} selected`}
+        subheader={
+          <Typography style={{ fontSize: 10 }}>{`${numberOfChecked(items)}/${
+            items.length
+          } selected`}</Typography>
+        }
       />
       <Divider />
       <List className={classes.list} dense component="div" role="list">

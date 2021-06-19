@@ -61,45 +61,45 @@ export default function QuoteDetail({ data, prices, chosen }) {
             <Table className={classes.table} aria-label="spanning table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="center" colSpan={3}>
+                  <TableCell align="center" colSpan={2}>
                     Details
                   </TableCell>
                   <TableCell align="right">Price(£)</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Desc</TableCell>
-                  <TableCell align="right">Qty.</TableCell>
-                  <TableCell align="right">Unit Price</TableCell>
-                  <TableCell align="right">Sum</TableCell>
+                  <TableCell align="left">Qty.</TableCell>
+                  <TableCell align="left">Unit Price</TableCell>
+                  <TableCell align="left">Sum</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((row) => (
                   <TableRow key={row.desc}>
                     <TableCell>{row.desc}</TableCell>
-                    <TableCell align="right">{row.qty}</TableCell>
-                    <TableCell align="right">{row.unit}</TableCell>
-                    <TableCell align="right">{ccyFormat(row.price)}</TableCell>
+                    <TableCell align="left">{row.qty}</TableCell>
+                    <TableCell align="left">{row.unit}</TableCell>
+                    <TableCell align="left">{ccyFormat(row.price)}</TableCell>
                   </TableRow>
                 ))}
 
                 <TableRow>
                   <TableCell rowSpan={5}></TableCell>
                   <TableCell colSpan={2}>Subtotal</TableCell>
-                  <TableCell align="right">
+                  <TableCell align="left">
                     {ccyFormat(invoiceSubtotal)}
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>VAT</TableCell>
-                  <TableCell align="right">{`${(TAX_RATE * 100).toFixed(
+                  <TableCell align="left">{`${(TAX_RATE * 100).toFixed(
                     0,
                   )} %`}</TableCell>
-                  <TableCell align="right">{ccyFormat(invoiceTaxes)}</TableCell>
+                  <TableCell align="left">{ccyFormat(invoiceTaxes)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={2}>Total</TableCell>
-                  <TableCell align="right">{ccyFormat(invoiceTotal)}</TableCell>
+                  <TableCell align="left">{ccyFormat(invoiceTotal)}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
