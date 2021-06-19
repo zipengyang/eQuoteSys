@@ -21,17 +21,9 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        // <Box component="span" m={1}>
-        <Grid
-          container
-          spacing={3}
-          justify="flex-start"
-          style={{ marginTop: 10 }}
-        >
-          <Grid item xs={12}>
-            <Typography>{children}</Typography>
-          </Grid>
-        </Grid>
+        <Box p={1}>
+          <Typography>{children}</Typography>
+        </Box>
       )}
     </div>
   );
@@ -79,7 +71,6 @@ export default function QuoteDetailTabs({ data, prices, chosen }) {
           variant="scrollable"
           scrollButtons="on"
           aria-label="quoteDetailTabsByLeadTime"
-          centered="true"
         >
           {chosen &&
             chosen.map((item) => (

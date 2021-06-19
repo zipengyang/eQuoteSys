@@ -13,7 +13,7 @@ const TAX_RATE = 0.2;
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 520,
+    minWidth: 480,
   },
 });
 
@@ -61,10 +61,12 @@ export default function QuoteDetail({ data, prices, chosen }) {
             <Table className={classes.table} aria-label="spanning table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="center" colSpan={2}>
+                  <TableCell align="left" colSpan={2}>
                     Details
                   </TableCell>
-                  <TableCell align="right">Price(£)</TableCell>
+                  <TableCell align="left" colSpan={2}>
+                    Price(£)
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Desc</TableCell>
