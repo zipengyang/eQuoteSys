@@ -21,9 +21,17 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box component="span" m={1}>
-          <Typography>{children}</Typography>
-        </Box>
+        // <Box component="span" m={1}>
+        <Grid
+          container
+          spacing={3}
+          justify="flex-start"
+          style={{ marginTop: 10 }}
+        >
+          <Grid item xs={12}>
+            <Typography>{children}</Typography>
+          </Grid>
+        </Grid>
       )}
     </div>
   );
