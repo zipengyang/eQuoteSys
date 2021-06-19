@@ -44,13 +44,9 @@ export default function QuoteDetail({ data, prices, chosen }) {
   let rows = [];
 
   rows = [
-    createRow(
-      `PCB - ${chosen} days - onShore manufacturing`,
-      data.quantity.value,
-      price,
-    ),
-    createRow('Front End Tooling', 1, 260.0),
-    createRow('Delivery Charge', 1, 20.0),
+    createRow(`PCB - ${chosen} days `, data.quantity.value, price),
+    createRow('Tooling', 1, 260.0),
+    createRow('Shipment', 1, 20.0),
   ];
 
   const invoiceSubtotal = subtotal(rows);
@@ -88,7 +84,7 @@ export default function QuoteDetail({ data, prices, chosen }) {
                 ))}
 
                 <TableRow>
-                  <TableCell rowSpan={5}>Specs:</TableCell>
+                  <TableCell rowSpan={5}></TableCell>
                   <TableCell colSpan={2}>Subtotal</TableCell>
                   <TableCell align="right">
                     {ccyFormat(invoiceSubtotal)}

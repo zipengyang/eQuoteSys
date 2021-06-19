@@ -68,8 +68,9 @@ export default function QuoteDetailTabs({ data, prices, chosen }) {
           indicatorColor="primary"
           textColor="primary"
           variant="scrollable"
-          scrollButtons="auto"
-          aria-label="scrollable auto tabs example"
+          scrollButtons="on"
+          aria-label="quoteDetailTabsByLeadTime"
+          centered="true"
         >
           {chosen &&
             chosen.map((item) => (
