@@ -13,7 +13,7 @@ const TAX_RATE = 0.2;
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 400,
+    minWidth: 520,
   },
 });
 
