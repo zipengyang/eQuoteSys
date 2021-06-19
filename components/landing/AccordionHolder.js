@@ -59,13 +59,13 @@ export default function AccordionHolder() {
     },
     [dispatch],
   );
-  // console.log(state);
-  const [suppAsArray, setSuppAsArray] = useState(false);
+
   const [priceIsReady, setPriceIsReady] = useState(false);
-  const [priced, setPriced] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [prices, setPrices] = useState([]);
-  // check if all required fields completed.
+  const activeStep = state.activeStep.value;
+
+  //check if all required fields completed.
   useEffect(() => {
     if (
       state.height.value !== '' &&
@@ -117,12 +117,10 @@ export default function AccordionHolder() {
           .then((result) => setPrices(result.data))
           .catch((err) => console.error(err));
       })
-
       .then(() => {
         setIsLoading(false);
-        setPriced(true);
+        handleSpecChange('activeStep', 1);
       })
-
       .catch((err) => console.error(err));
   };
   return (
@@ -139,18 +137,16 @@ export default function AccordionHolder() {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography className={classes.heading}>PCB Specs</Typography>
+              <Typography className={classes.heading}>
+                Step one: PCB Specs
+              </Typography>
             </AccordionSummary>
             {/* SpecContext start here */}
 
             <AccordionDetails>
               <Grid container justify="center" spacing={3}>
                 <Grid item xs={12}>
-                  <CardHolder
-                    field="suppliedAs"
-                    state={suppAsArray}
-                    handleStateChange={setSuppAsArray}
-                  />
+                  <CardHolder field="suppliedAs" />
                 </Grid>
                 {/* {state.suppliedAs.value && ( */}
                 <Slide
@@ -188,11 +184,11 @@ export default function AccordionHolder() {
             onChange={handlePanelChange('pricing')}
           >
             <AccordionSummary
-              expandIcon={priced && <ExpandMoreIcon />}
+              expandIcon={activeStep > 0 && <ExpandMoreIcon />}
               aria-controls="panel2a-content"
               id="panel2a-header"
             >
-              {!priced && (
+              {activeStep <= 0 && (
                 <Button
                   fullWidth
                   variant="contained"
@@ -205,25 +201,52 @@ export default function AccordionHolder() {
                   {isLoading && <CircularProgress color="inherit" />}
                 </Button>
               )}
-              {priced && <Typography>Price detail</Typography>}
+              {activeStep > 0 && (
+                <Typography>Step Two: Price detail</Typography>
+              )}
             </AccordionSummary>
             <AccordionDetails>
-              {priced && <PriceSelection prices={prices} />}
+              {activeStep >= 0 && (
+                <PriceSelection
+                  prices={prices}
+                  handlePanelChange={setExpanded}
+                  // handleStep={setActiveStep}
+                />
+              )}
             </AccordionDetails>
           </Accordion>
           <Accordion
             square
             expanded={expanded === 'requestForQuote'}
-            onChange={handlePanelChange('requestForQuote')}
+            onChange={handlePanelChange('requestForQuote')} // will be only available after send quote.
           >
             <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
+              expandIcon={activeStep >= 2 && <ExpandMoreIcon />}
               aria-controls="panel3a-content"
               id="panel3a-header"
             >
-              <Typography className={classes.heading}>Request Quote</Typography>
+              {activeStep < 2 && (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="secondary"
+                  disabled={activeStep < 2}
+                  // hidden={activeStep > 1}
+                  size="large"
+                  onClick={() => console.log('clicked')}
+                >
+                  Request a quote
+                </Button>
+              )}
+              {activeStep >= 2 && (
+                <Typography className={classes.heading}>
+                  Step Three: Request Quote
+                </Typography>
+              )}
             </AccordionSummary>
-            <AccordionDetails>{priced && <ContactForm />}</AccordionDetails>
+            <AccordionDetails>
+              {activeStep >= 2 && <ContactForm />}
+            </AccordionDetails>
           </Accordion>
         </SpecProvider>
       </div>

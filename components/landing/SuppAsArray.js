@@ -28,6 +28,7 @@ export default function SuppAsArray() {
             type="number"
             variant="outlined"
             name="ccPerArray"
+            disabled={state.activeStep.value > 0}
             defaultValue={state.ccPerArray.value}
             onChange={handleChange}
           />
@@ -38,6 +39,7 @@ export default function SuppAsArray() {
               <Checkbox
                 checked={state.xOut.value}
                 onChange={handlexOutChange}
+                disabled={state.activeStep.value > 0}
                 name="xOut"
                 color="primary"
               />

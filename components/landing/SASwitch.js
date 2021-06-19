@@ -75,6 +75,7 @@ export default function SASwitch() {
             checked={state.suppliedAs.value}
             onChange={handleChange}
             name="suppliedAs"
+            disabled={state.activeStep.value > 0}
           />
         </Grid>
         <Grid item>Array</Grid>

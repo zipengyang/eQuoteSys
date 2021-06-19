@@ -2,6 +2,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const DEFAULT_STATE = {
   quoteId: uuidv4(),
+  activeStep: {
+    value: 0,
+    error: null,
+  },
   suppliedAs: {
     value: false,
     error: null,
@@ -41,6 +45,10 @@ export const DEFAULT_STATE = {
 
 export const SpecReducer = (state, { key, payload }) => {
   switch (key) {
+    case 'activeStep':
+      state.activeStep.value = payload.newValue;
+      state.activeStep.error = payload.error;
+      return;
     case 'suppliedAs':
       state.suppliedAs.value = payload.newValue;
       state.suppliedAs.error = payload.error;

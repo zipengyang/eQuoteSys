@@ -175,7 +175,7 @@ export default function LeadTimePicker() {
             size="small"
             className={classes.button}
             onClick={handleCheckedRight}
-            disabled={leftChecked.length === 0}
+            disabled={leftChecked.length === 0 || state.activeStep.value > 0}
             aria-label="move selected right"
             style={{
               maxWidth: '30px',
@@ -191,7 +191,7 @@ export default function LeadTimePicker() {
             size="small"
             className={classes.button}
             onClick={handleCheckedLeft}
-            disabled={rightChecked.length === 0}
+            disabled={rightChecked.length === 0 || state.activeStep.value > 0}
             aria-label="move selected left"
             style={{
               maxWidth: '30px',

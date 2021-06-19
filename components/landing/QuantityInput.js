@@ -29,6 +29,7 @@ export default function QuantityInput() {
       id="outlined-margin-normal"
       name="quantity"
       type="number"
+      disabled={state.activeStep.value > 0}
       className={classes.textField}
       helperText="high volumn can be offshored"
       //   margin="normal"

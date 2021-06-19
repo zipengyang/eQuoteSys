@@ -49,6 +49,7 @@ export default function Dimension() {
             id="dimension_height"
             name="height"
             type="number"
+            disabled={state.activeStep.value > 0}
             // className={clsx(classes.margin, classes.textField)}
             InputProps={{
               startAdornment: (
@@ -69,6 +70,7 @@ export default function Dimension() {
             id="dimension_width"
             name="width"
             type="number"
+            disabled={state.activeStep.value > 0}
             // className={clsx(classes.margin, classes.textField)}
             InputProps={{
               startAdornment: (

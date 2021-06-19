@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CardHolder({ field, state, handleStateChange }) {
+export default function CardHolder({ field }) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
@@ -85,13 +85,7 @@ export default function CardHolder({ field, state, handleStateChange }) {
           </Paper>
         </CardContent>
       </Collapse>
-      {field === 'suppliedAs' && (
-        <CardHeader
-          title={
-            <SASwitch state={state} handleStateChange={handleStateChange} />
-          }
-        />
-      )}
+      {field === 'suppliedAs' && <CardHeader title={<SASwitch />} />}
       {field === 'suppliedAsArray' && <CardHeader title={<SuppAsArray />} />}
       {field === 'dimension' && <CardHeader title={<Dimension />} />}
       {field === 'layer' && <CardHeader title={<LayerSlider />} />}

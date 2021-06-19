@@ -29,10 +29,26 @@ export default function MaterialSelection() {
         onChange={handleChange}
       >
         <Grid container>
-          <FormControlLabel value="fr4" control={<Radio />} label="FR-4" />
-          <FormControlLabel value="rogers" control={<Radio />} label="Rogers" />
-          <FormControlLabel value="flex" control={<Radio />} label="flex" />
-          <FormControlLabel value="other" control={<Radio />} label="other" />
+          <FormControlLabel
+            value="fr4"
+            control={<Radio disabled={state.activeStep.value > 0} />}
+            label="FR-4"
+          />
+          <FormControlLabel
+            value="rogers"
+            control={<Radio disabled={state.activeStep.value > 0} />}
+            label="Rogers"
+          />
+          <FormControlLabel
+            value="flex"
+            control={<Radio disabled={state.activeStep.value > 0} />}
+            label="flex"
+          />
+          <FormControlLabel
+            value="other"
+            control={<Radio disabled={state.activeStep.value > 0} />}
+            label="other"
+          />
         </Grid>
       </RadioGroup>
     </FormControl>

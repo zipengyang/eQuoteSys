@@ -67,12 +67,13 @@ export default function LayerSlider() {
 
   return (
     <div>
-      <Typography gutterBottom>Layer</Typography>
+      <Typography gutterBottom>Layer: {state.layer.value}</Typography>
       <PrettoSlider
         valueLabelDisplay="auto"
         aria-label="pretto slider"
         // name="layer"
         defaultValue={2}
+        disabled={state.activeStep.value > 0}
         onChange={handleChange}
         min={2}
         max={24}
