@@ -26,6 +26,7 @@ import firebase from '../../firebase/firebase';
 import { v4 as uuidv4 } from 'uuid';
 import publicIp from 'public-ip';
 import Calculation from '../utils/testCal';
+import MultiplePriceSelection from './MultiplePriceSelection';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -207,7 +208,8 @@ export default function AccordionHolder() {
             </AccordionSummary>
             <AccordionDetails>
               {activeStep >= 0 && (
-                <PriceSelection
+                // <PriceSelection
+                <MultiplePriceSelection
                   prices={prices}
                   handlePanelChange={setExpanded}
                   // handleStep={setActiveStep}

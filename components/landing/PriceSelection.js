@@ -5,13 +5,14 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { useSpecContext } from './SpecContext';
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
 import { useQuery } from 'react-query';
 import { getSpecById } from '../../pages/api/getSpec';
 import { CustomizedDialog } from '../shared/customizedDialog';
 // import QuoteTemplate from '../portal/QuoteTemplate';
 import QuoteDetail from './QuoteDetail';
 import { useRouter } from 'next/router';
+import MoreOptions from './MoreOptions';
 
 export default function PriceSelection({
   prices,
@@ -36,7 +37,7 @@ export default function PriceSelection({
 
   return (
     <>
-      <Grid container spacing={3} justify="center">
+      <Grid container spacing={3} justify="center" alignItems="center">
         <Grid item xs={12}>
           <FormControl component="fieldset">
             {/* <FormLabel component="legend">Prices</FormLabel> */}
@@ -61,7 +62,7 @@ export default function PriceSelection({
             </RadioGroup>
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={4}>
           <Button
             variant="outlined"
             color="secondary"
@@ -70,15 +71,14 @@ export default function PriceSelection({
             Quote Detail
           </Button>
         </Grid>
-        {/* <Grid item xs={6}>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => router.push('/')}
-          >
-            Start a new quote
-          </Button>
-        </Grid> */}
+        <Grid item xs={6}>
+          <Typography variant="body2">
+            {`Can't find what your want? click me-->`}
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <MoreOptions />
+        </Grid>
       </Grid>
       <CustomizedDialog
         isOpen={Open}
