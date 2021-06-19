@@ -8,27 +8,19 @@ import { useSpecContext } from './SpecContext';
 import { Button, Grid } from '@material-ui/core';
 import { useQuery } from 'react-query';
 import { getSpecById } from '../../pages/api/getSpec';
+import { CustomizedDialog } from '../shared/customizedDialog';
+import QuoteTemplate from '../portal/QuoteTemplate';
 
 export default function PriceSelection({ prices }) {
   prices.sort((a, b) => a.leadtime - b.leadtime);
-  // console.log(prices);
-  const { state, handleSpecChange } = useSpecContext();
+
   const [value, setValue] = React.useState('none');
-
+  const [Open, setOpen] = React.useState(false);
+  console.log(Open);
+  const handleClose = () => setOpen(!Open);
   const handleChange = (event) => {
-    setValue(event.target.value);
-    // update data
+    setValue(event.target.name, event.target.value);
   };
-
-  const quoteId = state.quoteId;
-
-  // get data by state.quoteId from database  -- get price
-  const { data, isLoading, isError } = useQuery(['spec', quoteId], getSpecById);
-
-  if (isLoading) return '...loading';
-  if (isError) return '...error';
-
-  // console.log(data);
 
   return (
     <>
@@ -39,6 +31,7 @@ export default function PriceSelection({ prices }) {
             <RadioGroup
               aria-label="Prices"
               name="Price"
+              edge="end"
               value={value}
               onChange={handleChange}
             >
@@ -46,7 +39,8 @@ export default function PriceSelection({ prices }) {
                 prices.map((item, index) => (
                   <FormControlLabel
                     key={index}
-                    value={item}
+                    name={item.leadtime}
+                    value={item.leadtime}
                     control={<Radio />}
                     label={`${item.leadtime} dyas: -- £${item.price.toFixed(
                       2,
@@ -57,11 +51,22 @@ export default function PriceSelection({ prices }) {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <Button variant="outlined" color="secondary">
-            Choose and RFQ
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => setOpen(!Open)}
+          >
+            Quote Detail
           </Button>
         </Grid>
       </Grid>
+      <CustomizedDialog
+        isOpen={Open}
+        handleClose={handleClose}
+        title="Quote Detail"
+        subtitle=""
+        children={<QuoteTemplate />}
+      />
     </>
   );
 }
