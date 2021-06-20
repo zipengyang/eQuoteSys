@@ -8,10 +8,21 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Checkbox from '@material-ui/core/Checkbox';
 import Avatar from '@material-ui/core/Avatar';
 import { useSpecContext } from './SpecContext';
-import { Button, Grid, Typography, FormControlLabel } from '@material-ui/core';
-import { deepOrange, deepPurple } from '@material-ui/core/colors';
+import {
+  Button,
+  IconButton,
+  Grid,
+  Typography,
+  FormControlLabel,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from '@material-ui/core';
+import { deepOrange } from '@material-ui/core/colors';
+import CloseIcon from '@material-ui/icons/Close';
 
-import { CustomizedDialog } from '../shared/customizedDialog';
 import MoreOptions from './MoreOptions';
 import QuoteDetailTabs from './QuoteDetailTabs';
 
@@ -109,12 +120,23 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
         </Grid>
       </Grid>
 
-      <CustomizedDialog
-        isOpen={Open}
-        handleClose={handleClose}
-        title={<Typography>Quote Detail</Typography>}
-        subtitle={
-          <Grid container spacing={1} justify="flex-start">
+      <Dialog
+        fullWidth
+        maxWidth="md"
+        open={Open}
+        // onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
+          <Grid container justify="space-between" alignItems="center">
+            <Grid item xs={11}>
+              <Typography>Quote Detail</Typography>
+            </Grid>
+            <Grid item xs={1}>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Grid>
             <Grid item xs={12} md={5}>
               <FormControlLabel
                 control={
@@ -128,7 +150,6 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
                 label="Read and Accept Terms and Conditions"
               />
             </Grid>
-
             <Grid item xs={12} md={5}>
               <Button
                 variant="contained"
@@ -140,11 +161,16 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
               </Button>
             </Grid>
           </Grid>
-        }
-        children={
+        </DialogTitle>
+        <DialogContent>
+          {/* <DialogContentText>
+           
+          </DialogContentText> */}
+        </DialogContent>
+        <DialogActions>
           <QuoteDetailTabs data={state} prices={prices} chosen={checked} />
-        }
-      />
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

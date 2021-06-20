@@ -6,9 +6,10 @@ import AccordionHolder from '../components/landing/AccordionHolder';
 import { Container, Grid } from '@material-ui/core';
 import HomePageHeader from '../components/landing/HomePageHeader';
 import MenuAppBar from '../components/landing/AppBar';
+import { useRouter } from 'next/router';
 
 export default function Home() {
-  const [newQuote, setNewQuote] = React.useState(false);
+  const router = useRouter();
 
   return (
     <div className={styles.container}>
@@ -24,9 +25,9 @@ export default function Home() {
             <MenuAppBar />
           </Grid>
           <Grid item container xs={12} justify="center">
-            <HomePageHeader handleNewQuote={setNewQuote} />
+            <HomePageHeader />
           </Grid>
-          {newQuote && (
+          {router.query.create === 'true' && (
             <Grid item xs={12}>
               <AccordionHolder />
             </Grid>
@@ -35,13 +36,18 @@ export default function Home() {
       </Container>
       <footer className={styles.footer}>
         <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          href="https://www.exceptionpcb.com"
           target="_blank"
           rel="noopener noreferrer"
         >
           Powered by{' '}
           <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+            <Image
+              src="/logo.jpg"
+              alt="eXception Logo"
+              width={72}
+              height={16}
+            />
           </span>
         </a>
       </footer>

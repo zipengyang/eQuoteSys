@@ -7,11 +7,12 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Button } from '@material-ui/core';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minWidth: 400,
-    maxWidth: 428,
+    // minWidth: 400,
+    // maxWidth: 428,
   },
   media: {
     height: 0,
@@ -41,6 +42,8 @@ export default function HomePageHeader({ handleNewQuote }) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  const router = useRouter();
 
   return (
     <Card className={classes.root}>
@@ -73,9 +76,12 @@ export default function HomePageHeader({ handleNewQuote }) {
           <Button
             variant="outlined"
             color="secondary"
-            onClick={() => handleNewQuote(true)}
+            // onClick={() => handleNewQuote(true)}
+            onClick={() => router.push('?create=true')}
           >
-            Start a quote now
+            {router.query.create === 'true'
+              ? 'Quote Processing......'
+              : 'Start a quote now'}
           </Button>
         </Typography>
       </CardContent>

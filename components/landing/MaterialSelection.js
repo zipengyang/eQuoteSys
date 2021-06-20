@@ -42,12 +42,12 @@ export default function MaterialSelection() {
           <FormControlLabel
             value="flex"
             control={<Radio disabled={state.activeStep.value > 0} />}
-            label="flex"
+            label="Flex"
           />
           <FormControlLabel
             value="other"
             control={<Radio disabled={state.activeStep.value > 0} />}
-            label="other"
+            label="Other"
           />
         </Grid>
       </RadioGroup>

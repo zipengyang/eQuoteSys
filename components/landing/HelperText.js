@@ -31,7 +31,7 @@ export default function HelperText({ field }) {
 
   return (
     <div>
-      <Grid container spacing={1} justify="space-around" alignItems="center">
+      <Grid container spacing={0} justify="space-around" alignItems="center">
         <Grid item xs={11}>
           <Typography variant="subtitle2">{HelpText[field].title}</Typography>
         </Grid>

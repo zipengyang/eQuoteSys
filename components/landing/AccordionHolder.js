@@ -27,6 +27,7 @@ import { v4 as uuidv4 } from 'uuid';
 import publicIp from 'public-ip';
 import Calculation from '../utils/testCal';
 import MultiplePriceSelection from './MultiplePriceSelection';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -199,7 +200,7 @@ export default function AccordionHolder() {
                   size="large"
                   onClick={() => handleRevealButton()}
                 >
-                  {!isLoading && 'Reveal Price'}
+                  {!isLoading && 'Step Two: Reveal Price'}
                   {isLoading && <CircularProgress color="inherit" />}
                 </Button>
               )}
@@ -223,6 +224,7 @@ export default function AccordionHolder() {
             square
             expanded={expanded === 'requestForQuote'}
             onChange={handlePanelChange('requestForQuote')} // will be only available after send quote.
+            disabled={activeStep < 2}
           >
             <AccordionSummary
               expandIcon={activeStep >= 2 && <ExpandMoreIcon />}
@@ -238,7 +240,7 @@ export default function AccordionHolder() {
                   // hidden={activeStep > 1}
                   size="large"
                 >
-                  Request a quote
+                  Step Three: Request a quote
                 </Button>
               )}
               {activeStep >= 2 && (
