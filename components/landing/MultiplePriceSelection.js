@@ -34,7 +34,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
   const [checked, setChecked] = React.useState([]);
   const [Open, setOpen] = React.useState(false);
 
-  console.log(checked);
+  // console.log(checked);
   const handleClose = () => setOpen(!Open);
 
   const handleToggle = (value) => () => {
@@ -88,6 +88,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
           <Button
             variant="outlined"
             color="secondary"
+            disabled={checked.length === 0}
             onClick={() => setOpen(!Open)}
           >
             Quote Detail

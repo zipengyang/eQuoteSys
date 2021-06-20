@@ -21,7 +21,7 @@ export default function SuppAsArray() {
   return (
     <>
       <Grid container spacing={6}>
-        <Grid item xs={6}>
+        <Grid item xs={8}>
           <TextField
             id="circuits-number"
             label="Circuits Per Array"
@@ -33,7 +33,7 @@ export default function SuppAsArray() {
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <FormControlLabel
             control={
               <Checkbox
