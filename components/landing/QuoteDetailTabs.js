@@ -74,7 +74,7 @@ export default function QuoteDetailTabs({ data, prices, chosen }) {
         >
           {chosen &&
             chosen.map((item) => (
-              <Tab label={`${item} days`} {...a11yProps(item)} />
+              <Tab key={item} label={`${item} days`} {...a11yProps(item)} />
             ))}
         </Tabs>
       </AppBar>

@@ -8,7 +8,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Checkbox from '@material-ui/core/Checkbox';
 import Avatar from '@material-ui/core/Avatar';
 import { useSpecContext } from './SpecContext';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography, FormControlLabel } from '@material-ui/core';
 import { deepOrange, deepPurple } from '@material-ui/core/colors';
 
 import { CustomizedDialog } from '../shared/customizedDialog';
@@ -55,6 +55,12 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
     handleSpecChange('activeStep', 2);
   };
 
+  // terms and condition
+  const [termsAndCon, setTermsAndCon] = React.useState(false);
+  const handleTCChange = () => {
+    setTermsAndCon(!termsAndCon);
+  };
+
   return (
     <>
       <Grid container spacing={2}>
@@ -86,7 +92,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
 
         <Grid item xs={4}>
           <Button
-            variant="outlined"
+            variant="contained"
             color="secondary"
             disabled={checked.length === 0}
             onClick={() => setOpen(!Open)}
@@ -106,21 +112,35 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
       <CustomizedDialog
         isOpen={Open}
         handleClose={handleClose}
-        title={
-          <Grid container spacing={3}>
-            <Grid item>Quote Detail</Grid>
-            <Grid item>
+        title={<Typography>Quote Detail</Typography>}
+        subtitle={
+          <Grid container spacing={3} justify="flex-start">
+            <Grid item xs={5}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={termsAndCon}
+                    onChange={handleTCChange}
+                    name="termsAndCon"
+                    color="primary"
+                  />
+                }
+                label="Read and Accept Terms and Conditions"
+              />
+            </Grid>
+
+            <Grid item xs={5}>
               <Button
                 variant="contained"
                 color="secondary"
+                disabled={!termsAndCon}
                 onClick={() => handleSend()}
               >
-                Send
+                Send Request For a Quote
               </Button>
             </Grid>
           </Grid>
         }
-        subtitle=""
         children={
           <QuoteDetailTabs data={state} prices={prices} chosen={checked} />
         }

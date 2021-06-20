@@ -26,6 +26,7 @@ import LeadTimePicker from './LeadTimePicker';
 import MaterialSelection from './MaterialSelection';
 import QuantityInput from './QuantityInput';
 import { HelpText } from './HelpText';
+import HelperText from './HelperText';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,9 +65,9 @@ export default function CardHolder({ field }) {
   return (
     <Card className={classes.root}>
       <CardActions disableSpacing>
-        <Typography variant="subtitle2">{HelpText[field].title}</Typography>
+        {/* <Typography variant="subtitle2">{HelpText[field].title}</Typography> */}
 
-        <IconButton
+        {/* <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
           })}
@@ -76,15 +77,17 @@ export default function CardHolder({ field }) {
         >
           {!expanded && <InfoIcon color="secondary" />}
           {expanded && <CloseIcon />}
-        </IconButton>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        </IconButton> */}
+
+        {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Paper elevation={6}>
             <Typography paragraph>{HelpText[field].text}</Typography>
           </Paper>
         </CardContent>
-      </Collapse>
+      </Collapse> */}
+        <HelperText field={field} />
+      </CardActions>
       {field === 'suppliedAs' && <CardHeader title={<SASwitch />} />}
       {field === 'suppliedAsArray' && <CardHeader title={<SuppAsArray />} />}
       {field === 'dimension' && <CardHeader title={<Dimension />} />}
