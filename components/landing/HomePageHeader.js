@@ -8,6 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Button } from '@material-ui/core';
 import { useRouter } from 'next/router';
+import ProgressBar from './ProgressBar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,13 +78,14 @@ export default function HomePageHeader({ handleNewQuote }) {
             variant="outlined"
             color="secondary"
             // onClick={() => handleNewQuote(true)}
-            onClick={() => router.push('?create=true')}
+            onClick={() => router.push('?create=true&progress=0')}
           >
             {router.query.create === 'true'
               ? 'Quote Processing......'
               : 'Start a quote now'}
           </Button>
         </Typography>
+        {router.query.create === 'true' && <ProgressBar />}
       </CardContent>
     </Card>
   );

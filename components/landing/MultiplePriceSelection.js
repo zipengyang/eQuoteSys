@@ -25,6 +25,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import MoreOptions from './MoreOptions';
 import QuoteDetailTabs from './QuoteDetailTabs';
+import router, { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MultiplePriceSelection({ prices, handlePanelChange }) {
   const classes = useStyles();
   prices.sort((a, b) => a.leadtime - b.leadtime);
+  const router = useRouter();
   const { state, handleSpecChange } = useSpecContext();
   const activeStep = state.activeStep.value;
   const [checked, setChecked] = React.useState([]);
@@ -65,6 +67,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
     setOpen(!Open);
     handlePanelChange('requestForQuote');
     handleSpecChange('activeStep', 2);
+    router.push('?create=true&progress=90');
   };
 
   // terms and condition
@@ -106,6 +109,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
         <Grid item xs={12} md={5}>
           <Button
             variant="contained"
+            // style={{ color: '#52d869' }}
             color="secondary"
             fullWidth
             disabled={checked.length === 0 || activeStep >= 2}
@@ -154,6 +158,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
               <Button
                 variant="contained"
                 color="secondary"
+                // style={{ color: '#52d869' }}
                 disabled={!termsAndCon}
                 onClick={() => handleSend()}
               >

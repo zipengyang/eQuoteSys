@@ -27,7 +27,7 @@ import { v4 as uuidv4 } from 'uuid';
 import publicIp from 'public-ip';
 import Calculation from '../utils/testCal';
 import MultiplePriceSelection from './MultiplePriceSelection';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,6 +122,7 @@ export default function AccordionHolder() {
       .then(() => {
         setIsLoading(false);
         handleSpecChange('activeStep', 1);
+        router.push('?create=true&progress=60');
       })
       .catch((err) => console.error(err));
   };
