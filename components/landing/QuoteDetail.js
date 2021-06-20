@@ -87,7 +87,7 @@ export default function QuoteDetail({ data, prices, chosen }) {
 
                 <TableRow>
                   <TableCell rowSpan={5}></TableCell>
-                  <TableCell colSpan={1}>Subtotal</TableCell>
+                  <TableCell colSpan={3}>Subtotal</TableCell>
                   <TableCell align="left">
                     {ccyFormat(invoiceSubtotal)}
                   </TableCell>
@@ -100,7 +100,7 @@ export default function QuoteDetail({ data, prices, chosen }) {
                   <TableCell align="left">{ccyFormat(invoiceTaxes)}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={1}>Total</TableCell>
+                  <TableCell colSpan={3}>Total</TableCell>
                   <TableCell align="left">{ccyFormat(invoiceTotal)}</TableCell>
                 </TableRow>
               </TableBody>
