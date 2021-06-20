@@ -31,6 +31,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
   const classes = useStyles();
   prices.sort((a, b) => a.leadtime - b.leadtime);
   const { state, handleSpecChange } = useSpecContext();
+  const activeStep = state.activeStep.value;
   const [checked, setChecked] = React.useState([]);
   const [Open, setOpen] = React.useState(false);
 
@@ -83,6 +84,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
                       onChange={handleToggle(item.leadtime)}
                       checked={checked.indexOf(item.leadtime) !== -1}
                       inputProps={{ 'aria-labelledby': labelId }}
+                      disabled={activeStep >= 2}
                     />
                   </ListItemSecondaryAction>
                 </ListItem>
@@ -95,7 +97,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
             variant="contained"
             color="secondary"
             fullWidth
-            disabled={checked.length === 0}
+            disabled={checked.length === 0 || activeStep >= 2}
             onClick={() => setOpen(!Open)}
           >
             View Quote Detail
@@ -106,6 +108,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
           <MoreOptions />
         </Grid>
       </Grid>
+
       <CustomizedDialog
         isOpen={Open}
         handleClose={handleClose}

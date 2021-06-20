@@ -183,6 +183,7 @@ export default function AccordionHolder() {
             square
             expanded={expanded === 'pricing'}
             onChange={handlePanelChange('pricing')}
+            disabled={!priceIsReady}
           >
             <AccordionSummary
               expandIcon={activeStep > 0 && <ExpandMoreIcon />}
@@ -206,17 +207,18 @@ export default function AccordionHolder() {
                 <Typography>Step Two: Price detail</Typography>
               )}
             </AccordionSummary>
-            <AccordionDetails>
-              {activeStep >= 0 && (
-                // <PriceSelection
+            {/* display price  */}
+            {activeStep >= 0 && (
+              // <PriceSelection
+              <AccordionDetails>
                 <MultiplePriceSelection
                   prices={prices}
                   handlePanelChange={setExpanded}
-                  // handleStep={setActiveStep}
                 />
-              )}
-            </AccordionDetails>
+              </AccordionDetails>
+            )}
           </Accordion>
+
           <Accordion
             square
             expanded={expanded === 'requestForQuote'}
@@ -235,7 +237,6 @@ export default function AccordionHolder() {
                   disabled={activeStep < 2}
                   // hidden={activeStep > 1}
                   size="large"
-                  onClick={() => console.log('clicked')}
                 >
                   Request a quote
                 </Button>
