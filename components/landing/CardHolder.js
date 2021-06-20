@@ -65,27 +65,6 @@ export default function CardHolder({ field }) {
   return (
     <Card className={classes.root}>
       <CardActions disableSpacing>
-        {/* <Typography variant="subtitle2">{HelpText[field].title}</Typography> */}
-
-        {/* <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show helper text"
-        >
-          {!expanded && <InfoIcon color="secondary" />}
-          {expanded && <CloseIcon />}
-        </IconButton> */}
-
-        {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Paper elevation={6}>
-            <Typography paragraph>{HelpText[field].text}</Typography>
-          </Paper>
-        </CardContent>
-      </Collapse> */}
         <HelperText field={field} />
       </CardActions>
       {field === 'suppliedAs' && <CardHeader title={<SASwitch />} />}

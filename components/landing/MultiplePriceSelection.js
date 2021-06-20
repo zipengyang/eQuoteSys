@@ -90,22 +90,19 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
             })}
         </List>
 
-        <Grid item xs={4}>
+        <Grid item xs={12} md={5}>
           <Button
             variant="contained"
             color="secondary"
+            fullWidth
             disabled={checked.length === 0}
             onClick={() => setOpen(!Open)}
           >
-            Quote Detail
+            View Quote Detail
           </Button>
         </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body2">
-            {`Can't find what your want? click me-->`}
-          </Typography>
-        </Grid>
-        <Grid item xs={2}>
+
+        <Grid item xs={12} md={7}>
           <MoreOptions />
         </Grid>
       </Grid>
@@ -114,8 +111,8 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
         handleClose={handleClose}
         title={<Typography>Quote Detail</Typography>}
         subtitle={
-          <Grid container spacing={3} justify="flex-start">
-            <Grid item xs={5}>
+          <Grid container spacing={1} justify="flex-start">
+            <Grid item xs={12} md={5}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -129,7 +126,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
               />
             </Grid>
 
-            <Grid item xs={5}>
+            <Grid item xs={12} md={5}>
               <Button
                 variant="contained"
                 color="secondary"

@@ -29,10 +29,18 @@ export default function MoreOptions() {
 
   return (
     <div>
-      <IconButton onClick={handleClick}>
-        <MessageIcon />
-      </IconButton>
-
+      <Grid container spacing={0} alignItems="center">
+        <Grid item xs={11}>
+          <Typography variant="body2">
+            {`Can't find what your want? click me-->`}
+          </Typography>
+        </Grid>
+        <Grid item xs={1}>
+          <IconButton onClick={handleClick}>
+            <MessageIcon />
+          </IconButton>
+        </Grid>
+      </Grid>
       <Popover
         id={id}
         open={open}
