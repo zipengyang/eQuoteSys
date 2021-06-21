@@ -58,7 +58,7 @@ export default function HomePageHeader({ handleNewQuote }) {
         }
         title={
           <Typography variant="overline" color="secondary" align="center">
-            Get instance price for your PCB
+            Get instance price for PCB
           </Typography>
         }
       />
@@ -74,16 +74,23 @@ export default function HomePageHeader({ handleNewQuote }) {
           component="p"
           align="center"
         >
-          <Button
-            variant="outlined"
-            color="secondary"
-            // onClick={() => handleNewQuote(true)}
-            onClick={() => router.push('?create=true&progress=0')}
-          >
-            {router.query.create === 'true'
-              ? 'Quote Processing......'
-              : 'Start a quote now'}
-          </Button>
+          {router.query.create === 'true' && router.query.progress !== '100' ? (
+            <Button variant="outlined" color="secondary">
+              Quote Processing......
+            </Button>
+          ) : (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() =>
+                router.query.progress === '100'
+                  ? (window.location.href = '/?create=true&progress=0')
+                  : router.push('/?create=true&progress=0')
+              }
+            >
+              start a new quote
+            </Button>
+          )}
         </Typography>
         {router.query.create === 'true' && <ProgressBar />}
       </CardContent>

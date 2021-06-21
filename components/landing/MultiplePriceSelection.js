@@ -51,7 +51,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
   const pricesToBeSaved = prices.filter((item) =>
     checked.includes(item.leadtime),
   );
-  console.log('to be saved:', pricesToBeSaved);
+
   const handleClose = () => setOpen(!Open);
 
   const handleToggle = (value) => () => {

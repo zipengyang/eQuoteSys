@@ -17,7 +17,7 @@ import { useForm } from 'react-hook-form';
 import firebase from '../../firebase/firebase';
 import { useSpecContext } from './SpecContext';
 import { useRouter } from 'next/router';
-import ConfirmDialog from '../shared/confirmDialog';
+import CompletedDialog from './CompletedDialog';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,7 +43,7 @@ export default function ContactForm() {
   //   const router = useRouter();
   //   const { quoteid, uid, step } = router.query;
   const classes = useStyles();
-  const [Open, setOpen] = React.useState(true);
+  const [Open, setOpen] = React.useState(false);
   const { handleSubmit, register, errors } = useForm();
   const { state, handleSpecChange } = useSpecContext();
 
@@ -58,6 +58,7 @@ export default function ContactForm() {
   });
 
   const onSubmit = async (data) => {
+    console.log(data.gerberFile);
     const email = data.email.toLowerCase();
     // console.log(email);
     const userRef = firebase.firestore().collection('users');
@@ -66,56 +67,77 @@ export default function ContactForm() {
 
     if (result.length === 0) {
       // no document found, create a new one -- will use cloud function instead
-      await userRef.doc(email).set({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        companyName: data.companyName,
-        email: email,
-        createdDate: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+      await userRef
+        .doc(email)
+        .set({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          companyName: data.companyName,
+          email: email,
+          createdDate: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .then(() => {
+          router.push('?create=true&progress=100');
+          handleSpecChange('activeStep', 3);
+          setOpen(true);
+        });
+    } else {
+      const ref = firebase.firestore().collection('specs');
+      ref
+        .doc(state.quoteId)
+        .update({
+          // gerberFileUrl: url,
+          userId: email,
+          status: 'submitted',
+        })
+        .then(() => {
+          // log activity using cloud function
+          const data = { quoteId: state.quoteId, activity: 'submit quote' };
+          const logActivity = firebase
+            .functions()
+            .httpsCallable('logCustomerActivity');
+          logActivity(data);
+        })
+        .then(() => {
+          router.push('?create=true&progress=100');
+          handleSpecChange('activeStep', 3);
+          setOpen(true);
+        });
     }
     // upload file and update fields
-    const storageRef = firebase.storage().ref();
-    const fileRef = storageRef.child(
-      `/gerberFile/${state.quoteId}/` + data.gerberFile[0].name,
-    );
-    fileRef.put(data.gerberFile[0]).then(() => {
-      fileRef.getDownloadURL().then((url) => {
-        const ref = firebase.firestore().collection('specs');
-        ref
-          .doc(state.quoteId)
-          .update({
-            gerberFileUrl: url,
-            userId: email,
-            status: 'submitted',
-          })
-          .then(() => {
-            // log activity using cloud function
-            const data = { quoteId: state.quoteId, activity: 'submit quote' };
-            const logActivity = firebase
-              .functions()
-              .httpsCallable('logCustomerActivity');
-            logActivity(data);
-          })
-          .then(() => {
-            // setConfirmDialog({
-            //   isOpen: Open,
-            //   title: 'Thank you for submitting your request for quote.',
-            //   subTitle:
-            //     'We will check the gerber file and come back to you with offical quote shortly.',
-            //   entrance: 'thankyou',
-            //   onConfirm: () => {
-            //     window.location.href = '/';
-            //     // router.push('?create=true&progress=100');
-            //     // setOpen(!Open);
-            //   },
-            // });
-            router.push('?create=true&progress=100');
-            handleSpecChange('activeStep', 3);
-            window.alert('thank you.');
-          });
+    if (!!data.gerberFile) {
+      // allow empty just for demo purpose.
+      const storageRef = firebase.storage().ref();
+      const fileRef = storageRef.child(
+        `/gerberFile/${state.quoteId}/` + data.gerberFile[0].name,
+      );
+      fileRef.put(data.gerberFile[0]).then(() => {
+        fileRef.getDownloadURL().then((url) => {
+          const ref = firebase.firestore().collection('specs');
+          ref
+            .doc(state.quoteId)
+            .update({
+              gerberFileUrl: url,
+              // userId: email,
+              // status: 'submitted',
+            })
+            .catch((err) => console.error(err));
+          // .then(() => {
+          //   // log activity using cloud function
+          //   const data = { quoteId: state.quoteId, activity: 'submit quote' };
+          //   const logActivity = firebase
+          //     .functions()
+          //     .httpsCallable('logCustomerActivity');
+          //   logActivity(data);
+          // })
+          // .then(() => {
+          //   router.push('?create=true&progress=100');
+          //   handleSpecChange('activeStep', 3);
+          //   setOpen(true);
+          // });
+        });
       });
-    });
+    }
   };
 
   return (
@@ -210,19 +232,9 @@ export default function ContactForm() {
             </Grid>
           </Grid>
         </form>
-
-        {/* <Grid container justify="center">
-        <Grid item>
-          <Link href={`/quote/${quoteid}/uid/${step}/login`}>
-            <a>Already customer? Login</a>
-          </Link>
-        </Grid>
-      </Grid> */}
       </Container>
-      {/* <ConfirmDialog
-        confirmDialog={confirmDialog}
-        setConfirmDialog={setConfirmDialog}
-      /> */}
+
+      <CompletedDialog isOpen={Open} handleClose={setOpen} />
     </>
   );
 }

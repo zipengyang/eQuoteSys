@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import QuoteTemplate from './QuoteTemplate';
 import OfferBadge from './OfferBadge';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function QuoteList({ data }) {
+  // console.log(data);
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
@@ -76,12 +78,17 @@ export default function QuoteList({ data }) {
             <Typography className={classes.heading}>
               Ref: {data.id.substring(1, 7)}
             </Typography>
-            <Typography variant="body2">{data.createdDate}</Typography>
+            <Typography variant="body2">
+              {moment(data.createdDate.toDate()).format('MM/DD/YY')}
+            </Typography>
+            <Typography>{data.status}</Typography>
           </div>
           <div className={classes.column}>
-            <Typography className={classes.secondaryHeading}>
-              {data.leadtime} days @ £{data.price} -- {data.status}
-            </Typography>
+            {data.prices.map((item, index) => (
+              <Typography key={index} className={classes.secondaryHeading}>
+                {item.leadtime} days @ £{item.price.toFixed(2)}
+              </Typography>
+            ))}
           </div>
         </AccordionSummary>
         <AccordionDetails className={classes.details}>
