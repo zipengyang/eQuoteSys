@@ -13,6 +13,7 @@ import Divider from '@material-ui/core/Divider';
 import QuoteTemplate from './QuoteTemplate';
 import OfferBadge from './OfferBadge';
 import moment from 'moment';
+import QuoteDetailTabs from '../landing/QuoteDetailTabs';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,7 +57,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function QuoteList({ data }) {
-  // console.log(data);
+  let leadtimes = [];
+  data.prices.map((item) => leadtimes.push(item.leadtime));
+
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
@@ -92,7 +95,12 @@ export default function QuoteList({ data }) {
           </div>
         </AccordionSummary>
         <AccordionDetails className={classes.details}>
-          <QuoteTemplate />
+          {/* <QuoteTemplate /> */}
+          <QuoteDetailTabs
+            data={data}
+            prices={data.prices}
+            chosen={leadtimes}
+          />
         </AccordionDetails>
         <Divider />
         <AccordionActions>

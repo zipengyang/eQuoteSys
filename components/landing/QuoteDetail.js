@@ -35,8 +35,10 @@ function subtotal(items) {
 }
 
 export default function QuoteDetail({ data, prices, chosen }) {
+  const qty =
+    typeof data.quantity === 'object' ? data.quantity.value : data.quantity;
   const classes = useStyles();
-
+  // console.log(chosen);
   const price = prices
     .find((price) => price.leadtime === chosen)
     .price.toFixed(2);
@@ -44,7 +46,7 @@ export default function QuoteDetail({ data, prices, chosen }) {
   let rows = [];
 
   rows = [
-    createRow(`PCB - ${chosen} days `, data.quantity.value, price),
+    createRow(`PCB - ${chosen} days `, qty, price),
     createRow('Tooling', 1, 260.0),
     createRow('Shipment', 1, 20.0),
   ];
