@@ -14,7 +14,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import InputLabel from '@material-ui/core/InputLabel';
 import { useForm } from 'react-hook-form';
-// import { useRouter } from 'next/router';
+import firebase from '../../firebase/firebase';
+import { useSpecContext } from './SpecContext';
+import { useRouter } from 'next/router';
+import ConfirmDialog from '../shared/confirmDialog';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,107 +39,190 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ContactForm({ handleOnSubmit }) {
+export default function ContactForm() {
   //   const router = useRouter();
   //   const { quoteid, uid, step } = router.query;
   const classes = useStyles();
+  const [Open, setOpen] = React.useState(true);
   const { handleSubmit, register, errors } = useForm();
-  const onSubmit = (data) => {
-    handleOnSubmit(data);
+  const { state, handleSpecChange } = useSpecContext();
+
+  const activeStep = state.activeStep.value;
+
+  const router = useRouter();
+  const [confirmDialog, setConfirmDialog] = React.useState({
+    isOpen: Open,
+    title: '',
+    subTitle: '',
+    entrance: '',
+  });
+
+  const onSubmit = async (data) => {
+    const email = data.email.toLowerCase();
+    // console.log(email);
+    const userRef = firebase.firestore().collection('users');
+    const res = await userRef.doc(email).get();
+    const result = () => res.data();
+
+    if (result.length === 0) {
+      // no document found, create a new one -- will use cloud function instead
+      await userRef.doc(email).set({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        companyName: data.companyName,
+        email: email,
+        createdDate: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    }
+    // upload file and update fields
+    const storageRef = firebase.storage().ref();
+    const fileRef = storageRef.child(
+      `/gerberFile/${state.quoteId}/` + data.gerberFile[0].name,
+    );
+    fileRef.put(data.gerberFile[0]).then(() => {
+      fileRef.getDownloadURL().then((url) => {
+        const ref = firebase.firestore().collection('specs');
+        ref
+          .doc(state.quoteId)
+          .update({
+            gerberFileUrl: url,
+            userId: email,
+            status: 'submitted',
+          })
+          .then(() => {
+            // log activity using cloud function
+            const data = { quoteId: state.quoteId, activity: 'submit quote' };
+            const logActivity = firebase
+              .functions()
+              .httpsCallable('logCustomerActivity');
+            logActivity(data);
+          })
+          .then(() => {
+            // setConfirmDialog({
+            //   isOpen: Open,
+            //   title: 'Thank you for submitting your request for quote.',
+            //   subTitle:
+            //     'We will check the gerber file and come back to you with offical quote shortly.',
+            //   entrance: 'thankyou',
+            //   onConfirm: () => {
+            //     window.location.href = '/';
+            //     // router.push('?create=true&progress=100');
+            //     // setOpen(!Open);
+            //   },
+            // });
+            router.push('?create=true&progress=100');
+            handleSpecChange('activeStep', 3);
+            window.alert('thank you.');
+          });
+      });
+    });
   };
 
   return (
-    <Container component="main">
-      <form
-        className={classes.form}
-        noValidate
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              autoComplete="fname"
-              variant="outlined"
-              required
-              fullWidth
-              label="First Name"
-              autoFocus
-              {...register('firstName')}
-            />
+    <>
+      <Container component="main">
+        <form
+          className={classes.form}
+          noValidate
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoComplete="fname"
+                variant="outlined"
+                required
+                fullWidth
+                label="First Name"
+                disabled={activeStep >= 3}
+                autoFocus
+                {...register('firstName')}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                label="Last Name"
+                disabled={activeStep >= 3}
+                autoComplete="lname"
+                {...register('lastName')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                label="Company Name"
+                disabled={activeStep >= 3}
+                autoComplete="cName"
+                {...register('companyName')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                label="Email Address"
+                disabled={activeStep >= 3}
+                autoComplete="email"
+                {...register('email')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                multiline
+                rows={3}
+                rowsMax={8}
+                label="Note"
+                disabled={activeStep >= 3}
+                {...register('note')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <InputLabel htmlFor="gerberFile">Your Gerber file</InputLabel>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                disabled={activeStep >= 3}
+                name="gerberFile"
+                type="file"
+                {...register('gerberFile')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                fullWidth
+                disabled={activeStep >= 3}
+                variant="contained"
+                color="secondary"
+              >
+                Submit
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              label="Last Name"
-              autoComplete="lname"
-              {...register('lastName')}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              label="Company Name"
-              autoComplete="cName"
-              {...register('companyName')}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              label="Email Address"
-              autoComplete="email"
-              {...register('email')}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              multiline
-              rows={3}
-              rowsMax={8}
-              label="Note"
-              {...register('note')}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <InputLabel htmlFor="gerberFile">Your Gerber file</InputLabel>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              name="gerberFile"
-              type="file"
-              {...register('gerberFile')}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="secondary"
-            >
-              Submit
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
+        </form>
 
-      {/* <Grid container justify="center">
+        {/* <Grid container justify="center">
         <Grid item>
           <Link href={`/quote/${quoteid}/uid/${step}/login`}>
             <a>Already customer? Login</a>
           </Link>
         </Grid>
       </Grid> */}
-    </Container>
+      </Container>
+      {/* <ConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      /> */}
+    </>
   );
 }

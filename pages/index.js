@@ -27,11 +27,11 @@ export default function Home() {
           <Grid item container xs={12} justify="center">
             <HomePageHeader />
           </Grid>
-          {router.query.create === 'true' && (
-            <Grid item xs={12}>
-              <AccordionHolder />
-            </Grid>
-          )}
+          {/* {router.query.create === 'true' && ( */}
+          <Grid item xs={12}>
+            <AccordionHolder />
+          </Grid>
+          {/* )} */}
         </Grid>
       </Container>
       <footer className={styles.footer}>

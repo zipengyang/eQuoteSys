@@ -5,6 +5,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import LockIcon from '@material-ui/icons/Lock';
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 import {
   Grid,
@@ -27,7 +28,7 @@ import { v4 as uuidv4 } from 'uuid';
 import publicIp from 'public-ip';
 import Calculation from '../utils/testCal';
 import MultiplePriceSelection from './MultiplePriceSelection';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,6 +66,7 @@ export default function AccordionHolder() {
   const [priceIsReady, setPriceIsReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [prices, setPrices] = useState([]);
+  const router = useRouter();
   const activeStep = state.activeStep.value;
 
   //check if all required fields completed.
@@ -122,6 +124,7 @@ export default function AccordionHolder() {
       .then(() => {
         setIsLoading(false);
         handleSpecChange('activeStep', 1);
+        setPriceIsReady(false);
         router.push('?create=true&progress=60');
       })
       .catch((err) => console.error(err));
@@ -132,19 +135,24 @@ export default function AccordionHolder() {
         <SpecProvider value={{ state, handleSpecChange }}>
           <Accordion
             square
-            expanded={expanded === 'specs'}
+            expanded={router.query.create === 'true' && expanded === 'specs'}
             onChange={handlePanelChange('specs')}
           >
             <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
+              expandIcon={
+                router.query.create !== 'true' ? (
+                  <LockIcon fontSize="small" />
+                ) : (
+                  <ExpandMoreIcon />
+                )
+              }
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
               <Typography className={classes.heading}>
-                Step one: PCB Specs
+                Step 1: PCB Specs
               </Typography>
             </AccordionSummary>
-            {/* SpecContext start here */}
 
             <AccordionDetails>
               <Grid container justify="center" spacing={3}>
@@ -162,7 +170,7 @@ export default function AccordionHolder() {
                     <CardHolder field="suppliedAsArray" />
                   </Grid>
                 </Slide>
-                {/* )} */}
+
                 <Grid item xs={12}>
                   <CardHolder field="dimension" />
                 </Grid>
@@ -183,32 +191,38 @@ export default function AccordionHolder() {
           </Accordion>
           <Accordion
             square
-            expanded={expanded === 'pricing'}
+            expanded={activeStep >= 1 && expanded === 'pricing'}
             onChange={handlePanelChange('pricing')}
-            disabled={!priceIsReady}
           >
             <AccordionSummary
-              expandIcon={activeStep > 0 && <ExpandMoreIcon />}
+              expandIcon={
+                activeStep < 1 ? (
+                  <LockIcon fontSize="small" />
+                ) : (
+                  <ExpandMoreIcon />
+                )
+              }
               aria-controls="panel2a-content"
               id="panel2a-header"
             >
-              {activeStep <= 0 && (
+              {priceIsReady && activeStep === 0 ? (
                 <Button
                   fullWidth
                   variant="contained"
                   color="secondary"
-                  disabled={!priceIsReady}
                   size="large"
                   onClick={() => handleRevealButton()}
                 >
                   {!isLoading && 'Step Two: Reveal Price'}
                   {isLoading && <CircularProgress color="inherit" />}
                 </Button>
-              )}
-              {activeStep > 0 && (
-                <Typography>Step Two: Price detail</Typography>
+              ) : (
+                <Typography className={classes.heading}>
+                  Step 2: Price detail
+                </Typography>
               )}
             </AccordionSummary>
+
             {/* display price  */}
             {activeStep >= 0 && (
               // <PriceSelection
@@ -223,32 +237,23 @@ export default function AccordionHolder() {
 
           <Accordion
             square
-            expanded={expanded === 'requestForQuote'}
-            onChange={handlePanelChange('requestForQuote')} // will be only available after send quote.
-            disabled={activeStep < 2}
+            expanded={activeStep >= 2 && expanded === 'requestForQuote'}
+            onChange={handlePanelChange('requestForQuote')}
           >
             <AccordionSummary
-              expandIcon={activeStep >= 2 && <ExpandMoreIcon />}
+              expandIcon={
+                activeStep < 2 ? (
+                  <LockIcon fontSize="small" />
+                ) : (
+                  <ExpandMoreIcon />
+                )
+              }
               aria-controls="panel3a-content"
               id="panel3a-header"
             >
-              {activeStep < 2 && (
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="secondary"
-                  disabled={activeStep < 2}
-                  // hidden={activeStep > 1}
-                  size="large"
-                >
-                  Step Three: Request a quote
-                </Button>
-              )}
-              {activeStep >= 2 && (
-                <Typography className={classes.heading}>
-                  Step Three: Request Quote
-                </Typography>
-              )}
+              <Typography className={classes.heading}>
+                Step 3: Request Quote
+              </Typography>
             </AccordionSummary>
             <AccordionDetails>
               {activeStep >= 2 && <ContactForm />}

@@ -22,10 +22,10 @@ import {
 } from '@material-ui/core';
 import { deepOrange } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
-
 import MoreOptions from './MoreOptions';
 import QuoteDetailTabs from './QuoteDetailTabs';
 import router, { useRouter } from 'next/router';
+import firebase from '../../firebase/firebase';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,7 +48,10 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
   const [checked, setChecked] = React.useState([]);
   const [Open, setOpen] = React.useState(false);
 
-  // console.log(checked);
+  const pricesToBeSaved = prices.filter((item) =>
+    checked.includes(item.leadtime),
+  );
+  console.log('to be saved:', pricesToBeSaved);
   const handleClose = () => setOpen(!Open);
 
   const handleToggle = (value) => () => {
@@ -63,11 +66,21 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
 
     setChecked(newChecked);
   };
-  const handleSend = () => {
-    setOpen(!Open);
-    handlePanelChange('requestForQuote');
-    handleSpecChange('activeStep', 2);
-    router.push('?create=true&progress=90');
+  const handleSend = async () => {
+    const ref = firebase.firestore().collection('specs');
+    await ref
+      .doc(state.quoteId)
+      .update({
+        status: 'priced',
+        prices: pricesToBeSaved,
+      })
+      .then(() => {
+        setOpen(!Open);
+        handlePanelChange('requestForQuote');
+        handleSpecChange('activeStep', 2);
+        router.push('?create=true&progress=90');
+      })
+      .catch((err) => console.error(err));
   };
 
   // terms and condition
@@ -151,7 +164,7 @@ export default function MultiplePriceSelection({ prices, handlePanelChange }) {
                     color="primary"
                   />
                 }
-                label="Read and Accept Terms and Conditions"
+                label={`Read and Accept T&Cs`}
               />
             </Grid>
             <Grid item xs={12} md={5}>
