@@ -36,6 +36,7 @@
     "react-iframe": "^1.8.0",
     "react-query": "^3.9.6",
     "react-swipeable-views": "^0.14.0",
+    "react-tabs": "^3.2.2",
     "sass": "^1.32.8",
     "stripe": "^8.143.0",
     "use-immer": "^0.5.2",

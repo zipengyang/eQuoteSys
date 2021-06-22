@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import CampaignCard from '../../../marketing/Card';
-import SubmittedQuoteTable from '../SubmittedQuote';
+import SubmittedQuoteTable from '../../../admin/SubmittedQuote';
 import firebase from '../../../../firebase/firebase';
 
 export default function Submitted({ data, statics }) {

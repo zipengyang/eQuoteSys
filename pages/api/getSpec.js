@@ -7,6 +7,7 @@ const userRef = firebase.firestore().collection('users');
 const campRef = firebase.firestore().collection('campaigns');
 const adminRef = firebase.firestore().collection('admin');
 const taskRef = firebase.firestore().collection('tasks');
+const emailRef = firebase.firestore().collection('emails');
 
 // get specs to cache
 export const getAllSpecs = async () => {
@@ -266,6 +267,14 @@ export const getTasksByEmail = async ({ queryKey }) => {
   return result;
 };
 
+//get email by userID;
+
+export const getEmailsByUserId = async ({ queryKey }) => {
+  const [_key, userId] = queryKey;
+  const data = await emailRef.where('sender', '==', userId).get();
+  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return result;
+};
 // update spec with email and create a new user record if email does not exist.
 // export const contactFormSubmit = async ({ quoteid, ...data }) => {
 //   // email exist?

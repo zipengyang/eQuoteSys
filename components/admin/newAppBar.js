@@ -15,7 +15,7 @@ import { useQuery } from 'react-query';
 import { getAssignedToQuotes, getTasksByEmail } from '../../pages/api/getSpec';
 import MenuListComponent from '../dashboard/admin/menuList';
 import { Container, CssBaseline, Grid, makeStyles } from '@material-ui/core';
-import { menus } from './menu';
+import { menus } from '../shared/menu';
 import firebase from '../../firebase/firebase';
 import { useAuth } from '../../firebase/auth';
 import NotificationSideBar from '../dashboard/notificationSideBar';
@@ -74,8 +74,8 @@ export default function NewAppBar() {
             justify="space-around"
             alignItems="center"
           >
-            {menus.map((menu) => (
-              <Grid item spacing={2}>
+            {menus.map((menu, index) => (
+              <Grid item key={index}>
                 <MenuListComponent
                   menuName={menu.menuName}
                   menuItems={menu.menuItems}

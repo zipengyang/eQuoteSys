@@ -17,7 +17,9 @@ export default function CampReport({ rowData, data }) {
   ).length;
 
   return (
-    <Container maxWidth="false">
+    <Container
+    // maxWidth="false"
+    >
       <Grid container spacing={3}>
         <Grid item container md={3}>
           <CampDetail data={rowData} />

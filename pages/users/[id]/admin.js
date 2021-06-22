@@ -24,7 +24,7 @@ import {
 import { useQueries, useQuery } from 'react-query';
 import { getAllSpecs, getAllUsers } from '../../api/getSpec';
 import DraftQuoteTable from '../../../components/dashboard/admin/DraftQuoteTable';
-import SubmittedQuoteTable from '../../../components/dashboard/admin/SubmittedQuote';
+import SubmittedQuoteTable from '../../../components/admin/SubmittedQuote';
 import CampaignTable from '../../../components/marketing/CampaignTable';
 import Statics from '../../../components/dashboard/admin/Statics';
 import { drawerReducer } from '../../../components/shared/drawerReducer';
@@ -32,8 +32,8 @@ import PromotedQuotes from '../../../components/dashboard/admin/promotedQuotes';
 import AccordionTimeLine from '../../../components/dashboard/admin/accordionTimeLine';
 import ActivityTab from '../../../components/dashboard/admin/activity/activityTab';
 import NotificationSideBar from '../../../components/dashboard/notificationSideBar';
-import NewAppBar from '../../../components/shared/newAppBar';
-import QuoteAllInOneView from '../../../components/dashboard/quoteAllInOneView';
+import NewAppBar from '../../../components/admin/newAppBar';
+import QuoteTimeLineTabs from '../../../components/admin/Quote/QuoteTimeLineTabs';
 
 // context
 export const dispatchContext = createContext();
@@ -84,7 +84,7 @@ export default function selfService({ session }) {
           // return <AccordionTimeLine user={state.camps} />;
           return <ActivityTab user={state.camps} />;
         case 'quoteAllInOneView':
-          return <QuoteAllInOneView data={state.camps} />;
+          return <QuoteTimeLineTabs data={state.camps} />;
         default:
           return;
       }
@@ -122,7 +122,7 @@ export default function selfService({ session }) {
           <NotificationSideBar open={NSBopen} />
           <main className={classes.content}>
             <div className={classes.appBarSpacer} />
-            <Container className={classes.container} maxWidth="false">
+            <Container className={classes.container}>
               {getDisplayContent(state.menuSelected)}
             </Container>
           </main>

@@ -91,22 +91,22 @@ export default function SignInSide({
               fullWidth
               id="email"
               label="Email Address"
-              name="email"
+              // name="email"
               autoComplete="email"
               autoFocus
-              inputRef={register}
+              {...register('email')}
             />
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              name="password"
+              // name="password"
               label="Password"
               type="password"
               id="password"
               autoComplete="current-password"
-              inputRef={register}
+              {...register('password')}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
