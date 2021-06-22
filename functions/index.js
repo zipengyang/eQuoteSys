@@ -181,6 +181,18 @@ exports.updateAndSendOfferEmail = functions.https.onCall((data) => {
     });
 });
 
+// received quote email
+exports.QuoteReceivedEmail = functions.https.onCall((email) => {
+  const msg = {
+    to: email,
+    from: 'crm@exceptionpcb.com',
+    subject: 'We have received your quote.',
+    templateId: 'd-2dee1c1264b2480d8e300375fb7615ca',
+    dynamic_template_data: {},
+  };
+
+  return sendGridEmail.send(msg);
+});
 // price calculation
 //factors
 const factors = {

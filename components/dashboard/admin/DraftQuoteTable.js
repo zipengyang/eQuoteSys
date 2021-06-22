@@ -8,9 +8,12 @@ import { CustomizedDialog } from '../../shared/customizedDialog';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { IconButton } from '@material-ui/core';
 import FilterPanel from '../../shared/filterPanel';
+import moment from 'moment';
 
 export default function DraftQuoteTable({ data }) {
-  data = data.filter((items) => items.status === 'draft' && !items.campaigns);
+  data = data.filter(
+    (items) => items.status === 'submitted' && !items.campaigns,
+  );
 
   const handleFilter = (data) => {
     // console.log(data);
@@ -95,26 +98,26 @@ export default function DraftQuoteTable({ data }) {
           { field: 'userId', title: 'Contact' },
           {
             field: 'ipAddress',
-
             title: 'IP',
           },
-          { field: 'weight', title: 'Weight' },
-          {
-            field: 'classification',
+          // { field: 'weight', title: 'Weight' },
+          // {
+          //   field: 'classification',
 
-            title: 'Classification',
-          },
+          //   title: 'Classification',
+          // },
           {
             field: 'createdDate',
-
             title: 'Date',
+            render: (rowData) =>
+              moment(rowData.createdDate.toDate()).format('DD/MM/yy'),
           },
-          { field: 'leadtime', title: 'LeadTime' },
+          // { field: 'leadtime', title: 'LeadTime' },
           { field: 'quantity', title: 'Qty' },
-          {
-            field: 'price',
-            title: 'Price',
-          },
+          // {
+          //   field: 'price',
+          //   title: 'Price',
+          // },
           {
             field: 'campaigns.campaignId',
             title: 'Offered',

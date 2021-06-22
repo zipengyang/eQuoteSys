@@ -58,7 +58,7 @@ export default function ContactForm() {
   });
 
   const onSubmit = async (data) => {
-    console.log(data.gerberFile);
+    // console.log(data.gerberFile);
     const email = data.email.toLowerCase();
     // console.log(email);
     const userRef = firebase.firestore().collection('users');
@@ -80,6 +80,12 @@ export default function ContactForm() {
           router.push('?create=true&progress=100');
           handleSpecChange('activeStep', 3);
           setOpen(true);
+        })
+        .then(() => {
+          const QuoteReceivedEmail = firebase
+            .functions()
+            .httpsCallable('QuoteReceivedEmail');
+          QuoteReceivedEmail(email);
         });
     } else {
       const ref = firebase.firestore().collection('specs');
@@ -102,6 +108,12 @@ export default function ContactForm() {
           router.push('?create=true&progress=100');
           handleSpecChange('activeStep', 3);
           setOpen(true);
+        })
+        .then(() => {
+          const QuoteReceivedEmail = firebase
+            .functions()
+            .httpsCallable('QuoteReceivedEmail');
+          QuoteReceivedEmail(email);
         });
     }
     // upload file and update fields
@@ -120,6 +132,12 @@ export default function ContactForm() {
               gerberFileUrl: url,
               // userId: email,
               // status: 'submitted',
+            })
+            .then(() => {
+              const QuoteReceivedEmail = firebase
+                .functions()
+                .httpsCallable('QuoteReceivedEmail');
+              QuoteReceivedEmail(email);
             })
             .catch((err) => console.error(err));
           // .then(() => {

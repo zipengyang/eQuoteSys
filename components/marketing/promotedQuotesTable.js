@@ -1,5 +1,7 @@
 import React from 'react';
 import MaterialTable from 'material-table';
+import { GRID_ROWS_UPDATED } from '@material-ui/data-grid';
+import moment from 'moment';
 
 export default function PromotedQuotesTable({ data }) {
   return (
@@ -16,6 +18,8 @@ export default function PromotedQuotesTable({ data }) {
             {
               field: 'createdDate',
               title: 'Date',
+              render: (rowData) =>
+                moment(rowData.createdDate.toDate()).format('DD/MM/yy'),
             },
             { field: 'quantity', title: 'Qty' },
             {
