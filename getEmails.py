@@ -24,7 +24,7 @@ for message in messages:
     
     
     #  save to firebase
-    ref.add({'sender': message.SenderEmailAddress, 'subject': message.Subject,'date':message.LastModificationTime,'cc':message.CC,'body':message.body})
+    ref.add({'sender': message.SenderEmailAddress, 'subject': message.Subject,'date':message.LastModificationTime,'cc':message.CC,'body':message.body,'quoteId':''})
     # move saved email out of this folder
     message.Move(donetest)
 

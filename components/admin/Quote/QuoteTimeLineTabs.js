@@ -97,7 +97,7 @@ export default function QuoteTimeLineTabs({ data }) {
         Item Two
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Emails userId={data.userId} />
+        <Emails userId={data.userId} quoteId={data.id} />
       </TabPanel>
       <TabPanel value={value} index={3}>
         Item Four
