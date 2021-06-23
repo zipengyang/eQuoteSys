@@ -122,8 +122,10 @@ export default function AccordionHolder() {
           .catch((err) => console.error(err));
       })
       .then(() => {
-        setIsLoading(false);
         handleSpecChange('activeStep', 1);
+      })
+      .then(() => {
+        setIsLoading(false);
         setPriceIsReady(false);
         router.push('?create=true&progress=60');
       })
