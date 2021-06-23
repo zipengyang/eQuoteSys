@@ -15,15 +15,18 @@ export default function ActionForm({ onSubmit, status, prices }) {
             <Controller
               render={({ field }) => (
                 <Select {...field}>
-                  <MenuItem value="">To Be Approved</MenuItem>
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
                   <MenuItem value="approved">Approved</MenuItem>
                   <MenuItem value="rejected">Rejected</MenuItem>
                   <MenuItem value="amended">Amended</MenuItem>
+                  <MenuItem value="proforma">Proforma</MenuItem>
                 </Select>
               )}
               name="status"
               disabled={status === 'quoted'}
-              defaultValue={prices.status}
+              defaultValue={prices.status === 'undefined' ? '' : prices.status}
               control={control}
             />
           </Grid>

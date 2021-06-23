@@ -125,6 +125,7 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
       .doc(quoteId)
       .update({
         progress: 'paid',
+        status: 'paid',
       })
       .then(() => {
         //log activity

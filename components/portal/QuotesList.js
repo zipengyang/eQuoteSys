@@ -17,6 +17,14 @@ import QuoteDetailTabs from '../landing/QuoteDetailTabs';
 import { Grid } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import firebase from '../../firebase/firebase';
+import { loadStripe } from '@stripe/stripe-js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,15 +65,52 @@ const useStyles = makeStyles((theme) => ({
     border: `2px solid ${theme.palette.background.paper}`,
     padding: '100 40px',
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 173,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 export default function QuoteList({ data }) {
   let leadtimes = [];
   data.prices.map((item) => leadtimes.push(item.leadtime));
-
+  const approvedPrices = data.prices.filter(
+    (items) => items.status !== 'rejected',
+  );
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const [choice, setChoice] = React.useState({});
+  // const [status, setStatus] = React.useState('');
+  const handleClick = (event) => {
+    setChoice(
+      approvedPrices.find((item) => item.leadtime === event.target.value),
+    );
+  };
 
+  const handleAccept = () => {
+    const selectedPrice =
+      choice.statu === 'amended'
+        ? parseInt(choice.amendedPrice * data.quantity)
+        : parseInt(choice.price * data.quantity);
+    if (choice.status === 'proforma') {
+      // call stripe api
+      const createStripeCheckout = firebase
+        .functions()
+        .httpsCallable('createStripeCheckout');
+      // const stripe = getStripe();
+      const stripe = Stripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+      const paymentInfo = { quoteId: data.id, amount: selectedPrice }; // price is not correct!!
+      createStripeCheckout(paymentInfo).then((response) => {
+        const sessionId = response.data.id;
+        stripe.redirectToCheckout({ sessionId: sessionId });
+      });
+    } else {
+      // update database here.
+    }
+  };
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -116,6 +161,8 @@ export default function QuoteList({ data }) {
                       <CheckIcon color="secondary" />
                     ) : item.status === 'rejected' ? (
                       <ClearIcon color="error" />
+                    ) : item.status === 'proforma' ? (
+                      <AttachMoneyIcon />
                     ) : (
                       ''
                     )}
@@ -134,12 +181,41 @@ export default function QuoteList({ data }) {
           />
         </AccordionDetails>
         <Divider />
-        <AccordionActions>
-          <Button size="small">Cancel</Button>
-          <Button size="small" color="primary">
-            Save
-          </Button>
-        </AccordionActions>
+        {/* choose one leadtime & price to submit */}
+        {data.status === 'quoted' && (
+          <>
+            <AccordionActions>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label">
+                  Choose Your Price
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={choice.leadtime}
+                  onChange={handleClick}
+                  label="Price"
+                >
+                  {approvedPrices &&
+                    approvedPrices.map((item, index) => (
+                      <MenuItem value={item.leadtime} key={index}>
+                        {item.leadtime} days @ £
+                        {item.status === 'amended'
+                          ? item.amendedPrice
+                          : item.price.toFixed(2)}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+
+              <Button size="small" color="primary" onClick={handleAccept}>
+                {choice.status === 'proforma'
+                  ? 'Payment Required'
+                  : 'Accept and Send'}
+              </Button>
+            </AccordionActions>
+          </>
+        )}
       </Accordion>
     </div>
   );
