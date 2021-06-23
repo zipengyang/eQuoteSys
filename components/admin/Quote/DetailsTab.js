@@ -7,8 +7,11 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 // import QuoteDetail from './QuoteDetail';
-import { Grid } from '@material-ui/core';
+import { Button, Grid, Paper } from '@material-ui/core';
 import QuotePrice from './QuotePrice';
+import ActionForm from './ActionForm';
+import firebase from '../../../firebase/firebase';
+import { useQueryClient } from 'react-query';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,48 +51,101 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DetailsTab({ data }) {
-  console.log(data);
-  // const leadTimes =
-  //   chosen.sort((a, b) => a - b);
-
   const classes = useStyles();
+  const queryClient = useQueryClient();
   const [value, setValue] = React.useState(0);
+  const [prices, setPrices] = React.useState([]);
 
+  let actionArray = data.prices;
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  const onSubmit = (data) => {
+    actionArray[value].status = data.status;
+    if (data.status === 'amended') {
+      actionArray[value].amendedPrice = data.amendedPrice;
+    } else {
+      actionArray[value].amendedPrice = '';
+    }
+    setPrices(actionArray);
+  };
+
+  const handleApproval = async () => {
+    const invalidStatus = prices.filter((items) => items.status === '');
+    if (invalidStatus.length > 0) {
+      return window.alert('there is action uncompleted');
+    } else {
+      // update database
+      const ref = firebase.firestore().collection('specs');
+      await ref
+        .doc(data.id)
+        .update({ status: 'quoted', prices })
+        .then(() => {
+          queryClient.invalidateQueries('specs');
+          //call cloud function
+          const QuoteUpdatedEmail = firebase
+            .functions()
+            .httpsCallable('QuoteUpdatedEmail');
+          QuoteUpdatedEmail(data.userId);
+        })
+        .then(() => window.alert('quote sent.'))
+        .catch((err) => console.error(err));
+    }
+  };
+
   return (
-    <div className={classes.root}>
-      <AppBar position="static" color="default">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          centered={false}
-          aria-label="quoteDetailTabsByLeadTime"
-        >
-          {data &&
-            data.prices.map((item) => (
-              <Tab
-                key={item.leadtime}
-                label={`${item.leadtime} days`}
-                {...a11yProps(item.leadtime)}
+    <Grid container spacing={2}>
+      {/* <div className={classes.root}> */}
+      <Grid item xs={12}>
+        <AppBar position="static" color="default">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            centered={false}
+            aria-label="quoteDetailTabsByLeadTime"
+          >
+            {data &&
+              data.prices.map((item) => (
+                <Tab
+                  key={item.leadtime}
+                  label={`${item.leadtime} days`}
+                  {...a11yProps(item.leadtime)}
+                />
+              ))}
+          </Tabs>
+        </AppBar>
+
+        {data &&
+          data.prices.map((item, index) => (
+            <TabPanel value={value} index={index} key={index}>
+              <QuotePrice
+                qty={data.quantity}
+                price={item.price}
+                leadtime={item.leadtime}
+                updatePrices={prices}
               />
-            ))}
-        </Tabs>
-      </AppBar>
-      {data &&
-        data.prices.map((item, index) => (
-          <TabPanel value={value} index={index} key={index}>
-            <QuotePrice
-              qty={data.quantity}
-              price={item.price}
-              leadtime={item.leadtime}
-            />
-          </TabPanel>
-        ))}
-    </div>
+              <Paper
+                elevation={3}
+                style={{ marginTop: 10, marginBottom: 10, padding: 10 }}
+              >
+                <ActionForm
+                  onSubmit={onSubmit}
+                  prices={item}
+                  status={data.status}
+                />
+              </Paper>
+            </TabPanel>
+          ))}
+        {/* </div> */}
+      </Grid>
+      <Grid item container xs={12} justify="center">
+        <Button variant="contained" color="secondary" onClick={handleApproval}>
+          send quote
+        </Button>
+      </Grid>
+    </Grid>
   );
 }

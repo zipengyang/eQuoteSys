@@ -34,9 +34,10 @@ function subtotal(items) {
   return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
 }
 
-export default function QuotePrice({ qty, price, leadtime }) {
+export default function QuotePrice({ qty, price, leadtime, updatePrices }) {
   const classes = useStyles();
 
+  console.log(updatePrices);
   let rows = [];
 
   rows = [
@@ -82,7 +83,9 @@ export default function QuotePrice({ qty, price, leadtime }) {
                 ))}
 
                 <TableRow>
-                  <TableCell rowSpan={5}></TableCell>
+                  <TableCell rowSpan={5}>
+                    <Typography>{price.status}</Typography>
+                  </TableCell>
                   <TableCell colSpan={2}>Subtotal</TableCell>
                   <TableCell align="right">
                     {ccyFormat(invoiceSubtotal)}

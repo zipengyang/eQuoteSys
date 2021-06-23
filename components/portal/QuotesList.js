@@ -14,6 +14,9 @@ import QuoteTemplate from './QuoteTemplate';
 import OfferBadge from './OfferBadge';
 import moment from 'moment';
 import QuoteDetailTabs from '../landing/QuoteDetailTabs';
+import { Grid } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,22 +80,48 @@ export default function QuoteList({ data }) {
           aria-controls="panel1c-content"
           id="panel1c-header"
         >
-          <div className={classes.column}>
-            <Typography className={classes.heading}>
-              Ref: {data.id.substring(1, 7)}
-            </Typography>
-            <Typography variant="body2">
+          <Grid container justify="flex-start">
+            <Grid item xs={12}>
+              Ref: {data.id.substring(0, 6)}
+            </Grid>
+            <Grid item xs={12}>
               {moment(data.createdDate.toDate()).format('MM/DD/YY')}
-            </Typography>
-            <Typography>{data.status}</Typography>
-          </div>
-          <div className={classes.column}>
+            </Grid>
+            <Grid item xs={12}>
+              {data.status}
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={1} justify="flex-start">
             {data.prices.map((item, index) => (
-              <Typography key={index} className={classes.secondaryHeading}>
-                {item.leadtime} days @ £{item.price.toFixed(2)}
-              </Typography>
+              <Grid container item xs={12} key={index}>
+                <Grid item xs={4}>
+                  {item.leadtime} days
+                </Grid>
+                <Grid
+                  item
+                  xs={4}
+                  style={{
+                    textDecoration:
+                      item.status === 'amended' ? 'line-through' : 'none',
+                  }}
+                >
+                  £{item.price.toFixed(2)}
+                </Grid>
+                <Grid item xs={4}>
+                  {item.status === 'amended' ? (
+                    '£' + item.amendedPrice
+                  ) : item.status === 'approved' ? (
+                    <CheckIcon color="secondary" />
+                  ) : item.status === 'rejected' ? (
+                    <ClearIcon color="error" />
+                  ) : (
+                    ''
+                  )}
+                </Grid>
+              </Grid>
             ))}
-          </div>
+          </Grid>
         </AccordionSummary>
         <AccordionDetails className={classes.details}>
           {/* <QuoteTemplate /> */}
