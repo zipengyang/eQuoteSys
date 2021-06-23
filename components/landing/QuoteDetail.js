@@ -43,6 +43,8 @@ export default function QuoteDetail({ data, prices, chosen }) {
     .find((price) => price.leadtime === chosen)
     .price.toFixed(2);
 
+  const result = prices.find((price) => price.leadtime === chosen);
+
   let rows = [];
 
   rows = [
@@ -88,7 +90,14 @@ export default function QuoteDetail({ data, prices, chosen }) {
                 ))}
 
                 <TableRow>
-                  <TableCell rowSpan={5}></TableCell>
+                  <TableCell rowSpan={5}>
+                    {data.status === 'quoted' && (
+                      <p>
+                        {result.status} --
+                        {result.amendedPrice}
+                      </p>
+                    )}
+                  </TableCell>
                   <TableCell colSpan={2}>Subtotal</TableCell>
                   <TableCell align="left">
                     {ccyFormat(invoiceSubtotal)}

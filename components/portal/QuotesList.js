@@ -81,46 +81,48 @@ export default function QuoteList({ data }) {
           id="panel1c-header"
         >
           <Grid container justify="flex-start">
-            <Grid item xs={12}>
-              Ref: {data.id.substring(0, 6)}
-            </Grid>
-            <Grid item xs={12}>
-              {moment(data.createdDate.toDate()).format('MM/DD/YY')}
-            </Grid>
-            <Grid item xs={12}>
-              {data.status}
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={1} justify="flex-start">
-            {data.prices.map((item, index) => (
-              <Grid container item xs={12} key={index}>
-                <Grid item xs={4}>
-                  {item.leadtime} days
-                </Grid>
-                <Grid
-                  item
-                  xs={4}
-                  style={{
-                    textDecoration:
-                      item.status === 'amended' ? 'line-through' : 'none',
-                  }}
-                >
-                  £{item.price.toFixed(2)}
-                </Grid>
-                <Grid item xs={4}>
-                  {item.status === 'amended' ? (
-                    '£' + item.amendedPrice
-                  ) : item.status === 'approved' ? (
-                    <CheckIcon color="secondary" />
-                  ) : item.status === 'rejected' ? (
-                    <ClearIcon color="error" />
-                  ) : (
-                    ''
-                  )}
-                </Grid>
+            <Grid item container justify="flex-start" xs={4}>
+              <Grid item xs={12}>
+                Ref: {data.id.substring(0, 6)}
               </Grid>
-            ))}
+              <Grid item xs={12}>
+                {moment(data.createdDate.toDate()).format('MM/DD/YY')}
+              </Grid>
+              <Grid item xs={12}>
+                {data.status}
+              </Grid>
+            </Grid>
+
+            <Grid item container justify="flex-start" xs={8}>
+              {data.prices.map((item, index) => (
+                <Grid container item xs={12} key={index}>
+                  <Grid item xs={4}>
+                    {item.leadtime} days
+                  </Grid>
+                  <Grid
+                    item
+                    xs={4}
+                    style={{
+                      textDecoration:
+                        item.status === 'amended' ? 'line-through' : 'none',
+                    }}
+                  >
+                    £{item.price.toFixed(2)}
+                  </Grid>
+                  <Grid item xs={4}>
+                    {item.status === 'amended' ? (
+                      '£' + item.amendedPrice
+                    ) : item.status === 'approved' ? (
+                      <CheckIcon color="secondary" />
+                    ) : item.status === 'rejected' ? (
+                      <ClearIcon color="error" />
+                    ) : (
+                      ''
+                    )}
+                  </Grid>
+                </Grid>
+              ))}
+            </Grid>
           </Grid>
         </AccordionSummary>
         <AccordionDetails className={classes.details}>
