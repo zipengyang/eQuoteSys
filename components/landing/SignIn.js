@@ -11,6 +11,7 @@ import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 import { useForm } from 'react-hook-form';
 import firebase from '../../firebase/firebase';
@@ -53,14 +54,16 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
   const classes = useStyles();
   const router = useRouter();
-
+  const [isLoading, setIsLoading] = React.useState(false);
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
+    setIsLoading(true);
     await firebase
       .auth()
       .signInWithEmailAndPassword(data.email, data.password)
       .then(async (firebaseUser) => {
         const user = firebase.auth().currentUser;
+        // setIsLoading(false);
         router.push(`/users/${user.uid}/selfService`);
       })
       .catch((err) => {
@@ -121,7 +124,7 @@ export default function SignIn() {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            {isLoading ? <CircularProgress color="inherit" /> : 'Sign In'}
           </Button>
           <Grid container>
             <Grid item xs>
