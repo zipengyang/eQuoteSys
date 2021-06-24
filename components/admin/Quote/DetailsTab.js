@@ -126,6 +126,7 @@ export default function DetailsTab({ data }) {
                 price={item.price}
                 leadtime={item.leadtime}
                 updatePrices={prices}
+                campaigns={data.campaigns !== undefined ? data.campaigns : ''}
               />
               <Paper
                 elevation={3}

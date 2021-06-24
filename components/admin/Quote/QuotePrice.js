@@ -34,10 +34,15 @@ function subtotal(items) {
   return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
 }
 
-export default function QuotePrice({ qty, price, leadtime, updatePrices }) {
+export default function QuotePrice({
+  qty,
+  price,
+  leadtime,
+  updatePrices,
+  campaigns,
+}) {
   const classes = useStyles();
 
-  console.log(updatePrices);
   let rows = [];
 
   rows = [
@@ -45,6 +50,19 @@ export default function QuotePrice({ qty, price, leadtime, updatePrices }) {
     createRow('Tooling', 1, 260.0),
     createRow('Shipment', 1, 20.0),
   ];
+
+  if (campaigns) {
+    const { type, offer } = campaigns;
+    const offerAmount =
+      type === 'fixed'
+        ? Number(offer)
+        : ((price * qty + 260 + 20) * offer) / 100;
+    const discountDesc =
+      type === 'fixed'
+        ? `discount -- ${offer} off`
+        : `discount -- ${offer}% off`;
+    rows.push(createRow(discountDesc, 1, -ccyFormat(offerAmount)));
+  }
 
   const invoiceSubtotal = subtotal(rows);
   const invoiceTaxes = TAX_RATE * invoiceSubtotal;

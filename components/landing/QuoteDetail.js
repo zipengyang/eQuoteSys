@@ -44,14 +44,26 @@ export default function QuoteDetail({ data, prices, chosen }) {
     .price.toFixed(2);
 
   const result = prices.find((price) => price.leadtime === chosen);
-
   let rows = [];
-
   rows = [
     createRow(`PCB - ${chosen} days `, qty, price),
     createRow('Tooling', 1, 260.0),
     createRow('Shipment', 1, 20.0),
   ];
+  // console.log(data.campaign)
+  if (data.campaigns !== undefined) {
+    const { type, offer } = data.campaigns;
+    console.log('type: ', type, 'offer: ', offer);
+    const offerAmount =
+      type === 'fixed'
+        ? Number(offer)
+        : ((price * data.quantity + 260 + 20) * offer) / 100;
+    const discountDesc =
+      type === 'fixed'
+        ? `discount -- ${offer} off`
+        : `discount -- ${offer}% off`;
+    rows.push(createRow(discountDesc, 1, -ccyFormat(offerAmount)));
+  }
 
   const invoiceSubtotal = subtotal(rows);
   const invoiceTaxes = TAX_RATE * invoiceSubtotal;

@@ -34,6 +34,7 @@ import ActivityTab from '../../../components/dashboard/admin/activity/activityTa
 import NotificationSideBar from '../../../components/dashboard/notificationSideBar';
 import NewAppBar from '../../../components/admin/newAppBar';
 import QuoteTimeLineTabs from '../../../components/admin/Quote/QuoteTimeLineTabs';
+import QuotesForCampaign from '../../../components/marketing/QuotesForCampaign';
 
 // context
 export const dispatchContext = createContext();
@@ -65,7 +66,8 @@ export default function selfService({ session }) {
           return <SubmittedQuoteTable data={data} />;
         case 'draft':
           return <DraftQuoteTable data={data} />;
-
+        case 'quoted':
+          return <QuotesForCampaign data={data} />;
         case 'promoted':
           return <PromotedQuotes data={data} />;
         case 'customer':

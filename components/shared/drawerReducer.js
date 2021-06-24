@@ -10,6 +10,11 @@ export const drawerReducer = (state, action) => {
         menuSelected: 'draft',
         status: 'draft',
       };
+    case 'quoted':
+      return {
+        menuSelected: 'quoted',
+        status: 'quoted',
+      };
     case 'marketing':
       return {
         menuSelected: 'marketing',

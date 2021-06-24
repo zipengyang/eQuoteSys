@@ -14,7 +14,7 @@ import QuoteTemplate from './QuoteTemplate';
 import OfferBadge from './OfferBadge';
 import moment from 'moment';
 import QuoteDetailTabs from '../landing/QuoteDetailTabs';
-import { Grid } from '@material-ui/core';
+import { Badge, Grid } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
@@ -25,6 +25,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import firebase from '../../firebase/firebase';
 import { loadStripe } from '@stripe/stripe-js';
+import { useQueryClient } from 'react-query';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,6 +84,7 @@ export default function QuoteList({ data }) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [choice, setChoice] = React.useState({});
+  const queryClient = useQueryClient();
   // const [status, setStatus] = React.useState('');
   const handleClick = (event) => {
     setChoice(
@@ -91,10 +93,14 @@ export default function QuoteList({ data }) {
   };
 
   const handleAccept = () => {
-    const selectedPrice =
+    // this will be in cloud function
+    let selectedPrice =
       choice.statu === 'amended'
         ? parseInt(choice.amendedPrice * data.quantity)
         : parseInt(choice.price * data.quantity);
+    // temporary hard code tooling and vat
+    selectedPrice = (selectedPrice + 260 + 20) * 1.2;
+
     if (choice.status === 'proforma') {
       // call stripe api
       const createStripeCheckout = firebase
@@ -102,13 +108,33 @@ export default function QuoteList({ data }) {
         .httpsCallable('createStripeCheckout');
       // const stripe = getStripe();
       const stripe = Stripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-      const paymentInfo = { quoteId: data.id, amount: selectedPrice }; // price is not correct!!
-      createStripeCheckout(paymentInfo).then((response) => {
-        const sessionId = response.data.id;
-        stripe.redirectToCheckout({ sessionId: sessionId });
-      });
+      const paymentInfo = { quoteId: data.id, amount: selectedPrice };
+      createStripeCheckout(paymentInfo)
+        .then((response) => {
+          const sessionId = response.data.id;
+          stripe.redirectToCheckout({ sessionId: sessionId });
+        })
+        .then(() => {
+          // temporary update state here, should be in cloud function
+          const ref = firebase.firestore().collection('specs');
+          ref
+            .doc(data.id)
+            .update({ status: 'paid', acceptedPrice: choice })
+            .then(() => {
+              queryClient.invalidateQueries('specs');
+            })
+            .catch((err) => console.error(err));
+        });
     } else {
       // update database here.
+      const ref = firebase.firestore().collection('specs');
+      ref
+        .doc(data.id)
+        .update({ status: 'accepted', acceptedPrice: choice })
+        .then(() => {
+          queryClient.invalidateQueries('specs');
+        })
+        .catch((err) => console.error(err));
     }
   };
   const handleChange = (panel) => (event, isExpanded) => {
@@ -128,13 +154,27 @@ export default function QuoteList({ data }) {
           <Grid container justify="flex-start">
             <Grid item container justify="flex-start" xs={4}>
               <Grid item xs={12}>
+                {data.campaigns !== undefined && (
+                  <Badge color="secondary" badgeContent="offer" size="small" />
+                )}
                 Ref: {data.id.substring(0, 6)}
               </Grid>
               <Grid item xs={12}>
                 {moment(data.createdDate.toDate()).format('MM/DD/YY')}
               </Grid>
               <Grid item xs={12}>
-                {data.status}
+                <Typography
+                  style={{
+                    color:
+                      data.status === 'quoted'
+                        ? 'red'
+                        : data.status === 'accepted' || data.status === 'paid'
+                        ? 'green'
+                        : '',
+                  }}
+                >
+                  {data.status}
+                </Typography>
               </Grid>
             </Grid>
 
@@ -185,34 +225,36 @@ export default function QuoteList({ data }) {
         {data.status === 'quoted' && (
           <>
             <AccordionActions>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">
-                  Choose Your Price
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  value={choice.leadtime}
-                  onChange={handleClick}
-                  label="Price"
-                >
-                  {approvedPrices &&
-                    approvedPrices.map((item, index) => (
-                      <MenuItem value={item.leadtime} key={index}>
-                        {item.leadtime} days @ £
-                        {item.status === 'amended'
-                          ? item.amendedPrice
-                          : item.price.toFixed(2)}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
+              <Grid container item justify="center">
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel id="demo-simple-select-outlined-label">
+                    Choose Your Price
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    value={choice.leadtime}
+                    onChange={handleClick}
+                    label="Price"
+                  >
+                    {approvedPrices &&
+                      approvedPrices.map((item, index) => (
+                        <MenuItem value={item.leadtime} key={index}>
+                          {item.leadtime} days @ £
+                          {item.status === 'amended'
+                            ? item.amendedPrice
+                            : item.price.toFixed(2)}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
 
-              <Button size="small" color="primary" onClick={handleAccept}>
-                {choice.status === 'proforma'
-                  ? 'Payment Required'
-                  : 'Accept and Send'}
-              </Button>
+                <Button size="small" color="primary" onClick={handleAccept}>
+                  {choice.status === 'proforma'
+                    ? 'Payment Required'
+                    : 'Accept and Send'}
+                </Button>
+              </Grid>
             </AccordionActions>
           </>
         )}

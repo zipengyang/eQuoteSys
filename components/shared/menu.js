@@ -4,7 +4,7 @@ export const menus = [
     menuName: 'Quote',
     menuItems: [
       { name: 'Submitted', url: 'submitted' },
-      { name: 'Draft', url: 'draft' },
+
       { name: 'Promoted', url: 'promoted' },
     ],
   },
@@ -12,7 +12,7 @@ export const menus = [
     menuName: 'Marketing',
     menuItems: [
       { name: 'Campaigns', url: 'marketing' },
-      // { name: 'CampReport', url: 'campReport' },
+      { name: 'Quoted', url: 'quoted' },
     ],
   },
   {
