@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
 import Copyright from '../shared/copyRight';
 import firebase from '../../firebase/firebase';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,6 +56,7 @@ export default function SignInSide({
   quoteid,
   step,
   tabValue,
+  isLogging,
 }) {
   const classes = useStyles();
   const { register, handleSubmit, watch } = useForm();
@@ -119,7 +121,7 @@ export default function SignInSide({
               color="primary"
               className={classes.submit}
             >
-              Sign In
+              {isLogging ? <CircularProgress /> : 'Sign In'}
             </Button>
             <Grid container>
               <Grid item xs>

@@ -18,8 +18,9 @@ export default function login() {
 
   const router = useRouter();
   const { quoteid, step, tabValue } = router.query;
-
+  const [isLogging, setIsLogging] = React.useState(false);
   const handleFormSubmit = async (data) => {
+    setIsLogging(true);
     await firebase
       .auth()
       .signInWithEmailAndPassword(data.email, data.password)
@@ -104,6 +105,7 @@ export default function login() {
           quoteid={quoteid}
           step={step}
           tabValue={tabValue}
+          isLogging={isLogging}
         />
       </div>
       <Toast open={open} message={message} closeErrorToast={closeErrorToast} />;

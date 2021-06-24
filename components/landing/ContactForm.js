@@ -18,6 +18,7 @@ import firebase from '../../firebase/firebase';
 import { useSpecContext } from './SpecContext';
 import { useRouter } from 'next/router';
 import CompletedDialog from './CompletedDialog';
+import { useAuth } from '../../firebase/auth';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,98 +41,113 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ContactForm() {
-  //   const router = useRouter();
-  //   const { quoteid, uid, step } = router.query;
+  //   get login user info, set defaultvalue for contact form
+  const auth = useAuth();
+  let email = !!auth.user ? auth.user.email : null;
+  // const [emailToSpec, setEmailToSpec] = React.useState(email);
   const classes = useStyles();
   const [Open, setOpen] = React.useState(false);
   const { handleSubmit, register, errors } = useForm();
   const { state, handleSpecChange } = useSpecContext();
-
+  const quoteId = state.quoteId;
   const activeStep = state.activeStep.value;
-
   const router = useRouter();
-  const [confirmDialog, setConfirmDialog] = React.useState({
-    isOpen: Open,
-    title: '',
-    subTitle: '',
-    entrance: '',
-  });
 
   const onSubmit = async (data) => {
-    // console.log(data.gerberFile);
-    const email = data.email.toLowerCase();
-    // console.log(email);
-    const userRef = firebase.firestore().collection('users');
-    const res = await userRef.doc(email).get();
-    const result = () => res.data();
+    // handle new user creation
+    if (email === null) {
+      // not login
+      email = data.email.toLowerCase();
+      // setEmailToSpec(data.email.toLowerCase());
+      console.log('new email: ', email);
+      const userRef = firebase.firestore().collection('users');
+      const res = await userRef.doc(email).get();
+      const result = () => res.data();
 
-    if (result.length === 0) {
-      // no document found, create a new one -- will use cloud function instead
-      await userRef
-        .doc(email)
-        .set({
+      if (result.length === 0) {
+        // no document found, create a new one -- will use cloud function instead
+        await userRef.doc(email).set({
           firstName: data.firstName,
           lastName: data.lastName,
           companyName: data.companyName,
           email: email,
           createdDate: firebase.firestore.FieldValue.serverTimestamp(),
-        })
-        .then(() => {
-          router.push('?create=true&progress=100');
-          handleSpecChange('activeStep', 3);
-          setOpen(true);
-        })
-        .then(() => {
-          const QuoteReceivedEmail = firebase
-            .functions()
-            .httpsCallable('QuoteReceivedEmail');
-          QuoteReceivedEmail(email);
         });
-    } else {
-      const ref = firebase.firestore().collection('specs');
-      ref
-        .doc(state.quoteId)
-        .update({
-          // gerberFileUrl: url,
-          userId: email,
-          status: 'submitted',
-        })
-        .then(() => {
-          // log activity using cloud function
-          const data = { quoteId: state.quoteId, activity: 'submit quote' };
-          const logActivity = firebase
-            .functions()
-            .httpsCallable('logCustomerActivity');
-          logActivity(data);
-        })
-        .then(() => {
-          router.push('?create=true&progress=100');
-          handleSpecChange('activeStep', 3);
-          setOpen(true);
-        })
-        .then(() => {
-          const QuoteReceivedEmail = firebase
-            .functions()
-            .httpsCallable('QuoteReceivedEmail');
-          QuoteReceivedEmail(email);
-        });
+      }
     }
-    // upload file and update fields
-    if (!!data.gerberFile) {
-      // allow empty just for demo purpose.
+    // const email = data.email.toLowerCase();
+    // const userRef = firebase.firestore().collection('users');
+    // const res = await userRef.doc(email).get();
+    // const result = () => res.data();
+
+    // if (result.length === 0) {
+    //   // no document found, create a new one -- will use cloud function instead
+    //   await userRef
+    //     .doc(email)
+    //     .set({
+    //       firstName: data.firstName,
+    //       lastName: data.lastName,
+    //       companyName: data.companyName,
+    //       email: email,
+    //       createdDate: firebase.firestore.FieldValue.serverTimestamp(),
+    //     })
+    //     .then(() => {
+    //       router.push('?create=true&progress=100');
+    //       handleSpecChange('activeStep', 3);
+    //       setOpen(true);
+    //     })
+    //     .then(() => {
+    //       const QuoteReceivedEmail = firebase
+    //         .functions()
+    //         .httpsCallable('QuoteReceivedEmail');
+    //       QuoteReceivedEmail(email);
+    //     });
+    // } else {
+    //   const ref = firebase.firestore().collection('specs');
+    //   ref
+    //     .doc(state.quoteId)
+    //     .update({
+    //       // gerberFileUrl: url,
+    //       userId: email,
+    //       status: 'submitted',
+    //     })
+    //     .then(() => {
+    //       // log activity using cloud function
+    //       const data = { quoteId: state.quoteId, activity: 'submit quote' };
+    //       const logActivity = firebase
+    //         .functions()
+    //         .httpsCallable('logCustomerActivity');
+    //       logActivity(data);
+    //     })
+    //     .then(() => {
+    //       router.push('?create=true&progress=100');
+    //       handleSpecChange('activeStep', 3);
+    //       setOpen(true);
+    //     })
+    //     .then(() => {
+    //       const QuoteReceivedEmail = firebase
+    //         .functions()
+    //         .httpsCallable('QuoteReceivedEmail');
+    //       QuoteReceivedEmail(email);
+    //     });
+    // }
+    // handle update gerberfile and log activity and send email
+    if (data.gerberFile === undefined) {
+      return window.alert('gerber file must not be empty.');
+    } else {
       const storageRef = firebase.storage().ref();
       const fileRef = storageRef.child(
-        `/gerberFile/${state.quoteId}/` + data.gerberFile[0].name,
+        `/gerberFile/${quoteId}/` + data.gerberFile[0].name,
       );
       fileRef.put(data.gerberFile[0]).then(() => {
         fileRef.getDownloadURL().then((url) => {
           const ref = firebase.firestore().collection('specs');
           ref
-            .doc(state.quoteId)
+            .doc(quoteId)
             .update({
               gerberFileUrl: url,
-              // userId: email,
-              // status: 'submitted',
+              userId: email,
+              status: 'submitted',
             })
             .then(() => {
               const QuoteReceivedEmail = firebase
@@ -139,20 +155,20 @@ export default function ContactForm() {
                 .httpsCallable('QuoteReceivedEmail');
               QuoteReceivedEmail(email);
             })
+            .then(() => {
+              //   // log activity using cloud function
+              const data = { quoteId: quoteId, activity: 'submit quote' };
+              const logActivity = firebase
+                .functions()
+                .httpsCallable('logCustomerActivity');
+              logActivity(data);
+            })
+            .then(() => {
+              router.push('?create=true&progress=100');
+              handleSpecChange('activeStep', 3);
+              setOpen(true);
+            })
             .catch((err) => console.error(err));
-          // .then(() => {
-          //   // log activity using cloud function
-          //   const data = { quoteId: state.quoteId, activity: 'submit quote' };
-          //   const logActivity = firebase
-          //     .functions()
-          //     .httpsCallable('logCustomerActivity');
-          //   logActivity(data);
-          // })
-          // .then(() => {
-          //   router.push('?create=true&progress=100');
-          //   handleSpecChange('activeStep', 3);
-          //   setOpen(true);
-          // });
         });
       });
     }
@@ -167,64 +183,68 @@ export default function ContactForm() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                variant="outlined"
-                required
-                fullWidth
-                label="First Name"
-                disabled={activeStep >= 3}
-                autoFocus
-                {...register('firstName')}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                label="Last Name"
-                disabled={activeStep >= 3}
-                autoComplete="lname"
-                {...register('lastName')}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                label="Company Name"
-                disabled={activeStep >= 3}
-                autoComplete="cName"
-                {...register('companyName')}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                label="Email Address"
-                disabled={activeStep >= 3}
-                autoComplete="email"
-                {...register('email')}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                multiline
-                rows={3}
-                rowsMax={8}
-                label="Note"
-                disabled={activeStep >= 3}
-                {...register('note')}
-              />
-            </Grid>
+            {!email && (
+              <>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    autoComplete="fname"
+                    variant="outlined"
+                    required
+                    fullWidth
+                    label="First Name"
+                    disabled={activeStep >= 3}
+                    autoFocus
+                    {...register('firstName')}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    label="Last Name"
+                    disabled={activeStep >= 3}
+                    autoComplete="lname"
+                    {...register('lastName')}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    label="Company Name"
+                    disabled={activeStep >= 3}
+                    autoComplete="cName"
+                    {...register('companyName')}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    label="Email Address"
+                    disabled={activeStep >= 3}
+                    autoComplete="email"
+                    {...register('email')}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    multiline
+                    rows={3}
+                    rowsMax={8}
+                    label="Note"
+                    disabled={activeStep >= 3}
+                    {...register('note')}
+                  />
+                </Grid>
+              </>
+            )}
             <Grid item xs={12}>
               <InputLabel htmlFor="gerberFile">Your Gerber file</InputLabel>
               <TextField
