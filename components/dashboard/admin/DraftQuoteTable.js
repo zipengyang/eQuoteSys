@@ -54,6 +54,18 @@ export default function DraftQuoteTable({ data }) {
               campaignId: camp.id,
             },
           })
+
+          .then(() => {
+            const msg =
+              'We have offer for your quote of ref: ' + item.id.substring(0, 6);
+            firebase.firestore().collection('notification').doc().set({
+              userId: item.userId,
+              quoteId: item.id,
+              message: msg,
+              date: firebase.firestore.FieldValue.serverTimestamp(),
+              isDismissed: false,
+            });
+          })
           .then(() => {
             queryClient.invalidateQueries('specs');
             setOpen(false); //close form

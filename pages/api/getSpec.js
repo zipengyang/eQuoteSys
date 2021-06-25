@@ -142,7 +142,6 @@ export const getActivityByQuoteId = async ({ queryKey }) => {
   const data = await firebase
     .firestore()
     .collection('activityLog')
-
     .where('quoteId', '==', quoteId)
     .get();
   const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
@@ -151,6 +150,19 @@ export const getActivityByQuoteId = async ({ queryKey }) => {
 
 export const getAllActivity = async () => {
   const data = await firebase.forestore().collection('activityLog').get();
+  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return result;
+};
+
+// get notification
+// get activity by quote ID
+export const getUserNotification = async ({ queryKey }) => {
+  const [_key, email] = queryKey;
+  const data = await firebase
+    .firestore()
+    .collection('notification')
+    .where('userId', '==', email)
+    .get();
   const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
   return result;
 };

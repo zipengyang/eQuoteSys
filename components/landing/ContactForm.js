@@ -173,6 +173,18 @@ export default function ContactForm() {
               });
             })
             .then(() => {
+              const msg =
+                'We have received your quote of ref: ' +
+                quoteId.substring(0, 6);
+              firebase.firestore().collection('notification').doc().set({
+                userId: email,
+                quoteId: quoteId,
+                message: msg,
+                date: firebase.firestore.FieldValue.serverTimestamp(),
+                isDismissed: false,
+              });
+            })
+            .then(() => {
               router.push('?create=true&progress=100');
               handleSpecChange('activeStep', 3);
               setOpen(true);

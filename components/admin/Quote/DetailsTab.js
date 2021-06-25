@@ -85,11 +85,6 @@ export default function DetailsTab({ data }) {
         .update({ status: 'quoted', prices })
         .then(() => {
           queryClient.invalidateQueries('specs');
-          //call cloud function
-          const QuoteUpdatedEmail = firebase
-            .functions()
-            .httpsCallable('QuoteUpdatedEmail');
-          QuoteUpdatedEmail(data.userId);
         })
         .then(() => {
           // const title = 'quote sent';
@@ -101,6 +96,25 @@ export default function DetailsTab({ data }) {
             date: firebase.firestore.FieldValue.serverTimestamp(),
           });
         })
+        .then(() => {
+          const msg =
+            'You have an update on the quote of ref: ' +
+            data.id.substring(0, 6);
+          firebase.firestore().collection('notification').doc().set({
+            userId: data.userId,
+            quoteId: data.id,
+            message: msg,
+            date: firebase.firestore.FieldValue.serverTimestamp(),
+            isDismissed: false,
+          });
+        })
+        // .then(() => {
+        //   //call cloud function
+        //   const QuoteUpdatedEmail = firebase
+        //     .functions()
+        //     .httpsCallable('QuoteUpdatedEmail');
+        //   QuoteUpdatedEmail(data.userId);
+        // })
         .then(() => window.alert('quote sent.'))
         .catch((err) => console.error(err));
     }

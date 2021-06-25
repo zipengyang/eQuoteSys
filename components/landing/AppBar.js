@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MenuAppBar() {
   const auth = useAuth();
   const { user } = auth;
+  user && console.log(user.email);
   const classes = useStyles();
   // const [auth, setAuth] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -83,7 +84,7 @@ export default function MenuAppBar() {
               {/* <Grid item>{user && user.email}</Grid> */}
               {user && (
                 <Grid item xs={8}>
-                  <Notification />
+                  <Notification email={user.email} />
                 </Grid>
               )}
               {!user && (
