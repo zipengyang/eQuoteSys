@@ -136,6 +136,25 @@ export const getUserActivity = async ({ queryKey }) => {
   return result;
 };
 
+// get activity by quote ID
+export const getActivityByQuoteId = async ({ queryKey }) => {
+  const [_key, quoteId] = queryKey;
+  const data = await firebase
+    .firestore()
+    .collection('activityLog')
+
+    .where('quoteId', '==', quoteId)
+    .get();
+  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return result;
+};
+
+export const getAllActivity = async () => {
+  const data = await firebase.forestore().collection('activityLog').get();
+  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return result;
+};
+
 // get getAllCamps to cache
 export const getAllCamps = async () => {
   const data = await campRef.get();
@@ -275,6 +294,20 @@ export const getEmailsByUserId = async ({ queryKey }) => {
   const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
   return result;
 };
+
+// create activity log
+
+// export const addActivityLog = async ( quoteId, userId, title ) =>
+// {
+//   console.log('quoteid:' ,quoteId)
+//   firebase.firestore().collection('activityLog').doc().set({
+//     userId: userId,
+//     quoteId: quoteId,
+//     title: title,
+//     date: firebase.firestore.FieldValue.serverTimestamp(),
+//   });
+// };
+
 // update spec with email and create a new user record if email does not exist.
 // export const contactFormSubmit = async ({ quoteid, ...data }) => {
 //   // email exist?

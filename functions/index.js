@@ -143,6 +143,7 @@ exports.logCustomerActivity = functions.https.onCall(async (data) => {
 // update specs with offer and send email via sendGrid
 const SENDGRID_API_KEY = functions.config().sendgrid.key;
 const sendGridEmail = require('@sendgrid/mail');
+const { isGridHeaderTitleContainer } = require('@material-ui/data-grid');
 sendGridEmail.setApiKey(SENDGRID_API_KEY);
 exports.updateAndSendOfferEmail = functions.https.onCall((data) => {
   const ref = admin.firestore().collection('specs');
@@ -206,6 +207,19 @@ exports.QuoteUpdatedEmail = functions.https.onCall((email) => {
 
   return sendGridEmail.send(msg);
 });
+
+// create notification
+// exports.addNotification = functions.https.onCall((data) => {
+//   const ref = admin.firestore().collection('notification');
+//   ref.doc().set({
+//     userId: data.userId,
+//     quoteId: data.quoteId,
+//     type: data.type,
+//     message: data.message,
+//     isDismissed: false,
+//   });
+//   return '';
+// });
 
 // price calculation
 //factors

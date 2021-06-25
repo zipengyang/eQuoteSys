@@ -20,6 +20,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import QuoteSummaryTab from './QuoteSummaryTab';
 import Emails from './Emails';
+import ActivityTimeLine from '../timeline/ActivityTimeLine';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -94,7 +95,7 @@ export default function QuoteTimeLineTabs({ data }) {
         <QuoteSummaryTab data={data} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <ActivityTimeLine quote={data} />
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Emails userId={data.userId} quoteId={data.id} />

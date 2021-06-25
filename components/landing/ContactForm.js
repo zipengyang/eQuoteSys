@@ -59,7 +59,7 @@ export default function ContactForm() {
       // not login
       email = data.email.toLowerCase();
       // setEmailToSpec(data.email.toLowerCase());
-      console.log('new email: ', email);
+
       const userRef = firebase.firestore().collection('users');
       const res = await userRef.doc(email).get();
       const result = () => res.data();
@@ -155,13 +155,22 @@ export default function ContactForm() {
                 .httpsCallable('QuoteReceivedEmail');
               QuoteReceivedEmail(email);
             })
+            // .then(() => {
+            //   //   // log activity using cloud function
+            //   const data = { quoteId: quoteId, activity: 'submit quote' };
+            //   const logActivity = firebase
+            //     .functions()
+            //     .httpsCallable('logCustomerActivity');
+            //   logActivity(data);
+            // } )
             .then(() => {
-              //   // log activity using cloud function
-              const data = { quoteId: quoteId, activity: 'submit quote' };
-              const logActivity = firebase
-                .functions()
-                .httpsCallable('logCustomerActivity');
-              logActivity(data);
+              // tempoary
+              firebase.firestore().collection('activityLog').doc().set({
+                userId: email,
+                quoteId: quoteId,
+                title: 'submit quote',
+                date: firebase.firestore.FieldValue.serverTimestamp(),
+              });
             })
             .then(() => {
               router.push('?create=true&progress=100');

@@ -5,9 +5,9 @@ export const drawerReducer = (state, action) => {
         menuSelected: 'submitted',
         status: 'submitted',
       };
-    case 'draft':
+    case 'allquotes':
       return {
-        menuSelected: 'draft',
+        menuSelected: 'allquotes',
         status: 'draft',
       };
     case 'quoted':

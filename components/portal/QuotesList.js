@@ -123,6 +123,14 @@ export default function QuoteList({ data }) {
             .then(() => {
               queryClient.invalidateQueries('specs');
             })
+            .then(() => {
+              firebase.firestore().collection('activityLog').doc().set({
+                userId: data.userId,
+                quoteId: data.id,
+                title: 'quote paid',
+                date: firebase.firestore.FieldValue.serverTimestamp(),
+              });
+            })
             .catch((err) => console.error(err));
         });
     } else {
@@ -133,6 +141,14 @@ export default function QuoteList({ data }) {
         .update({ status: 'accepted', acceptedPrice: choice })
         .then(() => {
           queryClient.invalidateQueries('specs');
+        })
+        .then(() => {
+          firebase.firestore().collection('activityLog').doc().set({
+            userId: data.userId,
+            quoteId: data.id,
+            title: 'quote accepted',
+            date: firebase.firestore.FieldValue.serverTimestamp(),
+          });
         })
         .catch((err) => console.error(err));
     }

@@ -4,8 +4,8 @@ export const menus = [
     menuName: 'Quote',
     menuItems: [
       { name: 'Submitted', url: 'submitted' },
-
       { name: 'Promoted', url: 'promoted' },
+      { name: 'All Quotes', url: 'allquotes' },
     ],
   },
   {

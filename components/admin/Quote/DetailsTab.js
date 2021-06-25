@@ -12,6 +12,8 @@ import QuotePrice from './QuotePrice';
 import ActionForm from './ActionForm';
 import firebase from '../../../firebase/firebase';
 import { useQueryClient } from 'react-query';
+import { UpdateRounded } from '@material-ui/icons';
+import { addActivityLog } from '../../../pages/api/getSpec';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -88,6 +90,16 @@ export default function DetailsTab({ data }) {
             .functions()
             .httpsCallable('QuoteUpdatedEmail');
           QuoteUpdatedEmail(data.userId);
+        })
+        .then(() => {
+          // const title = 'quote sent';
+          // addActivityLog(data.quoteId, data.userId, title);
+          firebase.firestore().collection('activityLog').doc().set({
+            userId: data.userId,
+            quoteId: data.id,
+            title: 'quote sent',
+            date: firebase.firestore.FieldValue.serverTimestamp(),
+          });
         })
         .then(() => window.alert('quote sent.'))
         .catch((err) => console.error(err));
