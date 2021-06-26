@@ -138,7 +138,11 @@ export default function QuoteList({ data }) {
       const ref = firebase.firestore().collection('specs');
       ref
         .doc(data.id)
-        .update({ status: 'accepted', acceptedPrice: choice })
+        .update({
+          status: 'accepted',
+          acceptedDate: firebase.firestore.FieldValue.serverTimestamp(),
+          acceptedPrice: choice,
+        })
         .then(() => {
           queryClient.invalidateQueries('specs');
         })

@@ -82,7 +82,11 @@ export default function DetailsTab({ data }) {
       const ref = firebase.firestore().collection('specs');
       await ref
         .doc(data.id)
-        .update({ status: 'quoted', prices })
+        .update({
+          status: 'quoted',
+          quotedDate: firebase.firestore.FieldValue.serverTimestamp(),
+          prices,
+        })
         .then(() => {
           queryClient.invalidateQueries('specs');
         })
@@ -169,7 +173,12 @@ export default function DetailsTab({ data }) {
         {/* </div> */}
       </Grid>
       <Grid item container xs={12} justify="center">
-        <Button variant="contained" color="secondary" onClick={handleApproval}>
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled={data.status !== 'submitted'}
+          onClick={handleApproval}
+        >
           send quote
         </Button>
       </Grid>

@@ -10,7 +10,7 @@ import moment from 'moment';
 import { useQuery } from 'react-query';
 import { getUser } from '../../../pages/api/getSpec';
 import QuoteSummaryCard1 from './quoteSummaryCard1';
-import QuoteSummaryCard2 from './quoteSummaryCard2';
+import QuoteStageSummary from './QuoteStageSummary';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -89,15 +89,15 @@ export default function QuoteSummaryTab({ data }) {
         <Tab label="Summary" {...a11yProps(0)} />
         <Tab label="Specification" {...a11yProps(0)} />
         <Tab label="Calculation" {...a11yProps(1)} />
-        <Tab label="Prices" {...a11yProps(2)} />
+        <Tab label="Approval" {...a11yProps(2)} />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <Grid container spacing={3} justify="center">
-          <Grid item xs={6}>
-            <QuoteSummaryCard1 user={user} />
+        <Grid container spacing={2} justify="center">
+          <Grid item xs={8}>
+            <QuoteStageSummary data={data} />
           </Grid>
-          <Grid item xs={6}>
-            <QuoteSummaryCard2 data={data} />
+          <Grid item xs={4}>
+            <QuoteSummaryCard1 user={user} />
           </Grid>
         </Grid>
       </TabPanel>

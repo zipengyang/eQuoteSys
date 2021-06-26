@@ -47,7 +47,11 @@ export default function ActionForm({ onSubmit, status, prices }) {
             </>
           )}
           <Grid item xs={2}>
-            <Button variant="contained" type="submit">
+            <Button
+              variant="contained"
+              type="submit"
+              disabled={status !== 'submitted'}
+            >
               confirm
             </Button>
           </Grid>
