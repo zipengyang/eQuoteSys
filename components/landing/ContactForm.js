@@ -19,6 +19,7 @@ import { useSpecContext } from './SpecContext';
 import { useRouter } from 'next/router';
 import CompletedDialog from './CompletedDialog';
 import { useAuth } from '../../firebase/auth';
+import { addTimeLineLog } from '../../pages/api/getSpec';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,6 +45,7 @@ export default function ContactForm() {
   //   get login user info, set defaultvalue for contact form
   const auth = useAuth();
   let email = !!auth.user ? auth.user.email : null;
+
   // const [emailToSpec, setEmailToSpec] = React.useState(email);
   const classes = useStyles();
   const [Open, setOpen] = React.useState(false);
@@ -164,13 +166,14 @@ export default function ContactForm() {
             //   logActivity(data);
             // } )
             .then(() => {
-              // tempoary
-              firebase.firestore().collection('activityLog').doc().set({
-                userId: email,
-                quoteId: quoteId,
-                title: 'submit quote',
-                date: firebase.firestore.FieldValue.serverTimestamp(),
-              });
+              addTimeLineLog(
+                quoteId,
+                email,
+                'Quote', // type
+                'Quote Submitted', // title
+                '', // subtitle
+                '', // content
+              );
             })
             .then(() => {
               const msg =
@@ -185,7 +188,9 @@ export default function ContactForm() {
               });
             })
             .then(() => {
-              router.push('?create=true&progress=100');
+              email
+                ? router.push(`/users/${auth.user.uid}/selfService`)
+                : router.push('?create=true&progress=100');
               handleSpecChange('activeStep', 3);
               setOpen(true);
             })

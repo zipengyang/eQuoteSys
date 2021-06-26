@@ -37,13 +37,13 @@ export default function EmailAccordion({ data, quoteId }) {
 
   const handleChangeFiling = async (email) => {
     const updatedQuoteId = email.quoteId === '' ? quoteId : '';
-    const ref = firebase.firestore().collection('emails');
+    const ref = firebase.firestore().collection('timelineLog');
 
     await ref
       .doc(email.id)
       .update({ quoteId: updatedQuoteId })
       .then(() => {
-        queryClient.invalidateQueries('emails');
+        queryClient.invalidateQueries('timelineLog');
       })
       .catch((err) => console.error(err));
   };
@@ -65,7 +65,7 @@ export default function EmailAccordion({ data, quoteId }) {
               <Grid container spacing={1}>
                 <Grid item xs={12}>
                   <Typography className={classes.heading}>
-                    Subject: {email.subject}
+                    Subject: {email.title}
                   </Typography>
                 </Grid>
 
@@ -91,7 +91,7 @@ export default function EmailAccordion({ data, quoteId }) {
               </Grid>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>{email.body}</Typography>
+              <Typography>{email.content}</Typography>
             </AccordionDetails>
           </Accordion>
         ))}

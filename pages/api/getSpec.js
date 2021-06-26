@@ -7,7 +7,7 @@ const userRef = firebase.firestore().collection('users');
 const campRef = firebase.firestore().collection('campaigns');
 const adminRef = firebase.firestore().collection('admin');
 const taskRef = firebase.firestore().collection('tasks');
-const emailRef = firebase.firestore().collection('emails');
+const logRef = firebase.firestore().collection('timelineLog');
 
 // get specs to cache
 export const getAllSpecs = async () => {
@@ -132,18 +132,6 @@ export const getAllUsers = async () => {
 export const getUserActivity = async ({ queryKey }) => {
   const [_key, email] = queryKey;
   const data = await userRef.doc(email).collection('activityLog').get();
-  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-  return result;
-};
-
-// get activity by quote ID
-export const getActivityByQuoteId = async ({ queryKey }) => {
-  const [_key, quoteId] = queryKey;
-  const data = await firebase
-    .firestore()
-    .collection('activityLog')
-    .where('quoteId', '==', quoteId)
-    .get();
   const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
   return result;
 };
@@ -301,25 +289,47 @@ export const getTasksByEmail = async ({ queryKey }) => {
 //get email by userID;
 
 export const getEmailsByUserId = async ({ queryKey }) => {
-  const [_key, userId] = queryKey;
-  const data = await emailRef.where('sender', '==', userId).get();
+  const [_key, userId, type] = queryKey;
+  console.log(userId, type);
+  const data = await logRef
+    .where('userId', '==', userId)
+    .where('type', '==', type)
+    .get();
   const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
   return result;
 };
 
-// create activity log
+// create activity timeline: quote(submit,offer,quoted,accepted)/email/call/meeting/notes/chat
 
-// export const addActivityLog = async ( quoteId, userId, title ) =>
-// {
-//   console.log('quoteid:' ,quoteId)
-//   firebase.firestore().collection('activityLog').doc().set({
-//     userId: userId,
-//     quoteId: quoteId,
-//     title: title,
-//     date: firebase.firestore.FieldValue.serverTimestamp(),
-//   });
-// };
-
+export const addTimeLineLog = async (
+  quoteId,
+  userId,
+  type,
+  title,
+  subtitle,
+  content,
+) => {
+  firebase.firestore().collection('timelineLog').doc().set({
+    userId,
+    quoteId,
+    type,
+    title,
+    subtitle,
+    content,
+    date: firebase.firestore.FieldValue.serverTimestamp(),
+  });
+};
+// get timelineLog by quote ID
+export const getTimelineLogByQuoteId = async ({ queryKey }) => {
+  const [_key, quoteId] = queryKey;
+  const data = await firebase
+    .firestore()
+    .collection('timelineLog')
+    .where('quoteId', '==', quoteId)
+    .get();
+  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return result;
+};
 // update spec with email and create a new user record if email does not exist.
 // export const contactFormSubmit = async ({ quoteid, ...data }) => {
 //   // email exist?

@@ -174,11 +174,14 @@ export default function QuoteStageSummary({ data }) {
               </Typography>
               <Typography>
                 Accepted Item:{'  '}
-                {/* {console.log(data.acceptedPrice)} */}
-                LeadTime: {data.acceptedPrice.leadtime} days @{' '}
-                {data.acceptedPrice.status === 'amended'
-                  ? data.acceptedPrice.amendedPrice
-                  : data.acceptedPrice.price.toFixed(2)}
+                {data.status === 'accepted' && (
+                  <>
+                    LeadTime: {data.acceptedPrice.leadtime} days @{' '}
+                    {data.acceptedPrice.status === 'amended'
+                      ? data.acceptedPrice.amendedPrice
+                      : data.acceptedPrice.price.toFixed(2)}
+                  </>
+                )}
               </Typography>
 
               {/* <Typography>

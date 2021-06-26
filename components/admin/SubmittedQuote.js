@@ -50,7 +50,7 @@ export default function SubmittedQuoteTable({ data }) {
     {
       field: 'id',
       title: 'ID',
-      render: (rowData) => rowData.id.substring(1, 6),
+      render: (rowData) => rowData.id.substring(0, 6),
     },
     { field: 'userId', title: 'Customer' },
     { field: 'ipAddress', title: 'IP' },

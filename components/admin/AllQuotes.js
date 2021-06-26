@@ -68,13 +68,11 @@ export default function AllQuotes() {
   if (isLoading) return '...loading';
   if (isError) return '...error';
 
-  console.log(data);
-
   const columns = [
     {
       field: 'id',
       title: 'ID',
-      render: (rowData) => rowData.id.substring(1, 6),
+      render: (rowData) => rowData.id.substring(0, 6),
     },
     { field: 'userId', title: 'Customer' },
     { field: 'ipAddress', title: 'IP' },
@@ -86,10 +84,10 @@ export default function AllQuotes() {
       render: (rowData) =>
         moment(rowData.createdDate.toDate()).format('DD/MM/YY'),
     },
-    // {
-    //   field: 'leadtime',
-    //   title: 'LeadTime',
-    // },
+    {
+      field: 'status',
+      title: 'Status',
+    },
     // {
     //   field: 'price',
     //   title: 'Price',
@@ -135,7 +133,7 @@ export default function AllQuotes() {
     <div style={{ height: 580, width: '100%' }}>
       <MaterialTable
         data={data}
-        title="Submitted Quotes"
+        title="Quotes"
         columns={columns}
         options={{ filtering: true, exportButton: true }}
       />

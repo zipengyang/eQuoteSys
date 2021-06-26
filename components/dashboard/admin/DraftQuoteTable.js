@@ -9,6 +9,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { IconButton } from '@material-ui/core';
 import FilterPanel from '../../shared/filterPanel';
 import moment from 'moment';
+import { addTimeLineLog } from '../../../pages/api/getSpec';
 
 export default function DraftQuoteTable({ data }) {
   data = data.filter(
@@ -53,6 +54,16 @@ export default function DraftQuoteTable({ data }) {
             campaigns: {
               campaignId: camp.id,
             },
+          })
+          .then(() => {
+            addTimeLineLog(
+              item.id,
+              item.userId,
+              'Quote',
+              'offer discount',
+              '',
+              '',
+            );
           })
 
           .then(() => {

@@ -26,6 +26,7 @@ import Select from '@material-ui/core/Select';
 import firebase from '../../firebase/firebase';
 import { loadStripe } from '@stripe/stripe-js';
 import { useQueryClient } from 'react-query';
+import { addTimeLineLog } from '../../pages/api/getSpec';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -123,13 +124,23 @@ export default function QuoteList({ data }) {
             .then(() => {
               queryClient.invalidateQueries('specs');
             })
+            // .then(() => {
+            //   firebase.firestore().collection('activityLog').doc().set({
+            //     userId: data.userId,
+            //     quoteId: data.id,
+            //     title: 'quote paid',
+            //     date: firebase.firestore.FieldValue.serverTimestamp(),
+            //   });
+            // })
             .then(() => {
-              firebase.firestore().collection('activityLog').doc().set({
-                userId: data.userId,
-                quoteId: data.id,
-                title: 'quote paid',
-                date: firebase.firestore.FieldValue.serverTimestamp(),
-              });
+              addTimeLineLog(
+                data.id,
+                data.userId,
+                'Quote',
+                'Quote Paid',
+                '',
+                '',
+              );
             })
             .catch((err) => console.error(err));
         });
@@ -147,12 +158,14 @@ export default function QuoteList({ data }) {
           queryClient.invalidateQueries('specs');
         })
         .then(() => {
-          firebase.firestore().collection('activityLog').doc().set({
-            userId: data.userId,
-            quoteId: data.id,
-            title: 'quote accepted',
-            date: firebase.firestore.FieldValue.serverTimestamp(),
-          });
+          addTimeLineLog(
+            data.id,
+            data.userId,
+            'Quote',
+            'Quote Accepted',
+            '',
+            '',
+          );
         })
         .catch((err) => console.error(err));
     }

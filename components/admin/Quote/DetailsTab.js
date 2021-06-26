@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -12,8 +12,8 @@ import QuotePrice from './QuotePrice';
 import ActionForm from './ActionForm';
 import firebase from '../../../firebase/firebase';
 import { useQueryClient } from 'react-query';
-import { UpdateRounded } from '@material-ui/icons';
-import { addActivityLog } from '../../../pages/api/getSpec';
+import { addTimeLineLog } from '../../../pages/api/getSpec';
+import { dispatchContext } from '../../../pages/users/[id]/admin';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -53,6 +53,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DetailsTab({ data }) {
+  const { dispatch } = useContext(dispatchContext);
+
   const classes = useStyles();
   const queryClient = useQueryClient();
   const [value, setValue] = React.useState(0);
@@ -90,16 +92,16 @@ export default function DetailsTab({ data }) {
         .then(() => {
           queryClient.invalidateQueries('specs');
         })
-        .then(() => {
-          // const title = 'quote sent';
-          // addActivityLog(data.quoteId, data.userId, title);
-          firebase.firestore().collection('activityLog').doc().set({
-            userId: data.userId,
-            quoteId: data.id,
-            title: 'quote sent',
-            date: firebase.firestore.FieldValue.serverTimestamp(),
-          });
-        })
+        // .then(() => {
+        //   // const title = 'quote sent';
+        //   // addActivityLog(data.quoteId, data.userId, title);
+        //   firebase.firestore().collection('activityLog').doc().set({
+        //     userId: data.userId,
+        //     quoteId: data.id,
+        //     title: 'quote sent',
+        //     date: firebase.firestore.FieldValue.serverTimestamp(),
+        //   });
+        // })
         .then(() => {
           const msg =
             'You have an update on the quote of ref: ' +
@@ -112,14 +114,21 @@ export default function DetailsTab({ data }) {
             isDismissed: false,
           });
         })
-        // .then(() => {
-        //   //call cloud function
-        //   const QuoteUpdatedEmail = firebase
-        //     .functions()
-        //     .httpsCallable('QuoteUpdatedEmail');
-        //   QuoteUpdatedEmail(data.userId);
-        // })
+        .then(() => {
+          addTimeLineLog(data.id, data.userId, 'Quote', 'Quote Sent', '', '');
+        })
+        .then(() => {
+          //call cloud function
+          const QuoteUpdatedEmail = firebase
+            .functions()
+            .httpsCallable('QuoteUpdatedEmail');
+          QuoteUpdatedEmail(data.userId);
+        })
+
         .then(() => window.alert('quote sent.'))
+        .then(() => {
+          dispatch({ type: 'submitted' });
+        })
         .catch((err) => console.error(err));
     }
   };

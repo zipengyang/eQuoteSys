@@ -13,14 +13,16 @@ export default function Emails({ userId, quoteId }) {
     setState(!state);
   };
 
+  const type = 'email';
   const { data, isLoading, isError } = useQuery(
-    ['emails', userId],
+    ['timelineLog', userId, type],
     getEmailsByUserId,
   );
 
   if (isLoading) return '...loading';
   if (isError) return '...error';
 
+  console.log(data);
   const emails = !state
     ? data.filter((item) => item.quoteId === quoteId)
     : data.filter((item) => item.quoteId === '');

@@ -8,35 +8,22 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import Typography from '@material-ui/core/Typography';
 import { useQuery } from 'react-query';
-import {
-  getActivityByQuoteId,
-  getAllActivity,
-} from '../../../pages/api/getSpec';
+import { getTimelineLogByQuoteId } from '../../../pages/api/getSpec';
 import moment from 'moment';
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
 export default function ActivityTimeLine({ quote }) {
   // console.log(quote);
   const { data, isLoading, isError } = useQuery(
-    ['activityLog', quote.id],
-    getActivityByQuoteId,
+    ['timelineLog', quote.id],
+    getTimelineLogByQuoteId,
   );
 
   if (isLoading) return '...loading';
   if (isError) return '...error';
 
-  // console.log(data);
-
-  // const groupArrayByDate = (arr) => [
-  //   ...new Set(
-  //     arr.map((e) => moment(e.date.toDate()).format('DD/MM/yyyy HH:mm')),
-  //   ),
-  // ];
-  // const grouped = groupArrayByDate(data).sort().reverse();
-  // console.log(grouped);
-
   data.sort((a, b) => a.date - b.date);
-
-  console.log(data);
 
   return (
     <React.Fragment>
@@ -46,7 +33,7 @@ export default function ActivityTimeLine({ quote }) {
             <TimelineItem key={item.id}>
               <TimelineOppositeContent>
                 <Typography color="textSecondary">
-                  {moment(item.date.toDate()).format('DD/MM/yyyy HH:mm')}
+                  {moment(item.date.toDate()).format('DD/MM/yy HH:mm')}
                 </Typography>
               </TimelineOppositeContent>
               <TimelineSeparator>
@@ -54,7 +41,17 @@ export default function ActivityTimeLine({ quote }) {
                 <TimelineConnector />
               </TimelineSeparator>
               <TimelineContent>
-                <Typography>{item.title}</Typography>
+                <Typography>
+                  {item.type === 'email' ? (
+                    <MailOutlineIcon fontSize="small" />
+                  ) : item.type === 'Quote' ? (
+                    <AssignmentIcon fontSize="small" />
+                  ) : (
+                    item.type
+                  )}
+                  {item.title}
+                </Typography>
+                {item.type === 'email' ? item.content : ''}
               </TimelineContent>
             </TimelineItem>
           ))}
