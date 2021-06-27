@@ -40,6 +40,7 @@ export default function selfService({ session }) {
     if (isLoading) return '...loading';
     if (isError) return '...error';
     // console.log(data);
+    data.sort((a, b) => b.createdDate - a.createdDate);
     return (
       <div className={styles.container}>
         <Container maxWidth="sm" style={{ overflow: 'auto' }}>

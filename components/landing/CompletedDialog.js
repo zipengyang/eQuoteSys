@@ -6,12 +6,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import { useRouter } from 'next/router';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function CompletedDialog({ isOpen, handleClose }) {
+export default function CompletedDialog({ isOpen, handleRouter }) {
   //   const [open, setOpen] = React.useState(false);
 
   //   const handleClickOpen = () => {
@@ -21,7 +22,12 @@ export default function CompletedDialog({ isOpen, handleClose }) {
   //   const handleClose = () => {
   //     setOpen(false);
   //   };
-  console.log('isOpen:', isOpen);
+  // console.log( 'isOpen:', isOpen );
+  const router = useRouter();
+  const handleClick = () => {
+    handleClose(false);
+    router.push(url);
+  };
 
   return (
     <div>
@@ -43,7 +49,7 @@ export default function CompletedDialog({ isOpen, handleClose }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleClose(false)} color="primary">
+          <Button onClick={() => handleRouter()} color="primary">
             ok
           </Button>
         </DialogActions>

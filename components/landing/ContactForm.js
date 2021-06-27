@@ -45,7 +45,9 @@ export default function ContactForm() {
   //   get login user info, set defaultvalue for contact form
   const auth = useAuth();
   let email = !!auth.user ? auth.user.email : null;
-
+  const url = !!auth.user
+    ? `/users/${auth.user.uid}/selfService`
+    : '?create=true&progress=100';
   // const [emailToSpec, setEmailToSpec] = React.useState(email);
   const classes = useStyles();
   const [Open, setOpen] = React.useState(false);
@@ -54,6 +56,10 @@ export default function ContactForm() {
   const quoteId = state.quoteId;
   const activeStep = state.activeStep.value;
   const router = useRouter();
+  const handleRouter = () => {
+    setOpen(false); // close dialog
+    router.push(url);
+  };
 
   const onSubmit = async (data) => {
     // handle new user creation
@@ -187,13 +193,10 @@ export default function ContactForm() {
                 isDismissed: false,
               });
             })
-            .then(() => {
-              email
-                ? router.push(`/users/${auth.user.uid}/selfService`)
-                : router.push('?create=true&progress=100');
-              handleSpecChange('activeStep', 3);
-              setOpen(true);
-            })
+
+            .then(() => handleSpecChange('activeStep', 3))
+            .then(() => setOpen(true))
+
             .catch((err) => console.error(err));
         });
       });
@@ -298,7 +301,7 @@ export default function ContactForm() {
         </form>
       </Container>
 
-      <CompletedDialog isOpen={Open} handleClose={setOpen} />
+      <CompletedDialog isOpen={Open} handleRouter={handleRouter} />
     </>
   );
 }
