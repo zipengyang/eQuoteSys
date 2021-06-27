@@ -121,7 +121,11 @@ export default function SignInSide({
               color="primary"
               className={classes.submit}
             >
-              {isLogging ? <CircularProgress color="secondary" /> : 'Sign In'}
+              {isLogging ? (
+                <CircularProgress style={{ color: 'white' }} />
+              ) : (
+                'Sign In'
+              )}
             </Button>
             <Grid container>
               <Grid item xs>

@@ -26,9 +26,10 @@ import { SpecProvider } from './SpecContext';
 import firebase from '../../firebase/firebase';
 import { v4 as uuidv4 } from 'uuid';
 import publicIp from 'public-ip';
-import Calculation from '../utils/testCal';
+// import Calculation from '../utils/testCal';
 import MultiplePriceSelection from './MultiplePriceSelection';
 import { useRouter } from 'next/router';
+import { Calculation } from '../utils/testCal';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -95,6 +96,10 @@ export default function AccordionHolder() {
   const handleRevealButton = async () => {
     setIsLoading(true); // set loading true while waiting
 
+    const calsPrices = await Calculation(state);
+    // console.log(calsPrices);
+    setPrices(calsPrices.prices);
+
     const ref = firebase.firestore().collection('specs');
     await ref
       .doc(state.quoteId)
@@ -111,16 +116,20 @@ export default function AccordionHolder() {
         ipAddress: ip,
         createdDate: firebase.firestore.FieldValue.serverTimestamp(),
         status: 'initiated',
+        cals: calsPrices.calArray, // temorary here
       })
-      .then(() => {
-        //call cloud function
-        const addCalculation = firebase
-          .functions()
-          .httpsCallable('addCalculation');
-        addCalculation(state)
-          .then((result) => setPrices(result.data))
-          .catch((err) => console.error(err));
-      })
+      // .then(() => {
+      //call cloud function
+      // const addCalculation = firebase
+      //   .functions()
+      //   .httpsCallable('addCalculation');
+      // addCalculation(state)
+      // call cal function
+
+      // .then((result) => setPrices(result.data))
+      // .catch((err) => console.error(err));
+      //   console.log('used to call cloud function');
+      // })
       .then(() => {
         handleSpecChange('activeStep', 1);
       })

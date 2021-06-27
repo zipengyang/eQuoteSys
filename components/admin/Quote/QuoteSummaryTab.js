@@ -11,6 +11,7 @@ import { useQuery } from 'react-query';
 import { getUser } from '../../../pages/api/getSpec';
 import QuoteSummaryCard1 from './quoteSummaryCard1';
 import QuoteStageSummary from './QuoteStageSummary';
+import SpecsAndCalculatinTable from './SpecAndCalculationTable';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -87,9 +88,9 @@ export default function QuoteSummaryTab({ data }) {
         className={classes.tabs}
       >
         <Tab label="Summary" {...a11yProps(0)} />
-        <Tab label="Specification" {...a11yProps(0)} />
-        <Tab label="Calculation" {...a11yProps(1)} />
-        <Tab label="Approval" {...a11yProps(2)} />
+        <Tab label={`Specs & Cals`} {...a11yProps(0)} />
+        {/* <Tab label="Calculation" {...a11yProps(1)} /> */}
+        <Tab label="Approval" {...a11yProps(1)} />
       </Tabs>
       <TabPanel value={value} index={0}>
         <Grid container spacing={2} justify="center">
@@ -102,12 +103,12 @@ export default function QuoteSummaryTab({ data }) {
         </Grid>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Specification
+        <SpecsAndCalculatinTable quoteId={data.id} />
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      {/* <TabPanel value={value} index={2}>
         Calculation detail
-      </TabPanel>
-      <TabPanel value={value} index={3}>
+      </TabPanel> */}
+      <TabPanel value={value} index={2}>
         <DetailsTab data={data} />
       </TabPanel>
     </div>

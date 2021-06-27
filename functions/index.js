@@ -345,6 +345,51 @@ const Calculation = (data) => {
   let totalPrice = 0;
   const panelType = 1; // set penal size as '18x24'
   const suppliedAs = data.suppliedAs.value === false ? 'single' : 'array';
+
+  // push specs to array and save to database later
+  calArray.push({
+    spec: 'SuppliedAs',
+    value: suppliedAs,
+    unitPrice: 0,
+    amount: 0,
+    sum: totalPrice,
+  });
+  suppliedAs === 'array' &&
+    calArray.push({
+      spec: 'ccPerArray',
+      value: data.ccPerArray.value,
+      unitPrice: 0,
+      amount: 0,
+      sum: totalPrice,
+    });
+  calArray.push({
+    spec: 'width',
+    value: data.width.value,
+    unitPrice: 0,
+    amount: 0,
+    sum: totalPrice,
+  });
+  calArray.push({
+    spec: 'height',
+    value: data.height.value,
+    unitPrice: 0,
+    amount: 0,
+    sum: totalPrice,
+  });
+  calArray.push({
+    spec: 'Panel Size',
+    value: '18x24',
+    unitPrice: 0,
+    amount: 0,
+    sum: totalPrice,
+  });
+  calArray.push({
+    spec: 'quantity',
+    value: data.quantity.value,
+    unitPrice: 0,
+    amount: 0,
+    sum: totalPrice,
+  });
   const panelization = Panelization(
     panelType,
     suppliedAs,
@@ -359,26 +404,62 @@ const Calculation = (data) => {
     value: calSteps,
     unitPrice: 0,
     amount: 0,
-    totalPrice: 0,
+    sum: totalPrice,
   });
   calArray.push({
     factor: 'panel',
     value: panel,
     unitPrice,
     amount: panel * unitPrice,
-    totalPrice: panel * unitPrice,
+    sum: panel * unitPrice,
   });
   totalPrice = panel * unitPrice;
-  // return calArray;
+
+  //hard code overmake for now
+  const overmadePanel = 1;
+  calArray.push({
+    factor: 'overmake',
+    value: overmadePanel,
+    unitPrice,
+    amount: overmadePanel * unitPrice,
+    sum: overmadePanel * unitPrice + totalPrice,
+  });
+  totalPrice = overmadePanel * unitPrice + totalPrice;
+
+  const totalPanels = panel + overmadePanel;
+  //material: hard code for now
+  const materialPrice = 10;
+  calArray.push({
+    factor: 'material',
+    value: data.material.value,
+    unitPrice: materialPrice,
+    amount: data.quantity.value * materialPrice,
+    sum: data.quantity.value * materialPrice + totalPrice,
+  });
+  totalPrice = data.quantity.value * materialPrice + totalPrice;
+
   // leadtime
   const pricePerCircuit = totalPrice / data.quantity.value;
   let prices = [];
-  data.leadtime.value.map((item) =>
-    prices.push({
-      leadtime: item,
-      price: pricePerCircuit * factors.leadTime[item].Val,
+  data.leadtime.value.map(
+    (item) =>
+      prices.push({
+        leadtime: item,
+        price: pricePerCircuit * factors.leadTime[item].Val,
+      }),
+    // push leadtime price to calArray
+    calArray.push({
+      factor: 'leadtime',
+      value: item,
+      unitPrice: factors.leadTime[item].Val,
+      amount: pricePerCircuit * factors.leadTime[item].Val,
+      sum: data.quantity.value * pricePerCircuit * factors.leadTime[item].Val,
     }),
   );
+  // save data
+  const calRef = admin.firestore().collection('calculation');
+
+  // only return prices for leadtime picker
   return prices;
 };
 // create or update a new user profile after a user signup
