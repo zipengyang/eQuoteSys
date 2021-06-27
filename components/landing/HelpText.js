@@ -19,6 +19,10 @@ export const HelpText = {
     title: 'What material you want to use for your circuit?',
     text: 'your circuit can be supplied as a single in a panel, or in an array. you have to specify the number of circiuts if it being supplied as array.',
   },
+  soldermask: {
+    title: 'What color you want to use for your circuit?',
+    text: 'your circuit can be supplied as a single in a panel, or in an array. you have to specify the number of circiuts if it being supplied as array.',
+  },
   leadtime: {
     title: 'How quick you want to receive your circuits? (working days)',
     text: 'your circuit can be supplied as a single in a panel, or in an array. you have to specify the number of circiuts if it being supplied as array.',

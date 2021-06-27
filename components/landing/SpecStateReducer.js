@@ -33,6 +33,10 @@ export const DEFAULT_STATE = {
     value: '',
     error: null,
   },
+  soldermask: {
+    value: '',
+    error: null,
+  },
   quantity: {
     value: '',
     error: null,
@@ -76,6 +80,10 @@ export const SpecReducer = (state, { key, payload }) => {
     case 'material':
       state.material.value = payload.newValue;
       state.material.error = payload.error;
+      return;
+    case 'soldermask':
+      state.soldermask.value = payload.newValue;
+      state.soldermask.error = payload.error;
       return;
     case 'quantity':
       state.quantity.value = payload.newValue;

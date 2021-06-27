@@ -183,6 +183,9 @@ export default function AccordionHolder() {
                   <CardHolder field="material" />
                 </Grid>
                 <Grid item xs={12}>
+                  <CardHolder field="soldermask" />
+                </Grid>
+                <Grid item xs={12}>
                   <CardHolder field="leadtime" />
                 </Grid>
                 <Grid item xs={12}>
