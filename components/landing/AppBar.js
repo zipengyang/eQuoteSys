@@ -19,6 +19,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { useAuth } from '../../firebase/auth';
 import firebase from '../../firebase/firebase';
 import Notification from '../portal/Notification';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,6 +49,7 @@ export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [authOpen, setAuthOpen] = React.useState(false);
+  const [signUpOpen, setSignUpOpen] = React.useState(false);
 
   const handleChange = (event) => {
     setAuth(event.target.checked);
@@ -59,6 +61,15 @@ export default function MenuAppBar() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleSignIn = () => {
+    handleClose();
+    setAuthOpen(!authOpen);
+  };
+  const handleSignUp = () => {
+    handleClose();
+    setSignUpOpen(!signUpOpen);
   };
   const handleSignout = async () => {
     await firebase.auth().signOut();
@@ -77,9 +88,37 @@ export default function MenuAppBar() {
                   className={classes.menuButton}
                   color="inherit"
                   aria-label="menu"
+                  onClick={handleMenu}
                 >
                   <MenuIcon />
                 </IconButton>
+                {/* menu inside the hanberge  */}
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={() => handleSignIn()}>
+                    {/* <VpnKeyIcon /> */}
+                    Sign In
+                  </MenuItem>
+                  <MenuItem onClick={() => handleSignUp()}>
+                    {/* <PersonAddIcon /> */}
+                    Sign Up
+                  </MenuItem>
+
+                  {/* <MenuItem onClick={handleSignout}>Sign Out</MenuItem> */}
+                </Menu>
               </Grid>
               {/* <Grid item>{user && user.email}</Grid> */}
               {user && (
@@ -87,7 +126,7 @@ export default function MenuAppBar() {
                   <Notification email={user.email} />
                 </Grid>
               )}
-              {!user && (
+              {/* {!user && (
                 <Grid item xs={1}>
                   <IconButton
                     color="inherit"
@@ -96,7 +135,7 @@ export default function MenuAppBar() {
                     <PersonAddIcon />
                   </IconButton>
                 </Grid>
-              )}
+              )} */}
 
               {user && (
                 <Grid item>
@@ -161,10 +200,37 @@ export default function MenuAppBar() {
         </DialogTitle>
         <DialogContent>
           <SignIn />
-          {/* <SignUp /> */}
         </DialogContent>
       </Dialog>
-      {/* )} */}
+
+      {/* sign up */}
+      <Dialog
+        fullWidth
+        maxWidth="xs"
+        open={signUpOpen}
+        // onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
+          <Grid container justify="space-between" alignItems="center">
+            <Grid item xs={10}>
+              <img
+                aria-label="exceptionpcb"
+                className={classes.avatar}
+                src="https://firebasestorage.googleapis.com/v0/b/pcb-online-quote-system.appspot.com/o/images%2FLogo.jpg?alt=media&token=b4dba3eb-a1c8-42ec-846b-c191f11b6746"
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <IconButton onClick={() => setSignUpOpen(!signUpOpen)}>
+                <CloseIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </DialogTitle>
+        <DialogContent>
+          <SignUp />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

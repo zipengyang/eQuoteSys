@@ -75,7 +75,7 @@ export default function QuoteSummaryTab({ data }) {
 
   if (isLoading) return '...loading';
   if (isError) return '...error';
-  console.log(user);
+  // console.log(user);
 
   return (
     <div className={classes.root}>

@@ -39,9 +39,12 @@ export default function QuoteDetail({ data, prices, chosen }) {
     typeof data.quantity === 'object' ? data.quantity.value : data.quantity;
   const classes = useStyles();
   // console.log(chosen);
-  const price = prices
-    .find((price) => price.leadtime === chosen)
-    .price.toFixed(2);
+  const priceObj = prices.find((price) => price.leadtime === chosen);
+  // .price.toFixed(2);
+  const price =
+    priceObj.status === 'amended'
+      ? priceObj.amendedPrice
+      : priceObj.price.toFixed(2);
 
   const result = prices.find((price) => price.leadtime === chosen);
   let rows = [];
@@ -53,7 +56,7 @@ export default function QuoteDetail({ data, prices, chosen }) {
   // console.log(data.campaign)
   if (data.campaigns !== undefined) {
     const { type, offer } = data.campaigns;
-    console.log('type: ', type, 'offer: ', offer);
+
     const offerAmount =
       type === 'fixed'
         ? Number(offer)

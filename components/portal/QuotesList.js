@@ -27,6 +27,7 @@ import firebase from '../../firebase/firebase';
 import { loadStripe } from '@stripe/stripe-js';
 import { useQueryClient } from 'react-query';
 import { addTimeLineLog } from '../../pages/api/getSpec';
+import { LaptopWindows } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,6 +86,7 @@ export default function QuoteList({ data }) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [choice, setChoice] = React.useState({});
+
   const queryClient = useQueryClient();
   // const [status, setStatus] = React.useState('');
   const handleClick = (event) => {
@@ -96,7 +98,7 @@ export default function QuoteList({ data }) {
   const handleAccept = () => {
     // this will be in cloud function
     let selectedPrice =
-      choice.statu === 'amended'
+      choice.status === 'amended'
         ? parseInt(choice.amendedPrice * data.quantity)
         : parseInt(choice.price * data.quantity);
     // temporary hard code tooling and vat
@@ -167,6 +169,11 @@ export default function QuoteList({ data }) {
             '',
           );
         })
+        .then(() =>
+          window.alert(
+            'Thank you for accepting the quote, we will come back to you shortly.',
+          ),
+        )
         .catch((err) => console.error(err));
     }
   };
@@ -204,9 +211,13 @@ export default function QuoteList({ data }) {
                         : data.status === 'accepted' || data.status === 'paid'
                         ? 'green'
                         : '',
+                    fontSize: '13px',
                   }}
                 >
-                  {data.status}
+                  {data.status === 'accepted' || data.status === 'paid'
+                    ? data.status + '-' + data.acceptedPrice.leadtime + ' days'
+                    : data.status}
+                  {/* {data.status} */}
                 </Typography>
               </Grid>
             </Grid>

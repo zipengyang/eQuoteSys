@@ -36,6 +36,7 @@ import NewAppBar from '../../../components/admin/newAppBar';
 import QuoteTimeLineTabs from '../../../components/admin/Quote/QuoteTimeLineTabs';
 import QuotesForCampaign from '../../../components/marketing/QuotesForCampaign';
 import AllQuotes from '../../../components/admin/AllQuotes';
+import QuotesToPromoteTable from '../../../components/marketing/QuotesToPromoteTable';
 
 // context
 export const dispatchContext = createContext();
@@ -66,11 +67,12 @@ export default function selfService({ session }) {
         case 'submitted':
           return <SubmittedQuoteTable data={data} />;
         case 'draft':
-          return <DraftQuoteTable data={data} />;
+
         case 'allquotes':
           return <AllQuotes />;
         case 'quoted':
           return <QuotesForCampaign data={data} />;
+        // return <QuotesToPromoteTable data={data} />;
         case 'promoted':
           return <PromotedQuotes data={data} />;
         case 'customer':

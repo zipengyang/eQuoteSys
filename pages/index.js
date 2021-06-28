@@ -34,7 +34,7 @@ export default function Home() {
           {/* )} */}
         </Grid>
       </Container>
-      <footer className={styles.footer}>
+      {/* <footer className={styles.footer}>
         <a
           href="https://www.exceptionpcb.com"
           target="_blank"
@@ -50,7 +50,7 @@ export default function Home() {
             />
           </span>
         </a>
-      </footer>
+      </footer> */}
     </div>
   );
 }

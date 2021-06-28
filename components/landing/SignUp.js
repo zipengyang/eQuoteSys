@@ -67,7 +67,9 @@ export default function SignUp() {
       })
       .then(() => {
         const user = firebase.auth().currentUser;
-        user.sendEmailVerification().then(() => router.push('/'));
+        user
+          .sendEmailVerification()
+          .then(() => router.push(`/users/${user.uid}/selfService`));
       })
       .catch((err) => console.error(err));
   };

@@ -58,7 +58,9 @@ export default function SpecsAndCalculatinTable({ quoteId }) {
   const classes = useStyles();
 
   const { data, isLoading, isError } = useQuery(['spec', quoteId], getSpecById);
-  console.log(data.cals);
+  if (isLoading) return '...loading';
+  if (isError) return '...error';
+  // console.log(data.cals);
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">

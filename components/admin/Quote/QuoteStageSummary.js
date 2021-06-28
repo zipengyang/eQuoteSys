@@ -76,19 +76,19 @@ export default function QuoteStageSummary({ data }) {
           <Grid container spacing={2} justify="flex-start">
             <Grid item xs={12}>
               <Typography>
-                ID: {'  '}
+                <strong>ID: {'  '}</strong>
                 {data.id}
               </Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography>
-                Date:{'  '}
+                <strong>Date:{'  '}</strong>
                 {monent(data.createdDate.toDate()).format('DD/MM/yy HH:mm')}
               </Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography>
-                Quantity:{'  '}
+                <strong>Quantity:{'  '}</strong>
                 {data.quantity}
               </Typography>
             </Grid>
@@ -123,13 +123,13 @@ export default function QuoteStageSummary({ data }) {
           <Grid container spacing={2} justify="flex-start">
             <Grid item xs={12}>
               <Typography>
-                Assigned To:{'  '}
+                <strong>Assigned To:{'  '}</strong>
                 {data.assignedTo}
               </Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography>
-                Quote issued Date:{'  '}
+                <strong>Quote issued Date:{'  '}</strong>
                 {data.status === 'quoted' &&
                   monent(data.quotedDate.toDate()).format('DD/MM/yy HH:mm')}
               </Typography>
@@ -168,12 +168,12 @@ export default function QuoteStageSummary({ data }) {
           <Grid container spacing={2} justify="flex-start">
             <Grid item xs={12}>
               <Typography>
-                Accepted Date:{'  '}
+                <strong>Accepted Date:{'  '}</strong>
                 {data.status === 'accepted' &&
                   monent(data.acceptedDate.toDate()).format('DD/MM/yy HH:mm')}
               </Typography>
               <Typography>
-                Accepted Item:{'  '}
+                <strong>Accepted Item:{'  '}</strong>
                 {data.status === 'accepted' && (
                   <>
                     LeadTime: {data.acceptedPrice.leadtime} days @{' '}

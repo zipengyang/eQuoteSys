@@ -208,6 +208,21 @@ exports.QuoteUpdatedEmail = functions.https.onCall((email) => {
   return sendGridEmail.send(msg);
 });
 
+// quote accepted notification email to crm
+exports.QuoteAcceptedEmail = functions.https.onCall((quoteId) => {
+  const msg = {
+    to: 'crm@exceptionpcb.com',
+    from: 'crm@exceptionpcb.com',
+    subject: 'quote ref: has been accepted.',
+    templateId: 'd-b54942da03f047d1b96fbc5b9f7eef66',
+    dynamic_template_data: {
+      quoteId: quoteId,
+    },
+  };
+
+  return sendGridEmail.send(msg);
+});
+
 // create notification
 // exports.addNotification = functions.https.onCall((data) => {
 //   const ref = admin.firestore().collection('notification');
