@@ -56,7 +56,7 @@ export default function LeadTimePicker() {
     '12',
     '15',
     '20',
-    '>20',
+    '30',
   ]);
   const [right, setRight] = React.useState(['10']);
 

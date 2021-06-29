@@ -73,9 +73,9 @@ export default function AccordionHolder() {
   //check if all required fields completed.
   useEffect(() => {
     if (
-      state.height.value !== '' &&
-      state.width.value !== '' &&
-      state.quantity.value !== '' &&
+      state.height.value > 0 &&
+      state.width.value > 0 &&
+      state.quantity.value > 0 &&
       state.material.value !== '' &&
       state.leadtime.value !== []
     ) {

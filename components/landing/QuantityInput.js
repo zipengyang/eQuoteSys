@@ -20,8 +20,12 @@ export default function QuantityInput() {
   // get state from context
   const { state, handleSpecChange } = useSpecContext();
   // update state by reducer
+  const [errorMsg, setErrorMsg] = React.useState();
   const handleChange = (event) => {
     handleSpecChange(event.target.name, event.target.value);
+  };
+  const handleValidation = () => {
+    if (state.quantity.value < 0) setErrorMsg('have to greater than zero');
   };
   return (
     <TextField
@@ -36,7 +40,9 @@ export default function QuantityInput() {
       //   margin="normal"
       variant="outlined"
       defaultValue={state.quantity.value}
+      // errorText={errorMsg}
       onChange={handleChange}
+      // onBlur={handleValidation}
     />
   );
 }

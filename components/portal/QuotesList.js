@@ -211,7 +211,10 @@ export default function QuoteList({ data }) {
                         : data.status === 'accepted' || data.status === 'paid'
                         ? 'green'
                         : '',
-                    fontSize: '13px',
+                    fontSize:
+                      data.status === 'accepted' || data.status === 'paid'
+                        ? '12px'
+                        : '14px',
                   }}
                 >
                   {data.status === 'accepted' || data.status === 'paid'

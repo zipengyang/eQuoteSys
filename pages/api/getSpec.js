@@ -113,10 +113,7 @@ export const getCustomerAllQuotes = async ({ queryKey }) => {
 //get assignedto  quotes
 export const getAssignedToQuotes = async ({ queryKey }) => {
   const [_key, email] = queryKey;
-  const data = await ref
-    .where('status', '==', 'submitted')
-    .where('assignedTo', '==', email)
-    .get();
+  const data = await ref.where('assignedTo', '==', email).get();
   const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
   return result;
 };
@@ -326,6 +323,18 @@ export const getTimelineLogByQuoteId = async ({ queryKey }) => {
     .firestore()
     .collection('timelineLog')
     .where('quoteId', '==', quoteId)
+    .get();
+  const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  return result;
+};
+
+// get timelineLog by assign to
+export const getTimelineLogByAssignedTo = async ({ queryKey }) => {
+  const [_key, email] = queryKey;
+  const data = await firebase
+    .firestore()
+    .collection('timelineLog')
+    .where('assignedTo', '==', email)
     .get();
   const result = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
   return result;

@@ -20,6 +20,7 @@ import { useAuth } from '../../firebase/auth';
 import firebase from '../../firebase/firebase';
 import Notification from '../portal/Notification';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +45,7 @@ export default function MenuAppBar() {
   const auth = useAuth();
   const { user } = auth;
   user && console.log(user.email);
+  const router = useRouter();
   const classes = useStyles();
   // const [auth, setAuth] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -61,6 +63,7 @@ export default function MenuAppBar() {
 
   const handleClose = () => {
     setAnchorEl(null);
+    user && router.push(`/users/${user.uid}/selfService`);
   };
 
   const handleSignIn = () => {
@@ -163,7 +166,7 @@ export default function MenuAppBar() {
                     open={open}
                     onClose={handleClose}
                   >
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
+                    <MenuItem onClick={() => handleClose()}>Quote</MenuItem>
                     <MenuItem onClick={handleClose}>My account</MenuItem>
 
                     <MenuItem onClick={handleSignout}>Sign Out</MenuItem>

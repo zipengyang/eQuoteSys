@@ -12,7 +12,10 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
-import { getAssignedToQuotes, getTasksByEmail } from '../../pages/api/getSpec';
+import {
+  getAssignedToQuotes,
+  getTimelineLogByAssignedTo,
+} from '../../pages/api/getSpec';
 import MenuListComponent from '../dashboard/admin/menuList';
 import { Container, CssBaseline, Grid, makeStyles } from '@material-ui/core';
 import { menus } from '../shared/menu';
@@ -39,8 +42,8 @@ export default function NewAppBar() {
   //get tasks from cache
 
   const { data, isLoading, isError } = useQuery(
-    ['myTasks', email],
-    getTasksByEmail,
+    ['timelineLog', email],
+    getTimelineLogByAssignedTo,
   );
   const {
     data: assignedQuotes,
@@ -53,6 +56,8 @@ export default function NewAppBar() {
   const myTasks = data.length;
   const myAssignedQuotes = assignedQuotes ? assignedQuotes.length : 0;
   const myNotifications = myTasks + myAssignedQuotes;
+
+  console.log(data);
   return (
     <>
       <AppBar position="absolute">
@@ -105,7 +110,11 @@ export default function NewAppBar() {
       </AppBar>
 
       <div>
-        <NotificationSideBar open={NSBopen} handleSideBar={handleSideBar} />
+        <NotificationSideBar
+          open={NSBopen}
+          handleSideBar={handleSideBar}
+          data={data}
+        />
       </div>
     </>
   );

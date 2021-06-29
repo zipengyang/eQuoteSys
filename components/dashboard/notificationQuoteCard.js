@@ -17,6 +17,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import EditIcon from '@material-ui/icons/Edit';
 import { dispatchContext } from '../../pages/users/[id]/admin';
+import moment from 'moment';
+import { Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,32 +64,39 @@ export default function NotificationQuoteCard({ data, handleDrawerClose }) {
             Q
           </Avatar>
         }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={data.id}
-        subheader={data.submittedDate}
+        // action={
+        //   <IconButton aria-label="settings">
+        //     <MoreVertIcon />
+        //   </IconButton>
+        // }
+        title={data.id.substring(0, 6)}
+        subheader={moment(data.createdDate.toDate()).format('DD/MM/yy HH:MM')}
       />
-      {/* <CardMedia
-        className={classes.media}
-        image="/static/images/cards/paella.jpg"
-        title="Paella dish"
-      /> */}
+
       <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
-        </Typography>
+        <Grid container justify="center">
+          <Grid item xs={12}>
+            <Typography>
+              <strong>Quantity:{'  '}</strong>
+              {data.quantity}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            {data.prices.map((item) => (
+              <Typography key={item.leadtime}>
+                LeadTime:{'  '}
+                {item.leadtime} days @ {item.price.toFixed(2)}
+              </Typography>
+            ))}
+          </Grid>
+        </Grid>
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="see details" onClick={() => handleEditClick()}>
-          <EditIcon />
+          <MoreVertIcon />
         </IconButton>
 
-        <IconButton
+        {/* <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
           })}
@@ -96,9 +105,9 @@ export default function NotificationQuoteCard({ data, handleDrawerClose }) {
           aria-label="show more"
         >
           <ExpandMoreIcon />
-        </IconButton>
+        </IconButton> */}
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>Method:</Typography>
           <Typography paragraph>
@@ -128,7 +137,7 @@ export default function NotificationQuoteCard({ data, handleDrawerClose }) {
             serve.
           </Typography>
         </CardContent>
-      </Collapse>
+      </Collapse> */}
     </Card>
   );
 }

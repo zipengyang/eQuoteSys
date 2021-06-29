@@ -12,6 +12,10 @@ import { getTimelineLogByQuoteId } from '../../../pages/api/getSpec';
 import moment from 'moment';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import PhoneIcon from '@material-ui/icons/Phone';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
 
 export default function ActivityTimeLine({ quote }) {
   // console.log(quote);
@@ -46,53 +50,23 @@ export default function ActivityTimeLine({ quote }) {
                     <MailOutlineIcon fontSize="small" />
                   ) : item.type === 'Quote' ? (
                     <AssignmentIcon fontSize="small" />
+                  ) : item.type === 'call' ? (
+                    <PhoneIcon />
+                  ) : item.type === 'meeting' ? (
+                    <SupervisorAccountIcon />
+                  ) : item.type === 'task' ? (
+                    <AssignmentIndIcon />
                   ) : (
-                    item.type
+                    <SpeakerNotesIcon />
                   )}
-                  {item.title}
+                  {item.type === 'task'
+                    ? `${item.title} assign to: ${item.assignedTo}`
+                    : item.title}
                 </Typography>
                 {item.type === 'email' ? item.content : ''}
               </TimelineContent>
             </TimelineItem>
           ))}
-
-        {/*         
-        <TimelineItem>
-          <TimelineOppositeContent>
-            <Typography color="textSecondary">10:00 am</Typography>
-          </TimelineOppositeContent>
-          <TimelineSeparator>
-            <TimelineDot />
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Typography>Code</Typography>
-          </TimelineContent>
-        </TimelineItem>
-        <TimelineItem>
-          <TimelineOppositeContent>
-            <Typography color="textSecondary">12:00 am</Typography>
-          </TimelineOppositeContent>
-          <TimelineSeparator>
-            <TimelineDot />
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Typography>Sleep</Typography>
-          </TimelineContent>
-        </TimelineItem>
-        <TimelineItem>
-          <TimelineOppositeContent>
-            <Typography color="textSecondary">9:00 am</Typography>
-          </TimelineOppositeContent>
-          <TimelineSeparator>
-            <TimelineDot />
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Typography>Repeat</Typography>
-          </TimelineContent>
-        </TimelineItem> */}
       </Timeline>
     </React.Fragment>
   );

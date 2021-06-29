@@ -22,7 +22,7 @@ export default function Emails({ userId, quoteId }) {
   if (isLoading) return '...loading';
   if (isError) return '...error';
 
-  console.log(data);
+  // console.log(data);
   const emails = !state
     ? data.filter((item) => item.quoteId === quoteId)
     : data.filter((item) => item.quoteId === '');

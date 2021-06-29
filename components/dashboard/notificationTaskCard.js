@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -15,6 +15,10 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import moment from 'moment';
+import { dispatchContext } from '../../pages/users/[id]/admin';
+import { useQuery } from 'react-query';
+import { getSpecById } from '../../pages/api/getSpec';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,13 +43,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NotificationTaskCard({ data }) {
+export default function NotificationTaskCard({ data, handleDrawerClose }) {
+  const { dispatch } = useContext(dispatchContext);
+  const handleClick = () => {
+    handleDrawerClose();
+    dispatch({ type: 'quoteAllInOneView', payload: quote });
+  };
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  const {
+    data: quote,
+    isLoading,
+    isError,
+  } = useQuery(['specs', data.quoteId], getSpecById);
+
+  if (isLoading) return '...loading';
+  if (isError) return '...error';
 
   return (
     <Card className={classes.root}>
@@ -55,13 +73,13 @@ export default function NotificationTaskCard({ data }) {
             T
           </Avatar>
         }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={data.name}
-        subheader={data.createdDate}
+        // action={
+        //   <IconButton aria-label="settings">
+        //     <MoreVertIcon />
+        //   </IconButton>
+        // }
+        title={data.title}
+        subheader={moment(data.date.toDate()).format('DD/MM/yy HH:MM')}
       />
       {/* <CardMedia
         className={classes.media}
@@ -70,17 +88,12 @@ export default function NotificationTaskCard({ data }) {
       /> */}
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
+          {data.content}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
+        <IconButton aria-label="detail" onClick={() => handleClick()}>
+          <MoreVertIcon />
         </IconButton>
         <IconButton
           className={clsx(classes.expand, {
@@ -95,11 +108,8 @@ export default function NotificationTaskCard({ data }) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and
-            set aside for 10 minutes.
-          </Typography>
+          <Typography paragraph>Comment:</Typography>
+          <Typography paragraph>below is a list of comments.</Typography>
           <Typography paragraph>
             Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet
             over medium-high heat. Add chicken, shrimp and chorizo, and cook,

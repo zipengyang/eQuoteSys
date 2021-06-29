@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NotificationSideBar({ open, handleSideBar }) {
+export default function NotificationSideBar({ open, handleSideBar, data }) {
   const { user } = useAuth();
   const email = user ? user.email : '';
   const classes = useStyles();
@@ -92,18 +92,20 @@ export default function NotificationSideBar({ open, handleSideBar }) {
     handleSideBar();
   };
 
-  const { data, isLoading, isError } = useQuery(
-    ['myTasks', email],
-    getTasksByEmail,
-  );
+  // const { data, isLoading, isError } = useQuery(
+  //   ['myTasks', email],
+  //   getTasksByEmail,
+  // );
   const {
     data: assignedQuotes,
     isLoading: isLoadingQuotes,
     isError: isErrorQuotes,
   } = useQuery(['specs', email], getAssignedToQuotes);
 
-  if (isLoading && isLoadingQuotes) return <p>'...Loading'</p>;
-  if (isError && isErrorQuotes) return <p>'...Error'</p>;
+  if (isLoadingQuotes) return <p>'...Loading'</p>;
+  if (isErrorQuotes) return <p>'...Error'</p>;
+
+  console.log(assignedQuotes);
 
   return (
     <div className={classes.root}>

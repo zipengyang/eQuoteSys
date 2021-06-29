@@ -7,7 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Typography } from '@material-ui/core';
 
 const TAX_RATE = 0.2;
 
@@ -106,12 +106,15 @@ export default function QuoteDetail({ data, prices, chosen }) {
 
                 <TableRow>
                   <TableCell rowSpan={5}>
-                    {data.status === 'quoted' && (
-                      <p>
-                        {result.status} --
-                        {result.amendedPrice}
-                      </p>
-                    )}
+                    <Box
+                      width="auto"
+                      boxShadow={3}
+                      bgcolor="grey.300"
+                      p={1}
+                      style={{ width: '5rem', height: '2.5rem' }}
+                    >
+                      <Typography>{result.status}</Typography>
+                    </Box>
                   </TableCell>
                   <TableCell colSpan={2}>Subtotal</TableCell>
                   <TableCell align="left">

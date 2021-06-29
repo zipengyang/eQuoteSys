@@ -21,6 +21,8 @@ import Box from '@material-ui/core/Box';
 import QuoteSummaryTab from './QuoteSummaryTab';
 import Emails from './Emails';
 import ActivityTimeLine from '../timeline/ActivityTimeLine';
+import NoteAccordion from './NoteAccordion';
+import TaskAccordion from './taskAccordion';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -84,11 +86,11 @@ export default function QuoteTimeLineTabs({ data }) {
           <Tab label="TimeLine" icon={<MouseIcon />} {...a11yProps(1)} />
           <Tab label="Emails" icon={<MailOutlineIcon />} {...a11yProps(2)} />
           <Tab
-            label="Tasks"
+            label="Notes"
             icon={<AssignmentTurnedInIcon />}
             {...a11yProps(3)}
           />
-          <Tab label="Notes" icon={<CommentIcon />} {...a11yProps(4)} />
+          <Tab label="Tasks" icon={<CommentIcon />} {...a11yProps(4)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -101,10 +103,10 @@ export default function QuoteTimeLineTabs({ data }) {
         <Emails userId={data.userId} quoteId={data.id} />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        Item Four
+        <NoteAccordion userId={data.userId} quoteId={data.id} />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        Item Five
+        <TaskAccordion userId={data.userId} quoteId={data.id} />
       </TabPanel>
     </div>
   );
