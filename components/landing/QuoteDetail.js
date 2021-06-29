@@ -106,8 +106,9 @@ export default function QuoteDetail({ data, prices, chosen }) {
 
                 <TableRow>
                   <TableCell rowSpan={5}>
-                    {data.status !== 'initiated' &&
-                      data.status !== 'submitted' && (
+                    {data.status === 'quoted' ||
+                      data.status === 'accepted' ||
+                      (data.status === 'paid' && (
                         <Box
                           width="auto"
                           boxShadow={3}
@@ -117,7 +118,7 @@ export default function QuoteDetail({ data, prices, chosen }) {
                         >
                           <Typography>{result.status}</Typography>
                         </Box>
-                      )}
+                      ))}
                   </TableCell>
                   <TableCell colSpan={2}>Subtotal</TableCell>
                   <TableCell align="left">

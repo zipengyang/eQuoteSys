@@ -198,6 +198,7 @@ export default function SolderMaskSelect() {
       <Select
         labelId="demo-simple-select-outlined-label"
         id="demo-simple-select-outlined"
+        name="soldermask"
         value={state.soldermask.value}
         onChange={handleChange}
         label="Solder Mask"
