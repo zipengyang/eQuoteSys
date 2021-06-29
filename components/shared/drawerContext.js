@@ -5,8 +5,8 @@ export const drawerContext = createContext();
 
 const drawerContextProvider = (props) => {
   const [state, dispatch] = useReducer(drawerReducer, {
-    menuSelected: 'submitted',
-    status: 'submitted',
+    menuSelected: 'allquotes',
+    status: 'allquotes',
     camps: {},
   });
   return (

@@ -17,6 +17,7 @@ import { useForm } from 'react-hook-form';
 import firebase from '../../firebase/firebase';
 import 'firebase/auth';
 import { useRouter } from 'next/router';
+import Toast from '../shared/SnackBar';
 
 function Copyright() {
   return (
@@ -55,6 +56,11 @@ export default function SignIn() {
   const classes = useStyles();
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [message, setMessage] = React.useState('');
+  const closeErrorToast = () => {
+    setOpen(false);
+  };
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -66,8 +72,10 @@ export default function SignIn() {
         // setIsLoading(false);
         router.push(`/users/${user.uid}/selfService`);
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(function (error) {
+        const message = error.message;
+        setOpen(true);
+        setMessage(message);
       });
   };
 
@@ -140,6 +148,7 @@ export default function SignIn() {
           </Grid>
         </form>
       </div>
+      <Toast open={open} message={message} closeErrorToast={closeErrorToast} />;
       <Box mt={8}>
         <Copyright />
       </Box>

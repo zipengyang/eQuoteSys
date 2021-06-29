@@ -232,7 +232,7 @@ export default function AccordionHolder() {
                 </Button>
               ) : (
                 <Typography className={classes.heading}>
-                  Step 2: Price detail
+                  Step 2: Price Detail
                 </Typography>
               )}
             </AccordionSummary>

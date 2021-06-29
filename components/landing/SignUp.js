@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form';
 import firebase from '../../firebase/firebase';
 import 'firebase/auth';
 import { useRouter } from 'next/router';
+import Toast from '../shared/SnackBar';
 
 function Copyright() {
   return (
@@ -51,6 +52,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp() {
+  const [open, setOpen] = React.useState(false);
+  const [message, setMessage] = React.useState('');
+  const closeErrorToast = () => {
+    setOpen(false);
+  };
+
   const { register, handleSubmit } = useForm();
   const classes = useStyles();
   const router = useRouter();
@@ -71,7 +78,11 @@ export default function SignUp() {
           .sendEmailVerification()
           .then(() => router.push(`/users/${user.uid}/selfService`));
       })
-      .catch((err) => console.error(err));
+      .catch(function (error) {
+        const message = error.message;
+        setOpen(true);
+        setMessage(message);
+      });
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -173,6 +184,7 @@ export default function SignUp() {
           </Grid>
         </form>
       </div>
+      <Toast open={open} message={message} closeErrorToast={closeErrorToast} />;
       <Box mt={5}>
         <Copyright />
       </Box>
