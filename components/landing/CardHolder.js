@@ -28,6 +28,7 @@ import SolderMask from './SolderMask';
 import QuantityInput from './QuantityInput';
 import { HelpText } from './HelpText';
 import HelperText from './HelperText';
+import SolderMaskSelect from './SolderMaskSelect';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,7 +74,8 @@ export default function CardHolder({ field }) {
       {field === 'dimension' && <CardHeader title={<Dimension />} />}
       {field === 'layer' && <CardHeader title={<LayerSlider />} />}
       {field === 'material' && <CardHeader title={<MaterialSelection />} />}
-      {field === 'soldermask' && <CardHeader title={<SolderMask />} />}
+      {/* {field === 'soldermask' && <CardHeader title={<SolderMask />} />} */}
+      {field === 'soldermask' && <CardHeader title={<SolderMaskSelect />} />}
       {field === 'leadtime' && <CardHeader title={<LeadTimePicker />} />}
       {field === 'quantity' && <CardHeader title={<QuantityInput />} />}
     </Card>

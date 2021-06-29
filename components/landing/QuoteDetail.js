@@ -106,15 +106,18 @@ export default function QuoteDetail({ data, prices, chosen }) {
 
                 <TableRow>
                   <TableCell rowSpan={5}>
-                    <Box
-                      width="auto"
-                      boxShadow={3}
-                      bgcolor="grey.300"
-                      p={1}
-                      style={{ width: '5rem', height: '2.5rem' }}
-                    >
-                      <Typography>{result.status}</Typography>
-                    </Box>
+                    {data.status !== 'initiated' &&
+                      data.status !== 'submitted' && (
+                        <Box
+                          width="auto"
+                          boxShadow={3}
+                          bgcolor="grey.300"
+                          p={1}
+                          style={{ width: '5rem', height: '2.5rem' }}
+                        >
+                          <Typography>{result.status}</Typography>
+                        </Box>
+                      )}
                   </TableCell>
                   <TableCell colSpan={2}>Subtotal</TableCell>
                   <TableCell align="left">
