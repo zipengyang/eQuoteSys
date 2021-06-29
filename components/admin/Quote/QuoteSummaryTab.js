@@ -61,21 +61,22 @@ const useStyles = makeStyles((theme) => ({
 export default function QuoteSummaryTab({ data }) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-
+  console.log(data.userId);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   // get user info
+  const email = data.userId;
   const {
     data: user,
     isLoading,
     isError,
-  } = useQuery(['users', data.userId], getUser);
+  } = useQuery(['users', email], getUser);
 
   if (isLoading) return '...loading';
   if (isError) return '...error';
-  // console.log(user);
+  console.log(user);
 
   return (
     <div className={classes.root}>
