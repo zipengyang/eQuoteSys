@@ -135,13 +135,14 @@ export default function QuoteStageSummary({ data }) {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              {data.prices.map((item) => (
-                <Typography key={item.leadtime}>
-                  LeadTime:{'  '}
-                  {item.leadtime} days @ {item.price.toFixed(2)} {'  '}{' '}
-                  {item.status}
-                </Typography>
-              ))}
+              {data.status === 'quoted' &&
+                data.prices.map((item) => (
+                  <Typography key={item.leadtime}>
+                    LeadTime:{'  '}
+                    {item.leadtime} days @ {item.price.toFixed(2)} {'  '}{' '}
+                    {item.status}
+                  </Typography>
+                ))}
             </Grid>
           </Grid>
         </AccordionDetails>

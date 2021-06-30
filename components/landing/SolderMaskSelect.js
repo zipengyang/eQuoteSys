@@ -194,7 +194,9 @@ export default function SolderMaskSelect() {
     //       </RadioGroup>
 
     <FormControl variant="outlined" fullWidth>
-      <InputLabel id="demo-simple-select-outlined-label">soldermask</InputLabel>
+      <InputLabel id="demo-simple-select-outlined-label">
+        Solder Mask
+      </InputLabel>
       <Select
         labelId="demo-simple-select-outlined-label"
         id="demo-simple-select-outlined"
